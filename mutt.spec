@@ -21,7 +21,6 @@ Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Source4:	%{name}-nntp.config
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
@@ -40,7 +39,8 @@ Patch14:	%{name}-LIBOBJ.patch
 Patch15:	%{name}-pgp_hook.patch
 Patch16:	%{name}-manual.patch
 Patch17:	%{name}-send_charset.patch
-Patch18:	%{name}-sasl2.patch
+Patch18:	%{name}-nntp.patch
+Patch19:	%{name}-sasl2.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -126,8 +126,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch16 -p1
 %patch17 -p0
 %{?_with_nntp:%patch18 -p1}
-%{?_with_nntp:cat %{SOURCE4} >> Muttrc.head.in}
-%patch18 -p1
+%{!?_without_sasl:%patch19 -p1}
 
 %build
 %{__aclocal} -I m4
