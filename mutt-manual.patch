@@ -14,3 +14,14 @@ diff -urN mutt-1.4.orig/Muttrc.head.in mutt-1.4/Muttrc.head.in
  
  # If Mutt is unable to determine your site's domain name correctly, you can
  # set the default here.
+--- mutt-1.5.9/doc/Makefile.in.orig	2005-02-15 20:28:24.000000000 +0100
++++ mutt-1.5.9/doc/Makefile.in	2005-03-31 19:14:24.632303128 +0200
+@@ -103,7 +103,7 @@
+ 
+ check:
+ manual.txt: manual.sgml
+-	if linuxdoc -B txt --pass='-P -c' manual ; then \
++	if sgml2txt -c latin manual ; then \
+ 		uniq < manual.txt | expand > _manual.txt ; \
+ 		rm manual.txt ; \
+ 		mv _manual.txt manual.txt ;\
