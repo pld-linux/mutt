@@ -99,6 +99,9 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 gzip -9nf contrib/{*rc*,*cap*} \
 	ChangeLog README TODO NEWS README.SECURITY README.SSL README.UPGRADE
 
+# conflict with qmail
+rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
+
 %find_lang %{name}
 
 %clean
