@@ -17,6 +17,7 @@ Source1:	%{name}.desktop
 Source2:	%{name}.png
 Patch0:		%{name}-forcedotlock.patch
 Patch1:		%{name}-in_reply_to.patch
+Patch2:		%{name}-home_etc.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -59,6 +60,7 @@ desteði, renk ve POP3 desteði içerir.
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 aclocal -I m4
