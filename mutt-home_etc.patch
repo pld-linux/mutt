@@ -1,6 +1,41 @@
-diff -Nru mutt-1.4.1.orig/doc/mutt.man mutt-1.4.1/doc/mutt.man
+diff -Nur mutt-1.4.1.orig/configure.in mutt-1.4.1/configure.in
+--- mutt-1.4.1.orig/configure.in	Mon Dec  8 13:51:51 2003
++++ mutt-1.4.1/configure.in	Mon Dec  8 14:01:22 2003
+@@ -592,6 +592,31 @@
+         ])
+ AM_CONDITIONAL(USE_SASL, test x$need_sasl = xyes)
+ 
++AC_ARG_WITH(home-etc, [  --with-home-etc[=PFX]          Use HOME-ETC library to allow user keeping it's configuration files in a non-standard place ],
++        [
++        if test "$with_home_etc" != "no"
++        then
++          if test "$with_home_etc" != "yes"
++          then
++            LDFLAGS="$LDFLAGS -L$with_home_etc/lib"
++          fi
++
++          saved_LIBS="$LIBS"
++
++          AC_CHECK_LIB(home_etc, get_home_etc_static,,
++            AC_MSG_ERROR([could not find libhome_etc]),)
++	    
++	  AC_CHECK_HEADERS(home_etc.h)
++
++          MUTTLIBS="$MUTTLIBS -lhome_etc"
++          LIBS="$saved_LIBS"
++          AC_DEFINE(USE_HOME_ETC,1,
++                  [ Define if want to use the HOME-ETC library. ])
++          need_home_etc=yes
++        fi
++        ])
++AM_CONDITIONAL(USE_HOME_ETC, test x$need_home_etc = xyes)
++
+ if test "$need_md5" = "yes"
+ then
+         MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS md5c.o"
+diff -Nur mutt-1.4.1.orig/doc/mutt.man mutt-1.4.1/doc/mutt.man
 --- mutt-1.4.1.orig/doc/mutt.man	Wed Jul 24 10:41:31 2002
-+++ mutt-1.4.1/doc/mutt.man	Wed Oct  8 20:11:11 2003
++++ mutt-1.4.1/doc/mutt.man	Mon Dec  8 13:53:17 2003
 @@ -122,13 +122,13 @@
  Specifies the editor to use when composing messages.
  .SH FILES
@@ -18,37 +53,42 @@ diff -Nru mutt-1.4.1.orig/doc/mutt.man mutt-1.4.1/doc/mutt.man
  .IP "/etc/mailcap"
  System definition for handling non-text MIME types.
 diff -Nur mutt-1.4.1.orig/init.c mutt-1.4.1/init.c
---- mutt-1.4.1.orig/init.c	Sun Dec  7 14:34:23 2003
-+++ mutt-1.4.1/init.c	Sun Dec  7 15:08:22 2003
-@@ -25,6 +25,7 @@
+--- mutt-1.4.1.orig/init.c	Mon Dec  8 13:51:51 2003
++++ mutt-1.4.1/init.c	Mon Dec  8 14:02:19 2003
+@@ -25,6 +25,12 @@
  #include "mbyte.h"
  #include "charset.h"
  
-+#include <home_etc.h>
++#ifdef HAVE_HOME_ETC_H
++# include <home_etc.h>
++# define H_CFDIR _HEdir
++#else
++# define H_CFDIR Homedir
++#endif
  
  #ifdef HAVE_PGP
  #include "pgp.h"
-@@ -1892,13 +1893,13 @@
+@@ -1892,13 +1898,13 @@
    
    if (!Muttrc)
    {
 -    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
-+    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(_HEdir), MUTT_VERSION);
++    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(H_CFDIR), MUTT_VERSION);
      if (access(buffer, F_OK) == -1)
 -      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
-+      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(_HEdir));
++      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(H_CFDIR));
      if (access(buffer, F_OK) == -1)
 -      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(Homedir), MUTT_VERSION);
-+      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(_HEdir), MUTT_VERSION);
++      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(H_CFDIR), MUTT_VERSION);
      if (access(buffer, F_OK) == -1)
 -      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(Homedir));
-+      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(_HEdir));
++      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(H_CFDIR));
      
      default_rc = 1;
      Muttrc = safe_strdup (buffer);
-diff -Nru mutt-1.4.1.orig/muttbug.sh.in mutt-1.4.1/muttbug.sh.in
---- mutt-1.4.1.orig/muttbug.sh.in	Wed Oct  8 19:33:11 2003
-+++ mutt-1.4.1/muttbug.sh.in	Wed Oct  8 20:19:05 2003
+diff -Nur mutt-1.4.1.orig/muttbug.sh.in mutt-1.4.1/muttbug.sh.in
+--- mutt-1.4.1.orig/muttbug.sh.in	Mon Dec  8 13:51:50 2003
++++ mutt-1.4.1/muttbug.sh.in	Mon Dec  8 13:53:17 2003
 @@ -244,13 +244,21 @@
  if test "$personal" = "yes" ; then
  	CANDIDATES=".muttrc-${MUTTVERSION} .muttrc .mutt/muttrc-${MUTTVERSION} .mutt/muttrc"
@@ -73,18 +113,31 @@ diff -Nru mutt-1.4.1.orig/muttbug.sh.in mutt-1.4.1/muttbug.sh.in
  		echo "Warning: Can't find your personal .muttrc." >&2
  	else
 diff -Nur mutt-1.4.1.orig/sendlib.c mutt-1.4.1/sendlib.c
---- mutt-1.4.1.orig/sendlib.c	Sun Dec  7 14:34:23 2003
-+++ mutt-1.4.1/sendlib.c	Sun Dec  7 15:18:25 2003
-@@ -40,6 +40,8 @@
+--- mutt-1.4.1.orig/sendlib.c	Mon Dec  8 13:51:51 2003
++++ mutt-1.4.1/sendlib.c	Mon Dec  8 14:02:54 2003
+@@ -29,7 +29,6 @@
+ #include "pager.h"
+ #include "charset.h"
+ 
+-
+ #include <string.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+@@ -40,6 +39,13 @@
  #include <sys/wait.h>
  #include <fcntl.h>
  
-+#include <home_etc.h>
++#ifdef HAVE_HOME_ETC_H
++# include <home_etc.h>
++# define H_CFDIR _HEdir
++#else
++# define H_CFDIR Homedir
++#endif
 +
  #ifdef HAVE_SYSEXITS_H
  #include <sysexits.h>
  #else /* Make sure EX_OK is defined <philiph@pobox.com> */
-@@ -958,9 +960,9 @@
+@@ -958,9 +964,9 @@
  
  /* Given a file with path ``s'', see if there is a registered MIME type.
   * returns the major MIME type, and copies the subtype to ``d''.  First look
@@ -97,45 +150,12 @@ diff -Nur mutt-1.4.1.orig/sendlib.c mutt-1.4.1/sendlib.c
   */
  
  static int lookup_mime_type (BODY *att, const char *path)
-@@ -989,7 +991,7 @@
+@@ -989,7 +995,7 @@
      switch (count)
      {
        case 0:
 -	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(Homedir));
-+	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(_HEdir));
++	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(H_CFDIR));
  	break;
        case 1:
  	strfcpy (buf, SYSCONFDIR"/mime.types", sizeof(buf));
-diff -Nur mutt-1.4.1.orig/configure.in mutt-1.4.1/configure.in
---- mutt-1.4.1.orig/configure.in	Sun Dec  7 14:34:23 2003
-+++ mutt-1.4.1/configure.in	Sun Dec  7 18:38:04 2003
-@@ -592,6 +592,29 @@
-         ])
- AM_CONDITIONAL(USE_SASL, test x$need_sasl = xyes)
- 
-+AC_ARG_WITH(home-etc, [  --with-home-etc[=PFX]          Use HOME-ETC library to allow user keeping it's configuration files in a non-standard place ],
-+        [
-+        if test "$with_home_etc" != "no"
-+        then
-+          if test "$with_home_etc" != "yes"
-+          then
-+            LDFLAGS="$LDFLAGS -L$with_home_etc/lib"
-+          fi
-+
-+          saved_LIBS="$LIBS"
-+
-+          AC_CHECK_LIB(home_etc, get_home_etc_static,,
-+            AC_MSG_ERROR([could not find libhome_etc]),)
-+
-+          MUTTLIBS="$MUTTLIBS -lhome_etc"
-+          LIBS="$saved_LIBS"
-+          AC_DEFINE(USE_SASL,1,
-+                  [ Define if want to use the HOME-ETC library. ])
-+          need_home_etc=yes
-+        fi
-+        ])
-+AM_CONDITIONAL(USE_HOME_ETC, test x$need_home_etc = xyes)
-+
- if test "$need_md5" = "yes"
- then
-         MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS md5c.o"
