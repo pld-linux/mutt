@@ -111,7 +111,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 #%patch13 -p0
 
 %build
-autoconf
+%{__autoconf}
 #PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk
 CFLAGS="%{optflags} -I%{_includedir}/slang" \
 %configure \
