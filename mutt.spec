@@ -129,6 +129,9 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %{!?_without_sasl:%patch19 -p1}
 %{?_with_nntp:%patch20 -p1}
 
+# force regeneration (manual.sgml is modified by some patches)
+rm -f doc/{manual*.html,manual.txt}
+
 %build
 %{__aclocal} -I m4
 %{__autoconf}
