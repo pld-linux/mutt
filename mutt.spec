@@ -5,7 +5,7 @@
 %bcond_with	esmtp		# use esmtp patch
 %bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
-#%bcond_without	home_etc	# don't use home_etc
+#%%bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -18,19 +18,19 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.5.6
+Version:	1.5.9
 Release:	0.1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}i.tar.gz
-# Source0-md5:	aa1433635d7c86beba1675a3408b0324
+# Source0-md5:	c5318eba3404ebd78a15c680fa1b6056
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
+Patch0:		%{name}-pl.po-update.patch
 Patch1:		%{name}-forcedotlock.patch
-Patch2:		%{name}-muttbug-tmp.patch
-Patch3:		%{name}-rr.compressed.patch
+Patch2:		%{name}-rr.compressed.patch
 Patch4:		%{name}-cd.edit_threads.patch
 Patch5:		%{name}-bj.status-time.patch
 Patch6:		%{name}-devl.narrow_tree.patch
@@ -129,10 +129,10 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 експериментальну) п╕дтримку NNTP.
 
 %prep
-%setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
+%setup -q
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
-#%patch3 -p1
 #%patch4 -p1
 %patch5 -p1
 #%patch7 -p1
