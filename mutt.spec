@@ -1,5 +1,6 @@
 # conditionals:
 # --with slang:	use slang library instead of ncurses
+# --with nntp:	use VVV's NNTP patch
 
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -20,6 +21,7 @@ Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
+Source4:	%{name}-nntp.config
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
@@ -122,7 +124,8 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p0
-#%patch18 -p1
+%{?_with_nntp:%patch18 -p1}
+%{?_with_nntp:cat %{SOURCE4} >> Muttrc.head.in}
 
 %build
 %{__gettextize}
@@ -140,7 +143,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 	--enable-mailtool \
 	--with-mixmaster \
 	--enable-pop \
-	--enable-nntp \
+	%{?_with_nntp:--enable-nntp} \
 	--with-regex \
 	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
 	--with-ssl \
