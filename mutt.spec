@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.18i
-Release:	2
+Release:	3
 Epoch:		4
 License:	GPL
 Group:		Applications/Mail
@@ -18,13 +18,14 @@ Source2:	%{name}.png
 Patch0:		%{name}-forcedotlock.patch
 Patch1:		%{name}-in_reply_to.patch
 URL:		http://www.mutt.org/
-Requires:	smtpdaemon
-Requires:	mailcap
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.6a
 %{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
-BuildRequires:	autoconf
-BuildRequires:	automake
+Requires:	iconv
+Requires:	mailcap
+Requires:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 
