@@ -63,10 +63,10 @@ desteði, renk ve POP3 desteði içerir.
 %patch2 -p1
 
 %build
-aclocal -I m4
-autoheader
-autoconf
-automake -a -c
+%{__aclocal} -I m4
+%{__autoheader}
+%{__autoconf}
+%{__automake} -a -c
 %configure \
 	--with-curses \
 	--with-regex \
@@ -89,29 +89,29 @@ automake -a -c
 %{__make} 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}}
+%{__rm} -rf $RPM_BUILD_ROOT
+%{__install} -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
-install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
+%{__install} %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
+%{__install} %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 
-gzip -9nf contrib/{*rc*,*cap*} \
+%{__gzip} -9nf contrib/{*rc*,*cap*} \
 	ChangeLog README TODO NEWS README.SECURITY README.SSL README.UPGRADE
 
 # conflict with qmail
-rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
+%{__rm} -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 
 %find_lang %{name}
 
 %clean
-rm -rf $RPM_BUILD_ROOT
+%{__rm} -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc *.gz contrib/{*rc*,*cap*} doc/manual*html
-%config(noreplace) %verify(not size md5 mtime) %{_sysconfdir}/Muttrc
+%config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
