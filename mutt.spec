@@ -1,11 +1,10 @@
-%define		_pre	pre4
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent 
 Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.0%{_pre}
+Version:	1.0
 Release:	1i
 Copyright:	GPL
 Group:		Applications/Mail
