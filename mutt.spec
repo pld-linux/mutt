@@ -4,8 +4,8 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.3.18i
-Release:	4
+Version:	1.3.23i
+Release:	1
 Epoch:		4
 License:	GPL
 Group:		Applications/Mail
@@ -16,9 +16,8 @@ Source0:	ftp://ftp.mutt.org/pub/mutt/devel/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Patch0:		%{name}-forcedotlock.patch
-Patch1:		%{name}-in_reply_to.patch
-Patch2:		%{name}-home_etc.patch
-Patch3:		%{name}-muttbug-tmp.patch
+Patch1:		%{name}-home_etc.patch
+Patch2:		%{name}-muttbug-tmp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -62,14 +61,12 @@ desteði, renk ve POP3 desteði içerir.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
 
 %build
-aclocal -I m4
-autoheader
-autoconf
-automake -a -c
-%configure \
+
+#PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk \
+CFLAGS="%{optflags} -I%{_includedir}/slang" \
+./configure \
 	--with-curses \
 	--with-regex \
 	--with-homespool=Maildir \
@@ -85,10 +82,16 @@ automake -a -c
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--disable-warnings \
 	--enable-mailtool \
-	--without-included-nls
+	--without-included-nls \
+	--prefix=%{_prefix} \
+	--bindir=%{_bindir} \
+	--datadir=%{_datadir} \
+	--with-docdir=%{_docdir}/mutt-%{version} \
+	--sysconfdir=%{_sysconfdir} \
+	--mandir=%{_mandir} 
 
-%{__make} keymap.h
-%{__make}
+make
+make manual.txt -C doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -100,7 +103,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 
 gzip -9nf contrib/{*rc*,*cap*} \
-	ChangeLog README TODO NEWS README.SECURITY README.SSL README.UPGRADE
+	ChangeLog README TODO NEWS README.SECURITY README.SSL 
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
