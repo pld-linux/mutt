@@ -33,7 +33,6 @@ Requires:	mailcap
 Requires:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
 Features include MIME support, color, POP3 support, message threading,
@@ -56,7 +55,7 @@ POP, des fils de discussion, des touches liées et d'un mode de tri sur
 les fils.
 
 %description -l pl
-Mutt jest niewielkim programem pocztowym dla terminali tekstowych
+Mutt jest niewielkim programem pocztowym dla terminali tekstowych,
 posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty
 skrzynek pocztowych, kolory, w±tki, ocenê wa¿no¶ci listów (scoring)
 oraz skompresowane foldery.
