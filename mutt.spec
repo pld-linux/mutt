@@ -1,3 +1,4 @@
+%define		_pre	pre2
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent 
 Summary(fr):	Agent courrier Mutt
@@ -5,11 +6,11 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.0
-Release:	1.pre1i
+Release:	1.%{_pre}i
 Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
-Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}pre1i.tar.gz
+Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}%{_pre}i.tar.gz
 Source1:	mutt.desktop
 Source2:	Muttrc
 Patch:		mutt-mail.patch
@@ -44,7 +45,7 @@ Mutt, küçük ama çok güçlü bir tam-ekran Unix mektup istemcisidir. MIME desteði,
 renk ve POP3 desteði içerir.
 
 %prep
-%setup -q -n %{name}-%{version}pre1
+%setup -q -n %{name}-%{version}%{_pre}
 %patch -p0
 
 %build
