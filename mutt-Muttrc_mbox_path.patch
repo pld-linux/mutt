@@ -1,0 +1,12 @@
+diff -Nur mutt-1.4.2.1.orig/Muttrc mutt-1.4.2.1/Muttrc
+--- mutt-1.4.2.1.orig/Muttrc	2004-03-04 18:10:37.000000000 +0100
++++ mutt-1.4.2.1/Muttrc	2004-03-04 18:17:10.000000000 +0100
+@@ -1360,7 +1360,7 @@
+ # will be shown. The match is always case-sensitive.
+ # 
+ # 
+-# set mbox="~/mbox"
++set mbox="~/Mail/mbox"
+ #
+ # Name: mbox
+ # Type: path
