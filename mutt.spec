@@ -49,7 +49,7 @@ renk ve POP3 desteði içerir.
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
-./configure %{_target} \
+./configure %{_target_platform} \
 	--prefix=/usr \
 	--with-sharedir=%{_datadir} \
 	--sysconfdir=/etc \
@@ -109,7 +109,7 @@ rm -rf $RPM_BUILD_ROOT
 * Thu May  6 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.96.2-1]
 - updated .mo files list,
-- added %%{_target} macro to ./configure parameters.
+- added %%{_target_platform} macro to ./configure parameters.
 
 * Thu Mar 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.95.4-1i]
