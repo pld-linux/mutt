@@ -11,4 +11,5 @@ Exec=mutt
 Terminal=true
 Type=Application
 Encoding=UTF-8
+Categories=Application;Network;Email;
 # vi: encoding=utf-8
