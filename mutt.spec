@@ -41,11 +41,12 @@ Patch17:	%{name}-send_charset.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
-%{?_with_slang:BuildRequires:		slang-devel}
 %{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
+BuildRequires:	gettext-devel
+%{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.6a
 BuildRequires:	sgml-tools
+%{?_with_slang:BuildRequires:		slang-devel}
 Requires:	iconv
 Requires:	mailcap
 Requires:	smtpdaemon
