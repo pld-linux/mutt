@@ -1,6 +1,6 @@
 diff -durN mutt-1.4.orig/configure.in mutt-1.4/configure.in
---- mutt-1.4.orig/configure.in	Thu Jan  9 15:51:35 2003
-+++ mutt-1.4/configure.in	Thu Jan  9 15:55:52 2003
+--- mutt-1.4.orig/configure.in	Fri Jan 10 11:50:30 2003
++++ mutt-1.4/configure.in	Fri Jan 10 11:50:41 2003
 @@ -570,22 +570,24 @@
          then
            if test "$with_sasl" != "yes"
@@ -33,7 +33,7 @@ diff -durN mutt-1.4.orig/configure.in mutt-1.4/configure.in
  AM_CONDITIONAL(USE_SASL, test x$need_sasl = xyes)
 diff -durN mutt-1.4.orig/imap/auth_sasl.c mutt-1.4/imap/auth_sasl.c
 --- mutt-1.4.orig/imap/auth_sasl.c	Sun Jan 13 22:16:34 2002
-+++ mutt-1.4/imap/auth_sasl.c	Thu Jan  9 15:55:42 2003
++++ mutt-1.4/imap/auth_sasl.c	Fri Jan 10 11:51:38 2003
 @@ -34,7 +34,7 @@
    int rc, irc;
    char buf[LONG_STRING];
@@ -70,9 +70,20 @@ diff -durN mutt-1.4.orig/imap/auth_sasl.c mutt-1.4/imap/auth_sasl.c
        {
  	dprint (1, (debugfile, "imap_auth_sasl: error base64-decoding server response.\n"));
  	goto bail;
+@@ -137,10 +135,6 @@
+ 	dprint (1, (debugfile, "imap_auth_sasl: error base64-encoding client response.\n"));
+ 	goto bail;
+       }
+-
+-      /* sasl_client_st(art|ep) allocate pc with malloc, expect me to 
+-       * free it */
+-      FREE (&pc);
+     }
+     
+     if (olen || rc == SASL_CONTINUE)
 diff -durN mutt-1.4.orig/mutt_sasl.c mutt-1.4/mutt_sasl.c
 --- mutt-1.4.orig/mutt_sasl.c	Tue Feb 26 11:38:27 2002
-+++ mutt-1.4/mutt_sasl.c	Thu Jan  9 15:55:42 2003
++++ mutt-1.4/mutt_sasl.c	Fri Jan 10 11:50:41 2003
 @@ -92,10 +92,13 @@
   * probably stop exporting mutt_sasl_get_callbacks(). */
  int mutt_sasl_client_new (CONNECTION* conn, sasl_conn_t** saslconn)
@@ -101,13 +112,13 @@ diff -durN mutt-1.4.orig/mutt_sasl.c mutt-1.4/mutt_sasl.c
 +  if (getsockname (conn->fd, (struct sockaddr*) &local, &size))
 +    return -1;
 +  inet_ntop(local.sin_family, &local.sin_addr,buf,LONG_STRING);
-+  sprintf(localip,"%s:%i",buf,local.sin_port);
++  sprintf(localip,"%s;%i",buf,local.sin_port);
 +
 +  size = sizeof(remote);
 +  if (getpeername(conn->fd, (struct sockaddr*) &remote, &size))
 +    return -1;
 +  inet_ntop(remote.sin_family, &remote.sin_addr,buf,LONG_STRING);
-+  sprintf(remoteip,"%s:%i",buf,local.sin_port);
++  sprintf(remoteip,"%s;%i",buf,local.sin_port);
 +
 +  rc = sasl_client_new (service, conn->account.host, localip, remoteip,
 +    mutt_sasl_get_callbacks (&conn->account), 0, saslconn);
@@ -180,7 +191,7 @@ diff -durN mutt-1.4.orig/mutt_sasl.c mutt-1.4/mutt_sasl.c
    conn->ssf += *sasldata->ssf;
 diff -durN mutt-1.4.orig/pop_auth.c mutt-1.4/pop_auth.c
 --- mutt-1.4.orig/pop_auth.c	Thu Aug 30 10:11:06 2001
-+++ mutt-1.4/pop_auth.c	Thu Jan  9 15:55:42 2003
++++ mutt-1.4/pop_auth.c	Fri Jan 10 11:51:26 2003
 @@ -41,7 +41,7 @@
    char buf[LONG_STRING];
    char inbuf[LONG_STRING];
@@ -209,3 +220,14 @@ diff -durN mutt-1.4.orig/pop_auth.c mutt-1.4/pop_auth.c
      {
        dprint (1, (debugfile, "pop_auth_sasl: error base64-decoding server response.\n"));
        goto bail;
+@@ -124,10 +123,6 @@
+ 	dprint (1, (debugfile, "pop_auth_sasl: error base64-encoding client response.\n"));
+ 	goto bail;
+       }
+-
+-      /* sasl_client_st(art|ep) allocate pc with malloc, expect me to 
+-       * free it */
+-      safe_free ((void *) &pc);
+     }
+   }
+ 
