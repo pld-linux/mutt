@@ -45,7 +45,7 @@ Patch13:	%{name}-send_charset.patch
 Patch14:	%{name}-xface.patch
 Patch15:	%{name}-Muttrc_mbox_path.patch
 Patch16:	%{name}-po.patch
-Patch17:	%{name}-nntp.patch
+Patch17:	%{name}-vvv.nntp.patch
 Patch18:	%{name}-esmtp.patch
 #Patch19:	%{name}-home_etc.patch
 # if some fuctionality is still missing, patch must be rewritten
