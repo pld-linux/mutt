@@ -18,7 +18,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.2.1
-Release:	3
+Release:	4
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -41,7 +41,7 @@ Patch11:	%{name}-cd.signatures_menu.patch
 Patch12:	%{name}-folder_columns.patch
 Patch13:	%{name}-nr.tag_prefix_cond.patch
 Patch14:	%{name}-pgp_hook.patch
-Patch15:	%{name}-manual.patch
+#Patch15:	%{name}-manual.patch
 Patch16:	%{name}-send_charset.patch
 Patch17:	%{name}-xface.patch
 Patch19:	%{name}-nntp.patch
@@ -173,7 +173,7 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
-	--with-docdir=%{_datadir}/%{name} \
+	--with-docdir=%{_docdir}/%{name}-%{version} \
 	--with-homespool=Maildir \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
@@ -188,7 +188,7 @@ rm -f doc/{manual*.html,manual.txt}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1,%{_datadir}/%{name}}
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -198,7 +198,6 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1,%{_d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
-install doc/manual.txt $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
@@ -220,7 +219,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pgp*
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
-%{_datadir}/%{name}
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
