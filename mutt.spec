@@ -22,7 +22,7 @@ Source3:	%{name}.1.pl
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
-Patch3:         %{name}-rr.compressed.patch.gz
+Patch3:         %{name}-rr.compressed.patch
 Patch4:         %{name}-cd.edit_threads.patch
 Patch5:         %{name}-bj.status-time.patch
 Patch6:         %{name}-devl.narrow_tree.patch
