@@ -9,7 +9,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.3.99i
-Release:	1
+Release:	2
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
