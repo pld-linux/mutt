@@ -5,12 +5,12 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.0
-Release:	2.%{_pre}i
+Version:	1.0%{_pre}i
+Release:	1
 Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
-Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}%{_pre}i.tar.gz
+Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	mutt.desktop
 Source2:	Muttrc
 Patch:		mutt-mail.patch
