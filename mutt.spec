@@ -56,6 +56,8 @@ BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
+BuildRequires:	gpgme-devel >= 1:1.0.0
+BuildRequires:	libidn-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools
@@ -161,31 +163,26 @@ rm -f doc/{manual*.html,manual.txt}
 %{__automake}
 %configure \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
-	%{!?with_slang:--with-curses} \
-	%{?with_slang:--with-slang} \
+	--disable-warnings \
 	--enable-compressed \
 	--enable-external-dotlock \
+	--enable-gpgme \
 	--enable-imap \
-	--without-included-gettext \
 	--enable-mailtool \
-	--with-mixmaster \
-	--enable-pop \
 	%{?with_nntp:--enable-nntp} \
-	--with-regex \
-	%{?with_sasl:--with-sasl2} \
-	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
-	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
-	--with-ssl \
-	--disable-warnings \
+	--enable-pop \
+	%{!?with_slang:--with-curses} \
+	%{?with_slang:--with-slang} \
 	--with-docdir=%{_docdir}/%{name} \
+	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
 	--with-homespool=Maildir \
+	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-mailpath=/var/mail \
-	--with-sharedir=%{_datadir} \
-	--prefix=%{_prefix} \
-	--bindir=%{_bindir} \
-	--datadir=%{_datadir} \
-	--mandir=%{_mandir} \
-	--sysconfdir=%{_sysconfdir}
+	--with-regex \
+	--with-mixmaster \
+	%{?with_sasl:--with-sasl2} \
+	--with-ssl \
+	--without-included-gettext
 
 %{__make}
 %{__make} manual.txt -C doc
