@@ -73,7 +73,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
-gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/* \
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
 	contrib/{*rc,*cap} \
 	$RPM_BUILD_ROOT/usr/doc/mutt-%{version}/{*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
 
@@ -90,7 +90,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0755,root,root) /usr/bin/mutt
 %attr(2755,root,mail) /usr/bin/mutt_dotlock
 
-%lang(en) /usr/man/man1/*
+%lang(en) %{_mandir}/man1/*
 /usr/share/charsets
 
 %lang(cs) /usr/share/locale/cs/LC_MESSAGES/mutt.mo
