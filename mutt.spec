@@ -113,14 +113,14 @@ export CFLAGS LDFLAGS
 	--with-charmaps \
 	--with-docdir=%{_defaultdocdir}/%{name}-%{version}
 
-make keymap.h
-make 
+%{__make} keymap.h
+%{__make} 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 
-make install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE2} %{SOURCE3} .
