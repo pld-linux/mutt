@@ -55,12 +55,12 @@ BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.7}
 BuildRequires:	gettext-devel
-%{!?with_slang:BuildRequires:		ncurses-devel >= 5.0}
+%{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
-%{?with_slang:BuildRequires:		slang-devel}
-%{?with_esmtp:BuildRequires:       libesmtp-devel}
+%{?with_slang:BuildRequires:	slang-devel}
+%{?with_esmtp:BuildRequires:	libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
 %{?with_home_etc:Requires:	home-etc >= 1.0.7}
@@ -171,7 +171,7 @@ rm -f doc/{manual*.html,manual.txt}
 	--with-regex \
 	%{?with_sasl:--with-sasl} %{!?with_sasl:--without-sasl} \
 	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
-    %{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
+	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
 	--with-docdir=%{_docdir}/%{name}-%{version} \
