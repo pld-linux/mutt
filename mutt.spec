@@ -53,7 +53,6 @@ BuildRequires:	sgml-tools
 %{?_with_slang:BuildRequires:		slang-devel}
 Requires:	iconv
 Requires:	mailcap
-Requires:	smtpdaemon
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
