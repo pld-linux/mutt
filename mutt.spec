@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.2i
-Release:	1
+Release:	2
 License:	GPL
 Group:		Applications/Mail
 Group(pt):	Aplicações/Correio Eletrônico
@@ -117,11 +117,11 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_applnkdir}/Networking/Mail
+install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Networking/Mail
+install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE2} %{SOURCE3} .
 
 gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
@@ -142,7 +142,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc patches_{bj,sec}.txt.gz
 
 %config(noreplace) %verify(not size md5 mtime) %{_sysconfdir}/Muttrc
-%{_applnkdir}/Networking/Mail/mutt.desktop
+%{_applnkdir}/Network/Mail/mutt.desktop
 
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man*/*
