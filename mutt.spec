@@ -7,7 +7,7 @@ Summary(pt_BR):	Mutt, cliente de correio eletrônico
 Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.3.24i
+Version:	1.3.25i
 Release:	1
 Epoch:		4
 License:	GPL
