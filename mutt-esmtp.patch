@@ -1,0 +1,538 @@
+diff -urN mutt-1.4.1.org/configure.in mutt-1.4.1/configure.in
+--- mutt-1.4.1.org/configure.in	2003-08-21 15:30:19.000000000 +0200
++++ mutt-1.4.1/configure.in	2003-08-21 15:31:08.962016232 +0200
+@@ -869,6 +869,19 @@
+   AC_DEFINE(HAVE_LANGINFO_YESEXPR,1,[ Define if you have <langinfo.h> and nl_langinfo(YESEXPR). ])
+ fi
+ 
++dnl -- libesmtp --
++MUTT_AM_LIBESMTP
++if test x$use_libesmtp = xyes; then
++    CFLAGS="$CFLAGS $mutt_libesmtp_cflags"
++    MUTTLIBS="$MUTTLIBS $mutt_libesmtp_libs"
++    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS mutt_libesmtp.o -lpthread"
++
++    AC_DEFINE(USE_LIBESMTP,
++              1,
++	      [Define to enable the use of libesmtp])
++fi
++dnl -- end libesmtp --
++
+ AC_OUTPUT(Makefile intl/Makefile m4/Makefile
+         po/Makefile.in doc/Makefile contrib/Makefile
+         muttbug.sh
+diff -urN mutt-1.4.1.org/globals.h mutt-1.4.1/globals.h
+--- mutt-1.4.1.org/globals.h	2003-08-21 15:30:19.000000000 +0200
++++ mutt-1.4.1/globals.h	2003-08-21 15:31:08.964015928 +0200
+@@ -103,6 +103,12 @@
+ WHERE char *Signature;
+ WHERE char *SigDirectory;
+ WHERE char *SimpleSearch;
++#if defined(USE_LIBESMTP)
++WHERE char *SmtpAuthUser;
++WHERE char *SmtpAuthPass;
++WHERE char *SmtpHost;
++WHERE unsigned short SmtpPort;
++#endif
+ WHERE char *Spoolfile;
+ #if defined(USE_SSL) || defined(USE_NSS)
+ WHERE char *SslCertFile INITVAL (NULL);
+diff -urN mutt-1.4.1.org/init.h mutt-1.4.1/init.h
+--- mutt-1.4.1.org/init.h	2003-08-21 15:30:19.000000000 +0200
++++ mutt-1.4.1/init.h	2003-08-21 15:31:08.976014104 +0200
+@@ -99,6 +99,9 @@
+ # ifndef USE_SOCKET
+ #  define USE_SOCKET
+ # endif
++# ifndef USE_LIBESMTP
++#  define USE_LIBESMTP
++# endif
+ #endif
+ 
+ struct option_t MuttVars[] = {
+@@ -1468,6 +1471,38 @@
+   /*
+   */
+ #endif /* HAVE_PGP */
++ 
++#if defined(USE_LIBESMTP)
++  { "smtp_auth_username", DT_STR, R_NONE, UL &SmtpAuthUser, 0 },
++  /*
++   ** .pp
++   ** Defines the username to use with SMTP AUTH.  Setting this variable will
++   ** cause mutt to attempt to use SMTP AUTH when sending.
++   */
++   { "smtp_auth_password", DT_STR, R_NONE, UL &SmtpAuthPass, 0 },
++   /*
++   ** .pp
++   ** Defines the password to use with SMTP AUTH.  If ``$$smtp_auth_username''
++   ** is set, but this variable is not, you will be prompted for a password
++   ** when sending.
++   */
++   { "smtp_host", DT_STR, R_NONE, UL &SmtpHost, 0 },
++   /*
++   ** .pp
++   ** Defines the SMTP host which will be used to deliver mail, as opposed
++   ** to invoking the sendmail binary.  Setting this variable overrides the
++   ** value of ``$$sendmail'', and any associated variables.
++   */
++   { "smtp_port", DT_NUM, R_NONE, UL &SmtpPort, 25 },
++   /*
++   ** .pp
++   ** Defines the port that the SMTP host is listening on for mail delivery.
++   ** Must be specified as a number.
++   ** .pp
++   ** Defaults to 25, the standard SMTP port, but RFC 2476-compliant SMTP
++   ** servers will probably desire 587, the mail submission port.
++   */
++#endif
+   
+ #if defined(USE_SSL)||defined(USE_NSS)
+ # ifndef USE_NSS  
+diff -urN mutt-1.4.1.org/m4/libesmtp.m4 mutt-1.4.1/m4/libesmtp.m4
+--- mutt-1.4.1.org/m4/libesmtp.m4	1970-01-01 01:00:00.000000000 +0100
++++ mutt-1.4.1/m4/libesmtp.m4	2003-08-21 15:31:08.978013800 +0200
+@@ -0,0 +1,60 @@
++dnl vim:ft=config:
++
++dnl Search for libesmtp, by Steven Engelhardt <sengelha@yahoo.com>
++dnl
++dnl libesmtp often requires linking against -lpthread or -lc_r (BSD).
++dnl This macro attempts to centralize this code.
++
++AC_DEFUN([MUTT_AM_LIBESMTP],
++[
++  AC_ARG_WITH(
++    [libesmtp],
++    [  --with-libesmtp=DIR      Compile in support for libesmtp for the MTA],
++    [ if test "$with_libesmtp" != "no"
++      then
++        mutt_libesmtp_check_path="$PATH"
++
++        if test "$with_libesmtp" != "yes"
++        then
++          mutt_libesmtp_check_path="$tmp_path:$withval/bin"
++        fi
++
++        dnl 1. Find libesmtp-config
++        mutt_libesmtp_config_path=`which libesmtp-config || echo no`
++
++        if test "$mutt_libesmtp_config_path" = "no"
++        then
++          AC_MSG_ERROR([libesmtp-config binary not found.])
++        fi
++
++        dnl 2. Get CFLAGS and LIBS from libesmtp-config
++        mutt_libesmtp_cflags=`$mutt_libesmtp_config_path --cflags`
++        mutt_libesmtp_libs=`$mutt_libesmtp_config_path --libs`
++
++        dnl 3. Verify libesmtp.h can be found with these settings
++        temp_CFLAGS="$CFLAGS"
++        CFLAGS="$CFLAGS $mutt_libesmtp_cflags"
++        AC_CHECK_HEADER([libesmtp.h],
++                        [],
++                        AC_MSG_ERROR([Could not find libesmtp.h]))
++        CFLAGS="$temp_CFLAGS"
++
++        dnl 4. Verify the libesmtp library can be linked in
++        temp_CFLAGS="$CFLAGS"
++        temp_LIBS="$LIBS"
++        CFLAGS="$CFLAGS $mutt_libesmtp_cflags"
++        LIBS="$LIBS $mutt_libesmtp_libs"
++        AC_CHECK_LIB([esmtp],
++                     [smtp_create_session],
++                     [],
++                     AC_MSG_ERROR([Could not find libesmtp]))
++        CFLAGS="$temp_CFLAGS"
++        LIBS="$temp_LIBS"
++
++        dnl 5. Export use_libesmtp variable so configure.in can
++        dnl    act accordingly.
++        use_libesmtp=yes
++      fi
++    ]
++  )
++])
+diff -urN mutt-1.4.1.org/main.c mutt-1.4.1/main.c
+--- mutt-1.4.1.org/main.c	2003-08-21 15:30:19.000000000 +0200
++++ mutt-1.4.1/main.c	2003-08-21 15:31:08.982013192 +0200
+@@ -226,6 +226,12 @@
+ #else
+ 	"-USE_SASL  "
+ #endif
++
++#ifdef USE_LIBESMTP
++    "+USE_LIBESMTP  "
++#else
++    "-USE_LIBESMTP  "
++#endif
+ 	"\n"
+ 	
+ #ifdef HAVE_REGCOMP
+diff -urN mutt-1.4.1.org/Makefile.am mutt-1.4.1/Makefile.am
+--- mutt-1.4.1.org/Makefile.am	2003-08-21 15:30:18.000000000 +0200
++++ mutt-1.4.1/Makefile.am	2003-08-21 15:31:08.984012888 +0200
+@@ -68,7 +68,8 @@
+ EXTRA_mutt_SOURCES = account.c md5c.c mutt_sasl.c mutt_socket.c mutt_ssl.c \
+ 	mutt_tunnel.c pop.c pop_auth.c pop_lib.c pgp.c pgpinvoke.c pgpkey.c \
+ 	pgplib.c sha1.c pgpmicalg.c gnupgparse.c resize.c dotlock.c remailer.c \
+-	browser.h mbyte.h remailer.h url.h mutt_ssl_nss.c pgppacket.c 
++	browser.h mbyte.h remailer.h url.h mutt_ssl_nss.c pgppacket.c \
++	mutt_libesmtp.c
+ 
+ EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP TODO configure acconfig.h account.h \
+ 	attach.h buffy.h charset.h compress.h copy.h dotlock.h functions.h \
+@@ -80,7 +81,8 @@
+ 	_regex.h OPS.MIX README.SECURITY remailer.c remailer.h browser.h \
+ 	mbyte.h	lib.h extlib.c pgpewrap.c pgplib.h Muttrc.head Muttrc \
+ 	makedoc.c stamp-doc-rc README.SSL \
+-	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh
++	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
++	mutt_libesmtp.h
+ 
+ mutt_dotlock_SOURCES = mutt_dotlock.c
+ mutt_dotlock_LDADD = @LIBOBJS@
+diff -urN mutt-1.4.1.org/mutt_libesmtp.c mutt-1.4.1/mutt_libesmtp.c
+--- mutt-1.4.1.org/mutt_libesmtp.c	1970-01-01 01:00:00.000000000 +0100
++++ mutt-1.4.1/mutt_libesmtp.c	2003-08-21 15:31:08.987012432 +0200
+@@ -0,0 +1,224 @@
++#include "mutt.h"
++#include <auth-client.h>
++#include <libesmtp.h>
++#include <errno.h>
++
++static char authpass[STRING] = "";
++
++#define FAIL() \
++  do { \
++    ret = -1; \
++    goto Done; \
++  } while (0)
++#define MSGFAIL(msg) \
++  do { \
++    mutt_error("%s", msg); \
++    FAIL(); \
++  } while (0)
++#define LIBCFAIL(msg) \
++  do { \
++    mutt_error("%s: %s", msg, strerror(errno)); \
++    FAIL(); \
++  } while (0)
++#define SMTPFAIL(msg) \
++  do { \
++    _mutt_libesmtp_perror(msg); \
++    FAIL(); \
++  } while (0)
++
++/*
++ * _mutt_libesmtp_ensure_init
++ *   Make sure the libESMTP support in mutt is initialized at some time.
++ */
++static void
++_mutt_libesmtp_ensure_init()
++{
++  static int libesmtp_init = 0;
++
++  if (!libesmtp_init) {
++    if (SmtpAuthUser)
++      auth_client_init();
++    libesmtp_init = 1;
++  }
++}
++
++/*
++ * _mutt_libesmtp_perror
++ *   Prints 'msg', a colon, and then a string representation of the
++ *   libesmtp errno as a mutt error.
++ */
++static void
++_mutt_libesmtp_perror(const char* msg)
++{
++  char buf[512];
++
++  mutt_error("%s: %s", msg, smtp_strerror(smtp_errno(), buf, sizeof(buf)));
++}
++
++/*
++ * _mutt_libesmtp_add_recipients
++ *   Adds every address in 'addr' as a recipient to the smtp message
++ *   'message'.  Note that this does not mean that they will necessarily
++ *   show up in the mail headers (e.g., when bcc'ing).  Returns 0 upon
++ *   success, -1 upon failure (and prints an error message).
++ *
++ *   Very similar to sendlib.c::add_args
++ */
++static int
++_mutt_libesmtp_add_recipients(smtp_message_t message, ADDRESS *addr)
++{
++  int ret = 0;
++
++  for (; addr; addr = addr->next) {
++    /* weed out group mailboxes, since those are for display only */
++    if (addr->mailbox && !addr->group) {
++      if (!smtp_add_recipient(message, addr->mailbox))
++        SMTPFAIL("smtp_add_recipient");
++    }
++  }
++
++Done:
++  return ret;
++}
++
++static int
++_mutt_libesmtp_auth_interact(auth_client_request_t request,
++                             char **result, int fields, void *arg)
++{
++  int i;
++
++  for (i = 0; i < fields; i++) {
++    if (request[i].flags & AUTH_USER) {
++      result[i] = SmtpAuthUser;
++    } else if (request[i].flags & AUTH_PASS) {
++      if (SmtpAuthPass) {
++        result[i] = SmtpAuthPass;
++      } else {
++        if (authpass[0] == '\0') {
++          char prompt[STRING];
++
++          snprintf(prompt, sizeof(prompt), "%s%s: ", request[i].prompt,
++                   (request[i].flags & AUTH_CLEARTEXT) ? " (not encrypted)" : "");
++          mutt_get_password(prompt, authpass, sizeof(authpass));
++        }
++        result[i] = authpass;
++      }
++    }
++  }
++
++  return 1;
++}
++
++#define BUFLEN 8192
++
++static const char*
++_mutt_libesmtp_messagefp_cb(void **buf, int *len, void *arg)
++{
++  int octets;
++
++  if (*buf == NULL)
++    *buf = malloc(BUFLEN);
++
++  if (len == NULL) {
++    rewind((FILE*) arg);
++    return NULL;
++  }
++
++  if (fgets(*buf, BUFLEN - 2, (FILE*) arg) == NULL) {
++    octets = 0;
++  } else {
++    char* p = strchr(*buf, '\0');
++
++    if (p[-1] == '\n' && p[-2] != '\r') {
++      strcpy(p - 1, "\r\n");
++      p++;
++    }
++    octets = p - (char*) *buf;
++  }
++
++  *len = octets;
++  return *buf;
++}
++
++/*
++ * mutt_invoke_libesmtp
++ *   Sends a mail message to the provided recipients using libesmtp.
++ *   Returns 0 upon success, -1 upon failure (and prints an error
++ *   message).
++ */
++int
++mutt_invoke_libesmtp(ADDRESS *from,  /* the sender */
++                     ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
++                     const char *msg, /* file containing message */
++                     int eightbit) /* message contains 8bit chars */
++{
++  int ret = 0; /* return value, default = success */
++  smtp_session_t session;
++  smtp_message_t message;
++  char* hostportstr = NULL;
++  size_t hostportlen;
++  FILE* fp = NULL;
++  auth_context_t authctx = NULL;
++  const smtp_status_t* status;
++
++  _mutt_libesmtp_ensure_init();
++
++  if ((session = smtp_create_session()) == NULL)
++    SMTPFAIL("smtp_create_session");
++  if ((message = smtp_add_message(session)) == NULL)
++    SMTPFAIL("smtp_add_message");
++
++  /* Create hostname:port string and tell libesmtp */
++  /* len = SmtpHost len + colon + max port (65536 => 5 chars) + terminator */
++  hostportlen = strlen(SmtpHost) + 7;
++  hostportstr = safe_malloc(hostportlen);
++  snprintf(hostportstr, hostportlen, "%s:%d", SmtpHost, SmtpPort);
++  if (!smtp_set_server(session, hostportstr))
++    SMTPFAIL("smtp_set_server");
++
++  if (SmtpAuthUser) {
++    if ((authctx = auth_create_context()) == NULL)
++      MSGFAIL("auth_create_context failed");
++    auth_set_mechanism_flags(authctx, AUTH_PLUGIN_PLAIN, 0);
++    auth_set_interact_cb(authctx, _mutt_libesmtp_auth_interact, NULL);
++ 
++    if (!smtp_auth_set_context(session, authctx))
++      SMTPFAIL("smtp_auth_set_context");
++  }
++  
++  if ((fp = fopen(msg, "r")) == NULL)
++    LIBCFAIL("fopen");
++  if (!smtp_set_messagecb(message, _mutt_libesmtp_messagefp_cb, fp))
++    SMTPFAIL("smtp_set_messagecb");
++  if (_mutt_libesmtp_add_recipients(message, to))
++    FAIL(); 
++  if (_mutt_libesmtp_add_recipients(message, cc))
++    FAIL();
++  if (_mutt_libesmtp_add_recipients(message, bcc))
++    FAIL();
++  if (!smtp_start_session(session))
++    SMTPFAIL("smtp_start_session");
++
++  status = smtp_message_transfer_status(message);
++  if (status->code < 200 || status->code > 299) {
++    char buf[256];
++    snprintf(buf, sizeof(buf), "SMTP error while sending: %d %s", status->code, status->text);
++    MSGFAIL(buf);
++  }
++
++Done:
++  if (fp != NULL)
++    fclose(fp);
++  if (hostportstr != NULL)
++    free(hostportstr);
++  if (session != NULL)
++    smtp_destroy_session(session);
++  if (authctx != NULL)
++    auth_destroy_context(authctx);
++
++  /* Forget user-entered SMTP AUTH password if send fails */
++  if (ret != 0)
++    authpass[0] = '\0'; 
++
++  return ret;
++}
+diff -urN mutt-1.4.1.org/mutt_libesmtp.h mutt-1.4.1/mutt_libesmtp.h
+--- mutt-1.4.1.org/mutt_libesmtp.h	1970-01-01 01:00:00.000000000 +0100
++++ mutt-1.4.1/mutt_libesmtp.h	2003-08-21 15:31:08.988012280 +0200
+@@ -0,0 +1,10 @@
++#if !defined(LIBESMTP_H)
++#define LIBESMTP_H
++
++int
++mutt_invoke_libesmtp (ADDRESS *from,	/* the sender */
++		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
++		 const char *msg, /* file containing message */
++		 int eightbit); /* message contains 8bit chars */
++
++#endif /* !defined(LIBESMTP_H) */
+diff -urN mutt-1.4.1.org/Muttrc.esmtp mutt-1.4.1/Muttrc.esmtp
+--- mutt-1.4.1.org/Muttrc.esmtp	1970-01-01 01:00:00.000000000 +0100
++++ mutt-1.4.1/Muttrc.esmtp	2003-08-21 14:57:35.000000000 +0200
+@@ -0,0 +1,20 @@
++# enable minimalistic smtp support builtin to Mutt
++set sendmail = "builtin"        
++
++# The name or address of your SMTP server.
++set smtp_serv = "fastmail.fm"   
++
++# Your login name on the SMTP server. Mutt presents you 
++# as ``smtp_user''@``smtp_host'', unless ``envelope_from''
++# is set, this will then be the message's envelope sender.
++# Defaults to your login name on the local system.
++set smtp_user = "ulferikson"    
++
++# If set, Mutt will try to use ESMPT and ``AUTH LOGIN'' to 
++# authenticate your user.
++set smtp_pass = ""              
++
++# This variable specifies which port your SMTP server is 
++# listening on.
++set smtp_port = 25              
++
+diff -urN mutt-1.4.1.org/protos.h mutt-1.4.1/protos.h
+--- mutt-1.4.1.org/protos.h	2003-08-21 15:30:19.000000000 +0200
++++ mutt-1.4.1/protos.h	2003-08-21 15:31:08.991011824 +0200
+@@ -276,7 +276,7 @@
+ int mutt_get_postponed (CONTEXT *, HEADER *, HEADER **, char *, size_t);
+ int mutt_get_tmp_attachment (BODY *);
+ int mutt_index_menu (void);
+-int mutt_invoke_sendmail (ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *, const char *, int);
++int mutt_invoke_mta (ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *, const char *, int);
+ int mutt_is_autoview (BODY *, const char *);
+ int mutt_is_mail_list (ADDRESS *);
+ int mutt_is_message_type(int, const char *);
+diff -urN mutt-1.4.1.org/send.c mutt-1.4.1/send.c
+--- mutt-1.4.1.org/send.c	2002-01-30 23:50:59.000000000 +0100
++++ mutt-1.4.1/send.c	2003-08-21 15:31:08.996011064 +0200
+@@ -974,7 +974,7 @@
+     return mix_send_message (msg->chain, tempfile);
+ #endif
+ 
+-  i = mutt_invoke_sendmail (msg->env->from, msg->env->to, msg->env->cc, 
++  i = mutt_invoke_mta (msg->env->from, msg->env->to, msg->env->cc, 
+ 			    msg->env->bcc, tempfile, (msg->content->encoding == ENC8BIT));
+   return (i);
+ }
+diff -urN mutt-1.4.1.org/sendlib.c mutt-1.4.1/sendlib.c
+--- mutt-1.4.1.org/sendlib.c	2003-08-21 15:30:19.000000000 +0200
++++ mutt-1.4.1/sendlib.c	2003-08-21 15:31:09.003010000 +0200
+@@ -119,6 +119,9 @@
+ #endif /* HAVE_PGP */
+ 
+ 
++#ifdef USE_LIBESMTP
++# include "mutt_libesmtp.h"
++#endif /* USE_LIBESMTP */
+ 
+ #define DISPOSITION(X) X==DISPATTACH?"attachment":"inline"
+ 
+@@ -1970,7 +1973,7 @@
+ }
+ 
+ 
+-int
++static int
+ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+ 		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
+ 		 const char *msg, /* file containing message */
+@@ -2066,6 +2069,20 @@
+   return (i);
+ }
+ 
++int
++mutt_invoke_mta (ADDRESS *from,	/* the sender */
++		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
++		 const char *msg, /* file containing message */
++		 int eightbit) /* message contains 8bit chars */
++{
++#ifdef USE_LIBESMTP
++  if (SmtpHost)
++    return mutt_invoke_libesmtp(from, to, cc, bcc, msg, eightbit);
++#endif
++  
++  return mutt_invoke_sendmail(from, to, cc, bcc, msg, eightbit);
++}
++
+ /* appends string 'b' to string 'a', and returns the pointer to the new
+    string. */
+ char *mutt_append_string (char *a, const char *b)
+@@ -2219,8 +2236,8 @@
+     mutt_copy_bytes (fp, f, h->content->length);
+     fclose (f);
+ 
+-    mutt_invoke_sendmail (env_from, to, NULL, NULL, tempfile,
+-			  h->content->encoding == ENC8BIT);
++    mutt_invoke_mta (env_from, to, NULL, NULL, tempfile,
++          h->content->encoding == ENC8BIT);
+   }
+ 
+   if (msg)
