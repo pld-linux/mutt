@@ -4,8 +4,8 @@ Summary(fr): Agent courrier Mutt
 Summary(pl): Program pocztowy Mutt
 Summary(tr): Mutt elektronik posta programý
 Name:        mutt
-Version:     0.95.3
-Release:     3d
+Version:     0.95.4
+Release:     1
 Copyright:   GPL
 Group:       Applications/Mail
 Group(pl):   Aplikacje/Poczta
@@ -50,13 +50,13 @@ renk ve POP3 desteði içerir.
 install %{SOURCE3} $RPM_BUILD_DIR/%{name}-%{version}/po/pl.po
 
 %build
-CFLAGS="$RPM_OPT_FLAGS -I/usr/include/slang" LDFLAGS=-s \
+CFLAGS="$RPM_OPT_FLAGS" LDFLAGS=-s \
         ./configure \
 	--prefix=/usr \
 	--with-sharedir=/etc \
 	--enable-pop \
 	--enable-imap \
-	--with-slang \
+	--with-curses \
 	--disable-warnings \
 	--disable-domain \
         --enable-compressed \
@@ -89,7 +89,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0711,root,root) /usr/bin/mutt
 %attr(2711,root,mail) /usr/bin/mutt_dotlock
 
-%lang(en) %attr(644,root, man) /usr/man/man1/*
+%lang(en) /usr/man/man1/*
 
 %lang(en) /usr/share/locale/de/LC_MESSAGES/mutt.mo
 %lang(es) /usr/share/locale/es/LC_MESSAGES/mutt.mo
@@ -100,6 +100,13 @@ rm -rf $RPM_BUILD_ROOT
 %lang(uk) /usr/share/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
+* Thu Mar 25 1999 Artur Frysiak <wiget@pld.org.pl>
+  [0.95.4i-1]
+- upgraded to 0.95.4i
+- linked with ncurses
+- removed man group from man pages
+- updated pl.po (sync with i18n CVS)
+
 * Sat Feb 13 1999 Micha³ Kuratczyk <kura@wroclaw.art.pl>
   [0.95.3i-3d]
 - upgraded to 0.95.3i
