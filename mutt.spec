@@ -44,7 +44,7 @@ Patch18:	%{name}-sasl2.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
+%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 BuildRequires:	gettext-devel
 %{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.6a
