@@ -2,6 +2,7 @@
 # Conditional build:
 # _with_slang	- use slang library instead of ncurses
 # _with_nntp	- use VVV's NNTP patch
+# _with_esmtp   - use esmtp patch
 # _without_sasl - don't use sasl
 #
 Summary:	The Mutt Mail User Agent
@@ -16,7 +17,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.1
-Release:	2
+Release:	3
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -25,6 +26,7 @@ Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
+Source4:    %{name}-esmtp.rc
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
@@ -46,6 +48,7 @@ Patch17:	%{name}-send_charset.patch
 Patch18:	%{name}-xface.patch
 Patch19:	%{name}-sasl2.patch
 Patch20:	%{name}-nntp.patch
+Patch21:    %{name}-esmtp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -56,6 +59,7 @@ BuildRequires:	openssl-devel >= 0.9.7
 BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
 %{?_with_slang:BuildRequires:		slang-devel}
+%{?_with_esmtp:BuildRequires:       libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -141,6 +145,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch18 -p1
 %{!?_without_sasl:%patch19 -p1}
 %{?_with_nntp:%patch20 -p1}
+%{?_with_esmtp:%patch21 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -163,6 +168,7 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?_with_nntp:--enable-nntp} \
 	--with-regex \
 	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
+    %{?_with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
 	--with-docdir=%{_docdir}/%{name}-%{version} \
@@ -203,7 +209,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt README.xface
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt README.xface %{?_with_esmtp: Muttrc.esmtp}
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
