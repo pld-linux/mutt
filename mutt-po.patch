@@ -1,0 +1,23 @@
+diff -u mutt-1.4.2.1/po.orig/bg.po mutt-1.4.2.1/po/bg.po
+--- mutt-1.4.2.1/po.orig/bg.po	Thu Feb 12 09:52:41 2004
++++ mutt-1.4.2.1/po/bg.po	Tue Aug  3 20:24:45 2004
+@@ -4,7 +4,6 @@
+ #
+ # todo: decide how to translate: mailing list
+ #
+-#, fuzzy
+ msgid ""
+ msgstr ""
+ "Project-Id-Version: Mutt 1.4\n"
+diff -u mutt-1.4.2.1/po.orig/pt_BR.po mutt-1.4.2.1/po/pt_BR.po
+--- mutt-1.4.2.1/po.orig/pt_BR.po	Thu Feb 12 09:52:35 2004
++++ mutt-1.4.2.1/po/pt_BR.po	Tue Aug  3 20:09:23 2004
+@@ -8,7 +8,7 @@
+ "Language-Team: LIE-BR (http://lie-br.conectiva.com.br)\n"
+ "MIME-Version: 1.0\n"
+ "Content-Type: text/plain; charset=iso-8859-1\n"
+-"Content-Transfer-Encoding:\n"
++"Content-Transfer-Encoding: 8bit\n"
+ 
+ #: account.c:144
+ #, fuzzy, c-format
