@@ -40,6 +40,7 @@ Patch14:	%{name}-LIBOBJ.patch
 Patch15:	%{name}-pgp_hook.patch
 Patch16:	%{name}-manual.patch
 Patch17:	%{name}-send_charset.patch
+Patch18:	%{name}-sasl2.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -126,6 +127,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch17 -p0
 %{?_with_nntp:%patch18 -p1}
 %{?_with_nntp:cat %{SOURCE4} >> Muttrc.head.in}
+%patch18 -p1
 
 %build
 %{__gettextize}
@@ -174,6 +176,8 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
+
+rm -f $RPM_BUILD_ROOT/etc/mime.types
 
 %find_lang %{name}
 
