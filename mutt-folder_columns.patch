@@ -1,11 +1,142 @@
---- mutt-1.4.2.1/menu.c.orig	2004-02-14 11:15:52.874537592 +0100
-+++ mutt-1.4.2.1/menu.c	2004-02-14 11:17:58.135495032 +0100
+--- mutt-1.4-orig/init.h	2002-04-25 15:26:37.000000000 +0200
++++ mutt-1.4/init.h	2003-01-26 19:33:40.000000000 +0100
+@@ -519,6 +519,12 @@
+   ** you use `+' or `=' for any other variables since expansion takes place
+   ** during the `set' command.
+   */
++  { "folder_columns",   DT_NUM, R_NONE, UL &FolderColumns, UL 1 },
++  /*
++  ** .pp
++  ** Specifies the number of folder columns in folder browser.
++  **
++  */
+   { "folder_format",	DT_STR,	 R_INDEX, UL &FolderFormat, UL "%2C %t %N %F %2l %-8.8u %-8.8g %8s %d %f" },
+   /*
+   ** .pp
+--- mutt-1.4-orig/globals.h	2002-01-03 21:57:19.000000000 +0100
++++ mutt-1.4/globals.h	2003-01-26 19:34:05.000000000 +0100
+@@ -143,6 +143,7 @@
+ WHERE unsigned short Counter INITVAL (0);
+ 
+ WHERE short ConnectTimeout;
++WHERE short FolderColumns;
+ WHERE short HistSize;
+ WHERE short PagerContext;
+ WHERE short PagerIndexLines;
+--- mutt-1.4-orig/mutt_menu.h	2001-09-11 13:20:34.000000000 +0200
++++ mutt-1.4/mutt_menu.h	2003-01-26 19:33:01.000000000 +0100
+@@ -45,6 +45,7 @@
+   int menu;	/* menu definition for keymap entries. */
+   int offset;	/* which screen row to start the index */
+   int pagelen;	/* number of entries per screen */
++	int columns;  /* number of columns in menu */
+   int tagprefix;
+ 
+   /* Setting dialog != NULL overrides normal menu behaviour. 
+--- mutt-1.4-orig/browser.c	2002-03-19 10:54:00.000000000 +0100
++++ mutt-1.4/browser.c	2003-01-26 19:35:34.000000000 +0100
+@@ -476,12 +476,14 @@
+ }
+ 
+ static void init_menu (struct browser_state *state, MUTTMENU *menu, char *title,
+-		       size_t titlelen, int buffy)
++		       size_t titlelen, int buffy, int columns)
+ {
+   char path[_POSIX_PATH_MAX];
+ 
+   menu->max = state->entrylen;
+ 
++  menu->columns = columns;
++	
+   if(menu->current >= menu->max)
+     menu->current = menu->max - 1;
+   if (menu->current < 0)
+@@ -636,7 +638,7 @@
+   menu->help = mutt_compile_help (helpstr, sizeof (helpstr), MENU_FOLDER,
+     FolderHelp);
+ 
+-  init_menu (&state, menu, title, sizeof (title), buffy);
++  init_menu (&state, menu, title, sizeof (title), buffy, FolderColumns);
+ 
+   FOREVER
+   {
+@@ -767,7 +769,7 @@
+ 	    }
+ 	    menu->current = 0; 
+ 	    menu->top = 0; 
+-	    init_menu (&state, menu, title, sizeof (title), buffy);
++	    init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	    break;
+ 	  }
+ 	}
+@@ -865,7 +867,7 @@
+ 	  menu->data = state.entry;
+ 	  menu->current = 0; 
+ 	  menu->top = 0; 
+-	  init_menu (&state, menu, title, sizeof (title), buffy);
++	  init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	  MAYBE_REDRAW (menu->redraw);
+ 	}
+ 	break;
+@@ -895,7 +897,7 @@
+                   sizeof (struct folder_file) * (state.entrylen - (nentry+1)));
+ 	      state.entrylen--;
+ 	      mutt_message _("Mailbox deleted.");
+-	      init_menu (&state, menu, title, sizeof (title), buffy);
++	      init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	      MAYBE_REDRAW (menu->redraw);
+ 	    }
+ 	  }
+@@ -935,7 +937,7 @@
+ 	    menu->data = state.entry;
+ 	    menu->current = 0; 
+ 	    menu->top = 0; 
+-	    init_menu (&state, menu, title, sizeof (title), buffy);
++	    init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	  }
+ 	  else
+ #endif
+@@ -949,7 +951,7 @@
+ 	      {
+ 		menu->current = 0; 
+ 		menu->top = 0; 
+-		init_menu (&state, menu, title, sizeof (title), buffy);
++		init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	      }
+ 	      else
+ 	      {
+@@ -1012,12 +1014,12 @@
+ 	      state.imap_browse = 1;
+ 	      imap_browse (LastDir, &state);
+ 	      menu->data = state.entry;
+-	      init_menu (&state, menu, title, sizeof (title), buffy);
++	      init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	    }
+ 	    else
+ #endif
+ 	    if (examine_directory (menu, &state, LastDir, NULL) == 0)
+-	      init_menu (&state, menu, title, sizeof (title), buffy);
++	      init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	    else
+ 	    {
+ 	      mutt_error _("Error scanning directory.");
+@@ -1101,7 +1103,7 @@
+ #endif
+ 	else if (examine_directory (menu, &state, LastDir, prefix) == -1)
+ 	  goto bail;
+-	init_menu (&state, menu, title, sizeof (title), buffy);
++	init_menu (&state, menu, title, sizeof (title), buffy, 1);
+ 	break;
+ 
+       case OP_BROWSER_NEW_FILE:
+--- mutt-1.4.2.1/menu.c.orig	2004-02-14 17:54:37.148495120 +0100
++++ mutt-1.4.2.1/menu.c	2004-02-14 17:55:46.357973680 +0100
 @@ -148,7 +148,7 @@
      menu->make_entry (s, l, menu, i);
  }
  
 -void menu_pad_string (char *s, size_t n)
-+void menu_pad_string (MUTTMENU *menu, char *s, size_t l)
++void menu_pad_string (MUTTMENU *menu, char *s, size_t n)
  {
    int shift = option (OPTARROWCURSOR) ? 3 : 0;
    int cols = COLS - shift;
