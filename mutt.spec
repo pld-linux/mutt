@@ -4,8 +4,9 @@ Summary(es):	Mutt, cliente de correo electrСnico
 Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(pt_BR):	Mutt, cliente de correio eletrТnico
-Summary(es):	Mutt, cliente de correo electrСnico
+Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
+Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.3.28i
 Release:	2
@@ -74,9 +75,23 @@ O Mutt И um pequeno mas muito poderoso cliente de correio em tela
 cheia. Inclui suporte a tipos MIME, cor, POP3, encadeamento de
 mensagens, teclas configurАveis e classificaГЦo por encadeamento.
 
+%description -l ru
+Mutt - это небольшой, но мощный полноэкранный почтовый клиент.
+Включает поддержку MIME, цвет, поддержку POP3 и IMAP, группировку
+сообщений по цепочкам, переопределяемые клавиши, поддержку pgp/gpg и
+сортировку сообщений в цепочках. Включает также (пока что
+экспериментальную) поддержку NNTP.
+
 %description -l tr
 Mutt, kЭГЭk ama Гok gЭГlЭ bir tam-ekran Unix mektup istemcisidir. MIME
 desteПi, renk ve POP3 desteПi iГerir.
+
+%description -l uk
+Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
+М╕стить п╕дтримку MIME, кол╕р, п╕дтримку POP3 та IMAP, групування
+пов╕домлень по ланцюжкам, перевизначення клав╕ш, п╕дтримку pgp/gpg та
+сортування пов╕домлень у ланцюжках. М╕стить також (поки що
+експериментальну) п╕дтримку NNTP.
 
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
