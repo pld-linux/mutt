@@ -1,22 +1,22 @@
-Summary:     The Mutt Mail User Agent
-Summary(de): Der Mutt Mail-User-Agent 
-Summary(fr): Agent courrier Mutt
-Summary(pl): Program pocztowy Mutt
-Summary(tr): Mutt elektronik posta programý
-Name:        mutt
-Version:     0.95.4
-Release:     1
-Copyright:   GPL
-Group:       Applications/Mail
-Group(pl):   Aplikacje/Poczta
-Source0:     ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
-Source1:     %{name}.wmconfig
-Source2:     Muttrc
-Source3:     %{name}.pl.po
-Patch:	     %{name}-mail.patch
-URL:         http://www.mutt.org/
-Requires:    smtpdaemon
-Buildroot:   /tmp/%{name}-%{version}-root
+Summary:	The Mutt Mail User Agent
+Summary(de):	Der Mutt Mail-User-Agent 
+Summary(fr):	Agent courrier Mutt
+Summary(pl):	Program pocztowy Mutt
+Summary(tr):	Mutt elektronik posta programý
+Name:		mutt
+Version:	0.95.4
+Release:	1
+Copyright:	GPL
+Group:		Applications/Mail
+Group(pl):	Aplikacje/Poczta
+Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
+Source1:	mutt.wmconfig
+Source2:	Muttrc
+Source3:	mutt.pl.po
+Patch:		mutt-mail.patch
+URL:		http://www.mutt.org/
+Requires:	smtpdaemon
+Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
@@ -73,8 +73,9 @@ make prefix=$RPM_BUILD_ROOT/usr sharedir=$RPM_BUILD_ROOT/etc install
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
-gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/*
-gzip -9nf contrib/{*rc,*cap} rpm_docs/{html/*,*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
+gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/* \
+	contrib/{*rc,*cap} \
+	rpm_docs/{html/*,*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
