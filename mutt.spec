@@ -12,19 +12,6 @@ Release:	5
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
-Group(cs):	Aplikace/Po¹ta
-Group(da):	Programmer/Post
-Group(de):	Applikationen/Post
-Group(es):	Aplicaciones/Correo Electrónico
-Group(fr):	Applications/Courrier
-Group(is):	Forrit/Póst
-Group(it):	Applicazioni/Posta
-Group(no):	Applikasjoner/Epost
-Group(pl):	Aplikacje/Poczta
-Group(pt):	Aplicações/Correio Eletrônico
-Group(ru):	ğÒÉÌÏÖÅÎÉÑ/üÌÅËÔÒÏÎÎÁÑ ĞÏŞÔÁ
-Group(sl):	Programi/Po¹tna
-Group(sv):	Tillämpningar/Post
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
