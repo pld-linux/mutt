@@ -1,6 +1,7 @@
 Summary:     The Mutt Mail User Agent
 Summary(de): Der Mutt Mail-User-Agent 
 Summary(fr): Agent courrier Mutt
+Summary(pl): Program pocztowy Mutt
 Summary(tr): Mutt elektronik posta programý
 Name:        mutt
 Version:     0.93.2i
@@ -9,6 +10,8 @@ Copyright:   GPL
 Group:       Applications/Mail
 Source:      ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}.tar.gz
 Source1:     mutt.wmconfig
+Source2:     Muttrc
+Patch:       http://www.rhein.de/~roland/patch-0.93i.rr.compressed.1
 URL:         http://www.mutt.org/
 Requires:    smtpdaemon, mailcap, pgp
 Buildroot:   /tmp/%{name}-%{version}-root
@@ -23,6 +26,12 @@ Mutt ist ein kleiner aber leistungsfähiger Vollbild-Mail-Client für Unix mit
 MIME-Unterstützung, Farbe, POP3-Unterstützung, Nachrichten-Threading,
 zuweisbaren Tasten und Sortieren nach Threads.
 
+%description -l pl
+Mutt jest niewielkim programem pocztowym dla terminali tekstowych
+posiadaj±cym du¿e mo¿liwo¶ci.  Obs³uguje MIME, POP3, cztery formaty
+skrzynek pocztowych, obs³uguje kolory, w±tki i ocenê wa¿no¶ci listów
+(scoring).  W tej wersji dodano tak¿e obs³ugê skompresowanych folderów.
+
 %description -l fr
 mutt est un client courrier Unix plein écran, petit mais très puissant.
 Il dispose de la gestion MIME, des couleurs, de la gestion POP, des fils
@@ -34,6 +43,7 @@ renk ve POP3 desteði içerir.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -I/usr/include/slang" LDFLAGS=-s \
@@ -44,9 +54,9 @@ CFLAGS="$RPM_OPT_FLAGS -I/usr/include/slang" LDFLAGS=-s \
 	--with-slang \
 	--disable-warnings \
 	--disable-domain \
-	--with-docdir=$RPM_BUILD_DIR/mutt-%{version}/rpm_docs
+	--with-docdir=$RPM_BUILD_DIR/mutt-%{version}/rpm_docs \
+        --enable-compressed
 make
-#make manual.txt -C doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -55,6 +65,7 @@ install -d $RPM_BUILD_ROOT/etc/X11/wmconfig
 make prefix=$RPM_BUILD_ROOT/usr sharedir=$RPM_BUILD_ROOT/etc install
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -68,6 +79,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0755, root,  man) /usr/man/man1/mutt.1
 
 %changelog
+* Sat Sep 19 1998 Marcin Korzonek <mkorz@shadow.eu.org>
+  [0.93.2i-1]
+- added pl translation,
+- added patch for compressed folders,
+- rewrites system Muttrc based on ones from Roland Rosenfeld.
+
 * Sun Sep  6 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.93.2i-1]
 - added -q %setup parameter,
