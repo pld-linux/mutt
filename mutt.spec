@@ -34,23 +34,22 @@ Patch2:		%{name}-rr.compressed.patch
 Patch3:		%{name}-cd.edit_threads.patch
 Patch4:		%{name}-bj.status-time.patch
 Patch5:		%{name}-vvv.quote.patch
-Patch8:		%{name}-null_name.patch
-Patch9:		%{name}-cd.trash_folder.patch
-Patch10:	%{name}-cd.purge_message.patch
-Patch11:	%{name}-cd.signatures_menu.patch
-Patch12:	%{name}-folder_columns.patch
-Patch13:	%{name}-nr.tag_prefix_cond.patch
-Patch15:	%{name}-pgp_hook.patch
-Patch16:	%{name}-manual.patch
-Patch17:	%{name}-send_charset.patch
-Patch18:	%{name}-xface.patch
-Patch19:	%{name}-sasl2.patch
-Patch20:	%{name}-nntp.patch
-#Patch21:	%{name}-esmtp.patch
-#Patch22:	%{name}-home_etc.patch
-#Patch23:	%{name}-kill_warnings.patch
-#Patch24:	%{name}-Muttrc_mbox_path.patch
-#Patch25:	%{name}-po.patch
+Patch6:		%{name}-null_name.patch
+Patch7:		%{name}-cd.trash_folder.patch
+Patch8:		%{name}-cd.purge_message.patch
+Patch9:		%{name}-cd.signatures_menu.patch
+Patch10:	%{name}-folder_columns.patch
+Patch11:	%{name}-nr.tag_prefix_cond.patch
+Patch12:	%{name}-manual.patch
+Patch13:	%{name}-send_charset.patch
+Patch14:	%{name}-xface.patch
+Patch15:	%{name}-Muttrc_mbox_path.patch
+Patch16:	%{name}-po.patch
+Patch17:	%{name}-nntp.patch
+Patch18:	%{name}-esmtp.patch
+#Patch19:	%{name}-home_etc.patch
+# if some fuctionality is still missing, patch must be rewritten
+#PatchXXX:	%{name}-pgp_hook.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -62,7 +61,7 @@ BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
-#%{?with_esmtp:BuildRequires:	libesmtp-devel}
+%{?with_esmtp:BuildRequires:	libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
 #%{?with_home_etc:Requires:	home-etc >= 1.0.8}
@@ -135,21 +134,22 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
-%patch11 -p1
 # breaks display if arrow_cursor is set
-#%{?with_folder_column:%patch12 -p1}
+%{?with_folder_column:%patch10 -p1}
 # disabled - changes default behaviour
-#%patch13 -p0
-#%patch15 -p1
+#%patch11 -p0
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
 %patch16 -p1
-#%patch18 -p1
-%{?with_sasl:%patch19 -p1}
-%{?with_nntp:%patch20 -p1}
-%{?with_esmtp:%patch21 -p1}
-%{?with_home_etc:%patch22 -p1}
+%{?with_nntp:%patch17 -p1}
+%{?with_esmtp:%patch18 -p1}
+#%{?with_home_etc:%patch19 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -172,7 +172,7 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-pop \
 	%{?with_nntp:--enable-nntp} \
 	--with-regex \
-	%{?with_sasl:--with-sasl} %{!?with_sasl:--without-sasl} \
+	%{?with_sasl:--with-sasl2} \
 	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
