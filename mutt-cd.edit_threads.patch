@@ -17,68 +17,9 @@ diff -pruN mutt-1.5.5.1-orig/OPS mutt-1.5.5.1/OPS
  OP_MAIN_NEXT_NEW "jump to the next new message"
  OP_MAIN_NEXT_NEW_THEN_UNREAD "jump to the next new or unread message"
  OP_MAIN_NEXT_SUBTHREAD "jump to the next subthread"
-diff -pruN mutt-1.5.5.1-orig/acconfig.h mutt-1.5.5.1/acconfig.h
---- mutt-1.5.5.1-orig/acconfig.h	Tue Jan 21 11:50:49 2003
-+++ mutt-1.5.5.1/acconfig.h	Tue Nov 11 02:52:33 2003
-@@ -36,3 +36,7 @@
-  * all return values other than (size_t)(-1) as equivalent. */
- #undef ICONV_NONTRANS
- 
-+/* Do you want to use the rethreading functions with IMAP
-+ * (--enable-imap-edit-threads) */
-+#undef IMAP_EDIT_THREADS
-+
-diff -pruN mutt-1.5.5.1-orig/config.h.in mutt-1.5.5.1/config.h.in
---- mutt-1.5.5.1-orig/config.h.in	Tue Mar  4 08:50:34 2003
-+++ mutt-1.5.5.1/config.h.in	Tue Nov 11 02:52:33 2003
-@@ -531,3 +531,7 @@
-  * all return values other than (size_t)(-1) as equivalent. */
- #undef ICONV_NONTRANS
- 
-+/* Do you want to use the rethreading functions with IMAP
-+ * (--enable-imap-edit-threads) */
-+#undef IMAP_EDIT_THREADS
-+
-diff -pruN mutt-1.5.5.1-orig/configure mutt-1.5.5.1/configure
---- mutt-1.5.5.1-orig/configure	Wed Nov  5 21:00:06 2003
-+++ mutt-1.5.5.1/configure	Tue Nov 11 02:52:33 2003
-@@ -40,6 +40,8 @@ ac_help="$ac_help
- ac_help="$ac_help
-     --with-gss[=PFX]         Compile in GSSAPI authentication for IMAP"
- ac_help="$ac_help
-+  --enable-imap-edit-threads Enable editing threads support for IMAP"
-+ac_help="$ac_help
-   --with-ssl[=PFX]           Compile in SSL support for POP/IMAP"
- ac_help="$ac_help
-   --with-nss[=PFX]           Compile in SSL support for POP/IMAP via NSS"
-@@ -5383,6 +5385,23 @@ if test x$need_gss = xyes; then
- else
-   USE_GSS_TRUE='#'
-   USE_GSS_FALSE=
-+fi
-+
-+
-+# Check whether --enable-imap-edit-threads or --disable-imap-edit-threads was given.
-+if test "${enable_imap_edit_threads+set}" = set; then
-+  enableval="$enable_imap_edit_threads"
-+  
-+  if test "$enableval" = "yes"; then
-+    if test "$need_imap" = "yes"; then
-+      cat >> confdefs.h <<\EOF
-+#define IMAP_EDIT_THREADS 1
-+EOF
-+
-+    else
-+      echo "configure: warning: IMAP support for edit_threads is only useful with IMAP support" 1>&2
-+    fi
-+fi
- fi
- 
- 
-diff -pruN mutt-1.5.5.1-orig/configure.in mutt-1.5.5.1/configure.in
---- mutt-1.5.5.1-orig/configure.in	Wed Nov  5 21:00:05 2003
-+++ mutt-1.5.5.1/configure.in	Tue Nov 11 02:52:33 2003
-@@ -559,6 +559,16 @@ AM_CONDITIONAL(USE_GSS, test x$need_gss 
+--- mutt-1.5.9/configure.in.orig	2005-03-31 15:58:18.833976352 +0200
++++ mutt-1.5.9/configure.in	2005-03-31 15:59:03.298216760 +0200
+@@ -557,6 +557,16 @@
  
  dnl -- end imap dependencies --
  
@@ -86,13 +27,13 @@ diff -pruN mutt-1.5.5.1-orig/configure.in mutt-1.5.5.1/configure.in
 +[
 +  if test "$enableval" = "yes"; then
 +    if test "$need_imap" = "yes"; then
-+      AC_DEFINE(IMAP_EDIT_THREADS)
++      AC_DEFINE([IMAP_EDIT_THREADS],,[Do you want to use the rethreading functions with IMAP])
 +    else
 +      AC_MSG_WARN([IMAP support for edit_threads is only useful with IMAP support])
 +    fi
 +fi])
 +
- AC_ARG_WITH(ssl, [  --with-ssl[=PFX]           Compile in SSL support for POP/IMAP],
+ AC_ARG_WITH(ssl, AC_HELP_STRING([--with-ssl[=PFX]], [Compile in SSL support for POP/IMAP]),
  [       if test "$with_ssl" != "no"
          then
 diff -pruN mutt-1.5.5.1-orig/copy.c mutt-1.5.5.1/copy.c
@@ -445,10 +386,9 @@ diff -pruN mutt-1.5.5.1-orig/mh.c mutt-1.5.5.1/mh.c
      if (mh_rewrite_message (ctx, msgno) != 0)
        return (-1);
    }
-diff -pruN mutt-1.5.5.1-orig/mutt.h mutt-1.5.5.1/mutt.h
---- mutt-1.5.5.1-orig/mutt.h	Wed Nov  5 10:41:32 2003
-+++ mutt-1.5.5.1/mutt.h	Tue Nov 11 02:52:33 2003
-@@ -92,6 +92,8 @@
+--- mutt-1.5.9/mutt.h.orig	2005-03-31 15:58:18.891967536 +0200
++++ mutt-1.5.9/mutt.h	2005-03-31 15:59:31.109988728 +0200
+@@ -94,6 +94,8 @@
  #define CH_WEED_DELIVERED (1<<13) /* weed eventual Delivered-To headers */
  #define CH_FORCE_FROM	(1<<14)	/* give CH_FROM precedence over CH_WEED? */
  #define CH_NOQFROM	(1<<15)	/* give CH_FROM precedence over CH_WEED? */
@@ -457,15 +397,15 @@ diff -pruN mutt-1.5.5.1-orig/mutt.h mutt-1.5.5.1/mutt.h
  
  /* flags for mutt_enter_string() */
  #define  M_ALIAS   1      /* do alias "completion" by calling up the alias-menu */
-@@ -506,6 +508,7 @@ typedef struct list_t
- 
- #define mutt_new_list() safe_calloc (1, sizeof (LIST))
+@@ -550,6 +552,7 @@
+ #define mutt_new_rx_list() safe_calloc (1, sizeof (RX_LIST))
+ #define mutt_new_spam_list() safe_calloc (1, sizeof (SPAM_LIST))
  void mutt_free_list (LIST **);
 +LIST *mutt_copy_list (LIST *);
+ void mutt_free_rx_list (RX_LIST **);
+ void mutt_free_spam_list (SPAM_LIST **);
  int mutt_matches_ignore (const char *, LIST *);
- 
- /* add an element to a list */
-@@ -647,6 +650,8 @@ typedef struct header
+@@ -707,6 +710,8 @@
    unsigned int subject_changed : 1; 	/* used for threading */
    unsigned int threaded : 1;	    	/* used for threading */
    unsigned int display_subject : 1; 	/* used for threading */
@@ -474,7 +414,7 @@ diff -pruN mutt-1.5.5.1-orig/mutt.h mutt-1.5.5.1/mutt.h
    unsigned int recip_valid : 1;  	/* is_recipient is valid */
    unsigned int active : 1;	    	/* message is not to be removed */
    unsigned int trash : 1;		/* message is marked as trashed on disk.
-@@ -687,6 +692,10 @@ typedef struct header
+@@ -747,6 +752,10 @@
    char *tree;           	/* character string to print thread tree */
    struct thread *thread;
  
@@ -485,7 +425,7 @@ diff -pruN mutt-1.5.5.1-orig/mutt.h mutt-1.5.5.1/mutt.h
  #ifdef MIXMASTER
    LIST *chain;
  #endif
-@@ -752,6 +761,7 @@ typedef struct
+@@ -811,6 +820,7 @@
    char *pattern;                /* limit pattern string */
    pattern_t *limit_pattern;     /* compiled limit pattern */
    HEADER **hdrs;
@@ -653,3 +593,44 @@ diff -pruN mutt-1.5.5.1-orig/PATCHES mutt-1.5.5.1/PATCHES
 +++ mutt-1.5.5.1/PATCHES	Tue Nov 11 02:52:33 2003
 @@ -1,0 +1 @@
 +patch-1.5.5.1.cd.edit_threads.9.5
+--- mutt-1.5.9/po/pl.po.orig	2005-03-31 15:58:18.914964000 +0200
++++ mutt-1.5.9/po/pl.po	2005-03-31 16:06:53.533730096 +0200
+@@ -1014,6 +1014,38 @@
+ msgid "Exit Mutt without saving?"
+ msgstr "Wyj¶æ z Mutta bez zapisywania zmian?"
+ 
++#: curs_main.c:1193 curs_main.c:1231
++msgid "Threading is not enabled."
++msgstr "W±tkowanie nie jest w³±czone."
++
++#: curs_main.c:1197
++msgid "Compile Mutt with --enable-imap-edit-threads for break-thread support"
++msgstr "Do obs³ugi break-thread Mutt musi byæ skompilowany z --enable-imap-edit-threads"
++
++#: curs_main.c:1211
++msgid "Thread broken"
++msgstr "W±tek przerwany"
++
++#: curs_main.c:1235
++msgid "Compile Mutt with --enable-imap-edit-threads for link-threads support"
++msgstr "Do obs³ugi link-thread Mutt musi byæ skompilowany z --enable-imap-edit-threads"
++
++#: curs_main.c:1239
++msgid "No Message-ID: header available to link thread"
++msgstr "Brak nag³ówka Message-ID: do po³±czenia w±tku"
++
++#: curs_main.c:1241
++msgid "First, please tag a message to be linked here"
++msgstr "Najpierw trzeba zaznaczyæ wiadomo¶æ do do³±czenia tutaj"
++
++#: curs_main.c:1253
++msgid "Threads linked"
++msgstr "W±tki po³±czone"
++
++#: curs_main.c:1256
++msgid "No thread linked"
++msgstr "W±tek nie do³±czony"
++
+ #: curs_main.c:1199 curs_main.c:1224
+ msgid "You are on the last message."
+ msgstr "To jest ostatni list."
