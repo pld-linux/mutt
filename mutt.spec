@@ -16,7 +16,7 @@ Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	patches_sec.txt
 Source3:	patches_bj.txt
-Patch0:		%{name}-mail.patch
+#Patch0:	%{name}-mail.patch
 #Patch1:	%{name}-confdir.patch
 Patch2:		http://www.spinnaker.de/mutt/patch-1.2.rr.compressed.1.gz
 # Part of that patches I changed by hand to fit them into newer version
@@ -74,7 +74,7 @@ desteði, renk ve POP3 desteði içerir.
 
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
-%patch0 -p0
+#%patch0 -p0
 #%patch1 -p1 
 %patch2 -p1 
 %patch3 -p1
@@ -112,7 +112,8 @@ CFLAGS="%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g} -fno-strict-aliasing"
 	--with-homespool=Mailbox \
 	--with-ssl \
 	--with-charmaps \
-	--with-docdir=%{_defaultdocdir}/%{name}-%{version}
+	--with-docdir=%{_defaultdocdir}/%{name}-%{version} \
+	--enable-external-dotlock
 
 %{__make} keymap.h
 %{__make} 
@@ -139,6 +140,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc *.gz contrib/{*rc*,*cap*} doc/manual*html
 %config(noreplace) %verify(not size md5 mtime) %{_sysconfdir}/Muttrc
-%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root)  %{_bindir}/mutt
+%attr(755,root,root)  %{_bindir}/pgpewrap
+%attr(755,root,root)  %{_bindir}/pgpring
+%attr(2755,root,mail) %{_bindir}/mutt_dotlock
+
 %{_applnkdir}/Network/Mail/mutt.desktop
 %{_mandir}/man*/*
