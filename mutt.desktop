@@ -2,7 +2,7 @@
 Name=Mutt
 Comment=The Mutt Mail User Agent
 Comment[pl]=Mutt - program pocztowy
-Icon=mail2.xpm
-Exec=/usr/X11R6/bin/xterm -e mutt &
-Terminal=0
+Icon=mutt.png
+Exec=mutt
+Terminal=1
 Type=Application
