@@ -55,7 +55,7 @@ BuildRequires:	automake
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
-BuildRequires:	openssl-devel >= 0.9.6k
+BuildRequires:	openssl-devel >= 0.9.6m
 BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
