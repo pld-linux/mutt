@@ -1,155 +1,15 @@
---- mutt-1.3.23-orig/mutt_menu.h	Sun Oct 28 19:35:26 2001
-+++ mutt-1.3.23/mutt_menu.h	Tue Oct 30 16:45:06 2001
-@@ -45,6 +45,7 @@
-   int menu;	/* menu definition for keymap entries. */
-   int offset;	/* which screen row to start the index */
-   int pagelen;	/* number of entries per screen */
-+  int columns;  /* number of columns in menu */
-   int tagprefix;
- 
-   /* Setting dialog != NULL overrides normal menu behaviour. 
---- mutt-1.3.23-orig/init.h	Sun Oct 28 19:35:26 2001
-+++ mutt-1.3.23/init.h	Tue Oct 30 22:49:46 2001
-@@ -499,6 +499,12 @@
-   ** you use `+' or `=' for any other variables since expansion takes place
-   ** during the `set' command.
-   */
-+  { "folder_columns",   DT_NUM, R_NONE, UL &FolderColumns, UL 1 },
-+  /*
-+  ** .pp
-+  ** Specifies the number of folder columns in folder browser.
-+  **
-+  */
-   { "folder_format",	DT_STR,	 R_INDEX, UL &FolderFormat, UL "%2C %t %N %F %2l %-8.8u %-8.8g %8s %d %f" },
-   /*
-   ** .pp
---- mutt-1.3.23-orig/globals.h	Sun Oct 28 19:35:26 2001
-+++ mutt-1.3.23/globals.h	Tue Oct 30 22:44:42 2001
-@@ -138,6 +138,7 @@
- WHERE unsigned short Counter INITVAL (0);
- 
- WHERE short ConnectTimeout;
-+WHERE short FolderColumns;
- WHERE short HistSize;
- WHERE short PagerContext;
- WHERE short PagerIndexLines;
---- mutt-1.3.23-orig/browser.c	Sun Oct 28 19:35:26 2001
-+++ mutt-1.3.23/browser.c	Tue Oct 30 22:44:18 2001
-@@ -476,12 +476,13 @@
- }
- 
- static void init_menu (struct browser_state *state, MUTTMENU *menu, char *title,
--		       size_t titlelen, int buffy)
-+		       size_t titlelen, int buffy, int columns)
- {
-   char path[_POSIX_PATH_MAX];
- 
-   menu->max = state->entrylen;
--
-+  menu->columns = columns;  
-+  
-   if(menu->current >= menu->max)
-     menu->current = menu->max - 1;
-   if (menu->current < 0)
-@@ -634,7 +635,7 @@
-   menu->help = mutt_compile_help (helpstr, sizeof (helpstr), MENU_FOLDER,
-     FolderHelp);
- 
--  init_menu (&state, menu, title, sizeof (title), buffy);
-+  init_menu (&state, menu, title, sizeof (title), buffy, FolderColumns);
- 
-   FOREVER
-   {
-@@ -765,7 +766,7 @@
- 	    }
- 	    menu->current = 0; 
- 	    menu->top = 0; 
--	    init_menu (&state, menu, title, sizeof (title), buffy);
-+	    init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	    break;
- 	  }
- 	}
-@@ -863,7 +864,7 @@
- 	  menu->data = state.entry;
- 	  menu->current = 0; 
- 	  menu->top = 0; 
--	  init_menu (&state, menu, title, sizeof (title), buffy);
-+	  init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	  MAYBE_REDRAW (menu->redraw);
- 	}
- 	break;
-@@ -893,7 +894,7 @@
-                   sizeof (struct folder_file) * (state.entrylen - (nentry+1)));
- 	      state.entrylen--;
- 	      mutt_message _("Mailbox deleted.");
--	      init_menu (&state, menu, title, sizeof (title), buffy);
-+	      init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	      MAYBE_REDRAW (menu->redraw);
- 	    }
- 	  }
-@@ -933,7 +934,7 @@
- 	    menu->data = state.entry;
- 	    menu->current = 0; 
- 	    menu->top = 0; 
--	    init_menu (&state, menu, title, sizeof (title), buffy);
-+	    init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	  }
- 	  else
- #endif
-@@ -947,7 +948,7 @@
- 	      {
- 		menu->current = 0; 
- 		menu->top = 0; 
--		init_menu (&state, menu, title, sizeof (title), buffy);
-+		init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	      }
- 	      else
- 	      {
-@@ -1010,12 +1011,12 @@
- 	      state.imap_browse = 1;
- 	      imap_browse (LastDir, &state);
- 	      menu->data = state.entry;
--	      init_menu (&state, menu, title, sizeof (title), buffy);
-+	      init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	    }
- 	    else
- #endif
- 	    if (examine_directory (menu, &state, LastDir, NULL) == 0)
--	      init_menu (&state, menu, title, sizeof (title), buffy);
-+	      init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	    else
- 	    {
- 	      mutt_error _("Error scanning directory.");
-@@ -1099,7 +1100,7 @@
- #endif
- 	else if (examine_directory (menu, &state, LastDir, prefix) == -1)
- 	  goto bail;
--	init_menu (&state, menu, title, sizeof (title), buffy);
-+	init_menu (&state, menu, title, sizeof (title), buffy, 1);
- 	break;
- 
-       case OP_BROWSER_NEW_FILE:
---- mutt-1.3.23-orig/menu.c	Sun Oct 28 19:35:26 2001
-+++ mutt-1.3.23/menu.c	Wed Oct 31 09:30:28 2001
-@@ -126,14 +126,14 @@
+--- mutt-1.4.2.1/menu.c.orig	2004-02-14 11:15:52.874537592 +0100
++++ mutt-1.4.2.1/menu.c	2004-02-14 11:17:58.135495032 +0100
+@@ -148,7 +148,7 @@
      menu->make_entry (s, l, menu, i);
  }
  
--void menu_pad_string (char *s, size_t l)
+-void menu_pad_string (char *s, size_t n)
 +void menu_pad_string (MUTTMENU *menu, char *s, size_t l)
  {
-   size_t n = mutt_strlen (s);
    int shift = option (OPTARROWCURSOR) ? 3 : 0;
-   
-   l--; /* save room for the terminal \0 */
--  if (l > COLS - shift)
--    l = COLS - shift;
-+  if (l > (COLS / menu->columns) - shift)
-+    l = (COLS / menu->columns) - shift;
- 
-   /* Let's just pad the string anyway ... */
-   mutt_format_string (s, INT_MAX, l, l, 0, ' ', s, n, 1);
-@@ -191,69 +191,89 @@
+   int cols = COLS - shift;
+@@ -196,69 +196,89 @@
    menu->redraw &= ~REDRAW_STATUS;
  }
  
@@ -186,12 +46,24 @@
 -	  addstr ("->");
 -          attrset (menu->color (i));
 -	  addch (' ');
+-	}
+-	else
+-	  move (i - menu->top + menu->offset, 3);
 +		menu_item_pos(menu, i, &row, &col);
 +		if (i < menu->max)
 +	    {
 +			menu_make_entry (buf, sizeof (buf), menu, i);
 +			menu_pad_string (menu, buf, sizeof (buf));
-+
+ 
+-        print_enriched_string (menu->color(i), (unsigned char *) buf, 1);
+-        SETCOLOR (MT_COLOR_NORMAL);          
+-      }
+-      else
+-      {
+-	if (i == menu->current)
+-	{
+-	  SETCOLOR (MT_COLOR_INDICATOR);
+-	  BKGDSET (MT_COLOR_INDICATOR);
 +			if (option (OPTARROWCURSOR))
 +			{
 +				attrset (menu->color (i));
@@ -239,19 +111,6 @@
 +			}
 +		}
  	}
--	else
--	  move (i - menu->top + menu->offset, 3);
--
--        print_enriched_string (menu->color(i), (unsigned char *) buf, 1);
--        SETCOLOR (MT_COLOR_NORMAL);          
--      }
--      else
--      {
--	if (i == menu->current)
--	{
--	  SETCOLOR (MT_COLOR_INDICATOR);
--	  BKGDSET (MT_COLOR_INDICATOR);
--	}
 -        else
 -          attrset (menu->color (i));
 -            
@@ -288,7 +147,7 @@
    SETCOLOR (MT_COLOR_NORMAL);
    BKGDSET (MT_COLOR_NORMAL);
  
-@@ -265,16 +285,18 @@
+@@ -270,16 +290,18 @@
  
      if (menu->redraw & REDRAW_MOTION_RESYNCH)
      {
@@ -311,7 +170,7 @@
      SETCOLOR (MT_COLOR_INDICATOR);
      addstr ("->");
      SETCOLOR (MT_COLOR_NORMAL);
-@@ -283,17 +305,19 @@
+@@ -288,17 +310,19 @@
    {
      /* erase the current indicator */
      attrset (menu->color (menu->oldcurrent));
@@ -335,7 +194,7 @@
      print_enriched_string (menu->color(menu->current), (unsigned char *) buf, 0);
      SETCOLOR (MT_COLOR_NORMAL);
      BKGDSET (MT_COLOR_NORMAL);
-@@ -304,21 +328,22 @@
+@@ -309,21 +333,22 @@
  void menu_redraw_current (MUTTMENU *menu)
  {
    char buf[STRING];
@@ -362,7 +221,7 @@
      print_enriched_string (menu->color(menu->current), (unsigned char *) buf, 1);
      SETCOLOR (MT_COLOR_NORMAL);
    }
-@@ -326,7 +351,7 @@
+@@ -331,7 +356,7 @@
    {
      SETCOLOR (MT_COLOR_INDICATOR);
      BKGDSET (MT_COLOR_INDICATOR);
@@ -371,7 +230,7 @@
      print_enriched_string (menu->color(menu->current), (unsigned char *) buf, 0);
      SETCOLOR (MT_COLOR_NORMAL);
      BKGDSET (MT_COLOR_NORMAL);
-@@ -355,18 +380,18 @@
+@@ -360,18 +385,18 @@
  
  void menu_check_recenter (MUTTMENU *menu)
  {
@@ -394,7 +253,7 @@
      menu->redraw |= REDRAW_INDEX;
    }
    else if (menu->current < menu->top)
-@@ -375,7 +400,7 @@
+@@ -380,7 +405,7 @@
        menu->top = menu->current;
      else
      {
@@ -403,7 +262,7 @@
        if (menu->top < 0)
  	menu->top = 0;
      }
-@@ -666,6 +691,7 @@
+@@ -671,6 +696,7 @@
    p->pagelen = PAGELEN;
    p->color = default_color;
    p->search = menu_search_generic;
