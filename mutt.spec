@@ -12,7 +12,8 @@ Group(pl):	Aplikacje/Poczta
 Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
 Source1:	mutt.desktop
 Source2:	Muttrc
-Patch:		mutt-mail.patch
+Patch0:		mutt-mail.patch
+Patch1:		ftp://dione.ids.pl/people/siewca/patches/mutt-etc.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
@@ -48,7 +49,8 @@ renk ve POP3 desteði içerir.
 
 %prep
 %setup -q
-%patch -p0
+%patch0 -p0
+%patch1 -p1 
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
