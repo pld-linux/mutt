@@ -41,7 +41,7 @@ Patch11:	%{name}-cd.signatures_menu.patch
 Patch12:	%{name}-folder_columns.patch
 Patch13:	%{name}-nr.tag_prefix_cond.patch
 Patch14:	%{name}-pgp_hook.patch
-#Patch15:	%{name}-manual.patch
+Patch15:	%{name}-manual.patch
 Patch16:	%{name}-send_charset.patch
 Patch17:	%{name}-xface.patch
 Patch19:	%{name}-nntp.patch
@@ -140,6 +140,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch11 -p1
 %patch12 -p1
 #%patch13 -p0
+%patch14 -p1
 %patch14 -p1
 %patch16 -p1
 %patch17 -p1
