@@ -1,0 +1,2 @@
+- added --disable/enable debug dependant on %%{debug}
+- fixed in-reply-to bug
