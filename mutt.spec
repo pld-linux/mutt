@@ -34,8 +34,8 @@ zuweisbaren Tasten und Sortieren nach Threads.
 %description -l pl
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych
 posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty
-skrzynek pocztowych, obs³uguje kolory, w±tki i ocenê wa¿no¶ci listów
-(scoring).  W tej wersji dodano tak¿e obs³ugê skompresowanych folderów.
+skrzynek pocztowych, kolory, w±tki, ocenê wa¿no¶ci listów (scoring)
+oraz skompresowane foldery.
 
 %description -l fr
 mutt est un client courrier Unix plein écran, petit mais très puissant.
