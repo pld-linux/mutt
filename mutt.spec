@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.18i
-Release:	3
+Release:	4
 Epoch:		4
 License:	GPL
 Group:		Applications/Mail
@@ -18,6 +18,7 @@ Source2:	%{name}.png
 Patch0:		%{name}-forcedotlock.patch
 Patch1:		%{name}-in_reply_to.patch
 Patch2:		%{name}-home_etc.patch
+Patch3:		%{name}-muttbug-tmp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -61,6 +62,7 @@ desteði, renk ve POP3 desteði içerir.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %{__aclocal} -I m4
