@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.1.11i
-Release:	2.1
+Release:	3
 License:	GPL
 Group:		Applications/Mail
 Group(pt):	Aplicações/Correio Eletrônico
@@ -20,6 +20,7 @@ Patch2:		http://www.spinnaker.de/mutt/patch-1.1.10.rr.compressed.1.gz
 # Part of that patches I changed by hand to fit them into newer version
 # (bonkey)
 Patch3:		patch-0.00.sec+bonk.patchlist.1
+Patch4:		mutt-blanklines.patch
 Patch7:		http://sec.42.org/mutt/patch-0.94.7.sec.previous_jump.1
 Patch9:		http://sec.42.org/mutt/patch-0.94.7.vikas.word_chars.1
 Patch10:	http://sec.42.org/mutt/patch-0.95.3.bj.ed_mtime.1
@@ -31,7 +32,7 @@ Patch18:	http://sec.42.org/mutt/patch-0.95.6.as.mark-old.1
 Patch19:	http://sec.42.org/mutt/patch-0.95.bj.hash_destroy.2
 Patch20:	http://sec.42.org/mutt/patch-0.95.sec.condense_pgp.1
 Patch22:	http://sec.42.org/mutt/patch-1.02.sec._A.1
-Patch23:	http://www.murkworks.to/blank-line.patch
+#Patch23:	http://www.murkworks.to/blank-line.patch
 #Patch24:	http://www.albedo.art.pl/~kbryd/mutt/mutt_package.tar.gz
 Patch25:	mutt-dot-lock.patch
 URL:		http://www.mutt.org/
@@ -73,6 +74,7 @@ desteði, renk ve POP3 desteði içerir.
 #%patch1 -p1 
 %patch2 -p1 
 %patch3 -p1
+%patch4 -p1
 %patch7 -p1
 %patch9 -p0
 %patch10 -p0
@@ -84,7 +86,7 @@ desteði, renk ve POP3 desteði içerir.
 %patch19 -p0
 %patch20 -p1
 %patch22 -p1
-%patch23 -p0
+#%patch23 -p0
 %patch25 -p1
 
 %build
