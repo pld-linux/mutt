@@ -1,11 +1,17 @@
-# conditionals:
-# --with slang:	use slang library instead of ncurses
-# --with nntp:	use VVV's NNTP patch
-
+#
+# Conditional build:
+%bcond_with	slang		# use slang library instead of ncurses
+%bcond_with	nntp		# use VVV's NNTP patch
+%bcond_with	esmtp		# use esmtp patch
+%bcond_with	folder_column	# build with folder_column patch
+%bcond_without	sasl		# don't use sasl
+#%bcond_without	home_etc	# don't use home_etc
+#
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
 Summary(es):	Mutt, cliente de correo electrónico
 Summary(fr):	Agent courrier Mutt
+Summary(ko):	ÅØ½ºÆ® ±â¹İÀÇ MUA
 Summary(pl):	Program pocztowy Mutt
 Summary(pt_BR):	Mutt, cliente de correio eletrônico
 Summary(ru):	ğÏŞÔÏ×ÁÑ ËÌÉÅÎÔÓËÁÑ ĞÒÏÇÒÁÍÍÁ Mutt
@@ -22,7 +28,6 @@ Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
 Patch3:		%{name}-rr.compressed.patch
@@ -42,18 +47,29 @@ Patch17:	%{name}-send_charset.patch
 Patch18:	%{name}-xface.patch
 Patch19:	%{name}-sasl2.patch
 Patch20:	%{name}-nntp.patch
+#Patch21:	%{name}-esmtp.patch
+#Patch22:	%{name}-home_etc.patch
+#Patch23:	%{name}-kill_warnings.patch
+#Patch24:	%{name}-Muttrc_mbox_path.patch
+#Patch25:	%{name}-po.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+%{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
-%{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
+%{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools
-%{?_with_slang:BuildRequires:		slang-devel}
+BuildRequires:	sgml-tools-dtd
+%{?with_slang:BuildRequires:	slang-devel}
+#%{?with_esmtp:BuildRequires:	libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
+#%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		specflags_ia32	 -fomit-frame-pointer 
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
@@ -75,6 +91,13 @@ mutt est un client courrier Unix plein écran, petit mais très
 puissant. Il dispose de la gestion MIME, des couleurs, de la gestion
 POP, des fils de discussion, des touches liées et d'un mode de tri sur
 les fils.
+
+%description -l ko
+Mutt´Â ÀÛÁö¸¸ ¸Å¿ì °­·ÂÇÑ ÅØ½ºÆ® ±â¹İÀÇ ¸ŞÀÏ Å¬¶óÀÌ¾ğÆ®ÀÌ´Ù. Mutt´Â
+¸¹Àº ¼³Á¤ÀÌ °¡´ÉÇÏ´Ù. ±×¸®°í, Å°¹ÙÀÎµù, Å°º¸µå ¸ŞÅ©·Î, ¸ŞÀÏ ½º·¹µù°ú
+°°Àº Áøº¸µÈ ÇüÅÂ¿Í Á¤±ÔÇ¥Çö½Ä °Ë»ö, ¸ŞÀÏ¿¡¼­ ¼±ÅÃµÈ ±×·ìÀÇ ³»¿ë¿¡¼­
+°­·ÂÇÏ°Ô ÀÏÁ¤ÇÑ ÆĞÅÏÀ» Ã£¾Æ³»´Â °ÍÀ» Áö¿øÇÔÀ¸·Î½á ¸ŞÀÏÀÇ ÆÄ¿ö À¯Àú¿¡°Ô
+°¡Àå ÀûÇÕÇÏ´Ù.
 
 %description -l pl
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych,
@@ -107,7 +130,6 @@ Mutt - ÃÅ ÎÅ×ÅÌÉËÉÊ, ÁÌÅ ĞÏÔÕÖÎÉÊ ĞÏ×ÎÏÅËÒÁÎÎÉÊ ĞÏÛÔÏ×ÉÊ ËÌ¦¤ÎÔ.
 
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 #%patch3 -p1
@@ -118,14 +140,17 @@ Mutt - ÃÅ ÎÅ×ÅÌÉËÉÊ, ÁÌÅ ĞÏÔÕÖÎÉÊ ĞÏ×ÎÏÅËÒÁÎÎÉÊ ĞÏÛÔÏ×ÉÊ ËÌ¦¤ÎÔ.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-#%patch12 -p1
+# breaks display if arrow_cursor is set
+#%{?with_folder_column:%patch12 -p1}
+# disabled - changes default behaviour
 #%patch13 -p0
 #%patch15 -p1
 %patch16 -p1
 #%patch18 -p1
-%{!?_without_sasl:%patch19 -p1}
-#%patch20 -p1
-%{?_with_nntp:%patch20 -p1}
+%{?with_sasl:%patch19 -p1}
+%{?with_nntp:%patch20 -p1}
+%{?with_esmtp:%patch21 -p1}
+%{?with_home_etc:%patch22 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -133,11 +158,12 @@ rm -f doc/{manual*.html,manual.txt}
 %build
 %{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
-	%{!?_with_slang:--with-curses} \
-	%{?_with_slang:--with-slang} \
+	%{!?with_slang:--with-curses} \
+	%{?with_slang:--with-slang} \
 	--enable-compressed \
 	--enable-external-dotlock \
 	--enable-imap \
@@ -145,12 +171,14 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-mailtool \
 	--with-mixmaster \
 	--enable-pop \
-	%{?_with_nntp:--enable-nntp} \
+	%{?with_nntp:--enable-nntp} \
 	--with-regex \
-	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
+	%{?with_sasl:--with-sasl} %{!?with_sasl:--without-sasl} \
+	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
+	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
-	--with-docdir=%{_docdir}/%{name}-%{version} \
+	--with-docdir=%{_docdir}/%{name} \
 	--with-homespool=Maildir \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
@@ -165,16 +193,20 @@ rm -f doc/{manual*.html,manual.txt}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}} \
-	$RPM_BUILD_ROOT%{_mandir}/pl/man1
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %PATCH17
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
+install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
+
+# keep manual.txt.gz, the rest is installed as %doc
+rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
+gzip -9nf $RPM_BUILD_ROOT%{_docdir}/%{name}/manual.txt
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
@@ -188,7 +220,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp:Muttrc.esmtp}
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
@@ -197,7 +229,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/smime_keys
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
-%{_applnkdir}/Network/Mail/mutt.desktop
+%{_docdir}/%{name}
+%{_desktopdir}/*.desktop
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
 %lang(pl) %{_mandir}/pl/man*/*
