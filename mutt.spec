@@ -124,7 +124,6 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
-%patch17 -p0
 %{?_with_nntp:%patch18 -p1}
 %{!?_without_sasl:%patch19 -p1}
 
@@ -167,6 +166,8 @@ install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}} \
 	$RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
+
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %PATCH17
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
