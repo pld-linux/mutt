@@ -1420,7 +1420,7 @@ diff -urN mutt-1.5.8/po/de.po mutt-1.5.8-ro/po/de.po
  
 +#: hook.c:96
 +msgid "bad formatted command string"
-+msgstr "Hook enthält nicht die Muster %f und %t"
++msgstr ""
 +
  #: hook.c:246
  #, c-format
@@ -1501,7 +1501,7 @@ diff -urN mutt-1.5.8/po/de.po mutt-1.5.8-ro/po/de.po
  
 ++#: hook.c:96
 ++msgid "bad formatted command string"
-++msgstr "Hook enthält nicht die Muster %f und %t"
+++msgstr "¼le sformatowany ³añcuch polecenia"
 ++
  #: hook.c:246
  #, c-format
