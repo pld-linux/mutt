@@ -26,7 +26,6 @@ Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Source4:    %{name}-esmtp.rc
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
