@@ -6,6 +6,7 @@ Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
 Summary(es):	Mutt, cliente de correo electrónico
 Summary(fr):	Agent courrier Mutt
+Summary(ko):	ÅØ½ºÆ® ±â¹İÀÇ MUA
 Summary(pl):	Program pocztowy Mutt
 Summary(pt_BR):	Mutt, cliente de correio eletrônico
 Summary(ru):	ğÏŞÔÏ×ÁÑ ËÌÉÅÎÔÓËÁÑ ĞÒÏÇÒÁÍÍÁ Mutt
@@ -76,6 +77,13 @@ mutt est un client courrier Unix plein écran, petit mais très
 puissant. Il dispose de la gestion MIME, des couleurs, de la gestion
 POP, des fils de discussion, des touches liées et d'un mode de tri sur
 les fils.
+
+%description -l ko
+Mutt´Â ÀÛÁö¸¸ ¸Å¿ì °­·ÂÇÑ ÅØ½ºÆ® ±â¹İÀÇ ¸ŞÀÏ Å¬¶óÀÌ¾ğÆ®ÀÌ´Ù. Mutt´Â
+¸¹Àº ¼³Á¤ÀÌ °¡´ÉÇÏ´Ù. ±×¸®°í, Å°¹ÙÀÎµù, Å°º¸µå ¸ŞÅ©·Î, ¸ŞÀÏ ½º·¹µù°ú
+°°Àº Áøº¸µÈ ÇüÅÂ¿Í Á¤±ÔÇ¥Çö½Ä °Ë»ö, ¸ŞÀÏ¿¡¼­ ¼±ÅÃµÈ ±×·ìÀÇ ³»¿ë¿¡¼­
+°­·ÂÇÏ°Ô ÀÏÁ¤ÇÑ ÆĞÅÏÀ» Ã£¾Æ³»´Â °ÍÀ» Áö¿øÇÔÀ¸·Î½á ¸ŞÀÏÀÇ ÆÄ¿ö À¯Àú¿¡°Ô
+°¡Àå ÀûÇÕÇÏ´Ù.
 
 %description -l pl
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych,
