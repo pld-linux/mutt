@@ -18,7 +18,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.2.1
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -174,7 +174,7 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
-	--with-docdir=%{_docdir}/%{name}-%{version} \
+	--with-docdir=%{_datadir}/%{name} \
 	--with-homespool=Maildir \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
@@ -189,7 +189,7 @@ rm -f doc/{manual*.html,manual.txt}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1,%{_datadir}/%{name}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -199,6 +199,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
+install doc/manual.txt $RPM_BUILD_ROOT%{_datadir}/%{name}
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
@@ -212,7 +213,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt README.xface %{?with_esmtp: Muttrc.esmtp}
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp: Muttrc.esmtp}
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
@@ -220,6 +221,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pgp*
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
+%{_datadir}/%{name}
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
