@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.17i
-Release:	2
+Release:	3
 Epoch:		4
 License:	GPL
 Group:		Applications/Mail
@@ -23,7 +23,7 @@ Requires:	mailcap
 Requires:	iconv
 BuildRequires:	iconv
 BuildRequires:	ncurses-devel >= 5.0
-BuildRequires:	openssl-devel
+BuildRequires:	openssl-devel >= 0.9.6a
 BuildRequires:	cyrus-sasl-devel
 BuildRequires:	autoconf
 BuildRequires:	automake
