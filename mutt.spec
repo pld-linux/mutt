@@ -10,7 +10,7 @@ Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
 Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}pre1i.tar.gz
-Source1:	mutt.wmconfig
+Source1:	mutt.desktop
 Source2:	Muttrc
 Patch:		mutt-mail.patch
 URL:		http://www.mutt.org/
@@ -52,7 +52,6 @@ CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" LDFLAGS="-s" \
 %configure \
 	--with-sharedir=%{_datadir} \
 	--sysconfdir=/etc \
-	--mandir=%{_mandir} \
 	--enable-pop \
 	--enable-imap \
 	--with-curses \
@@ -65,16 +64,16 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/X11/wmconfig
+install -d $RPM_BUILD_ROOT/etc/X11/applnk/Networking/Mail
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/applnk/Networking/Mail
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
-gzip -9nf		$RPM_BUILD_ROOT%{_mandir}/man1/* \
-			contrib/{*rc,*cap} \
-			ChangeLog README TODO NEWS README.SECURITY
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
+	contrib/{*rc,*cap} \
+	ChangeLog README TODO NEWS README.SECURITY
 
 %find_lang %{name}
 
@@ -86,7 +85,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc {ChangeLog,README,TODO,NEWS,README.SECURITY}.gz
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
-%config(missingok) /etc/X11/wmconfig/mutt
+/etc/X11/applnk/Networking/Mail/mutt.desktop
 
-%attr(0755,root,root) %{_bindir}/*
-%lang(en) %{_mandir}/man*/*
+%attr(755,root,root) %{_bindir}/*
+%{_mandir}/man*/*
