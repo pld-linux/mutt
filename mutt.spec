@@ -15,6 +15,7 @@ Group(pt):	Aplicações/Correio Eletrônico
 Source0:	ftp://ftp.mutt.org/pub/mutt/devel/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
+Patch0:		%{name}-forcedotlock.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
@@ -56,6 +57,7 @@ desteði, renk ve POP3 desteði içerir.
 
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
+%patch0 -p1
 
 %build
 aclocal -I m4
