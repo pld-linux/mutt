@@ -4,7 +4,7 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	0.96.2
+Version:	0.96.4
 Release:	1i
 Copyright:	GPL
 Group:		Applications/Mail
@@ -49,8 +49,7 @@ renk ve POP3 desteði içerir.
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
-./configure %{_target_platform} \
-	--prefix=/usr \
+%configure \
 	--with-sharedir=%{_datadir} \
 	--sysconfdir=/etc \
 	--enable-pop \
@@ -59,7 +58,7 @@ CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 	--disable-warnings \
 	--disable-domain \
         --enable-compressed \
-	--with-docdir=/usr/doc/mutt-%{version}
+	--with-docdir=$RPM_BUILD_ROOT%{_datadir}/doc/mutt-%{version}
 
 make 
 
@@ -67,15 +66,14 @@ make
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/X11/wmconfig
 
-#make prefix=$RPM_BUILD_ROOT/usr sharedir=$RPM_BUILD_ROOT/etc install
 make install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
-	contrib/{*rc,*cap} \
-	$RPM_BUILD_ROOT/usr/doc/mutt-%{version}/{*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
+gzip -9nf		$RPM_BUILD_ROOT%{_mandir}/man1/* \
+			contrib/{*rc,*cap} \
+			ChangeLog README TODO NEWS README.SECURITY
 
 %find_lang %{name}
 
@@ -84,13 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc /usr/doc/%{name}-%{version}/*.gz
+%doc {ChangeLog,README,TODO,NEWS,README.SECURITY}.gz
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
 %config(missingok) /etc/X11/wmconfig/mutt
 
-%attr(0755,root,root) %{_bindir}/mutt
-%attr(2755,root,mail) %{_bindir}/mutt_dotlock
-
-%lang(en) %{_mandir}/man1/*
-%{_datadir}/charsets
+%attr(0755,root,root) %{_bindir}/*
+%lang(en) %{_mandir}/man*/*
