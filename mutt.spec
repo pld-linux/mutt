@@ -8,7 +8,7 @@ Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.23.2i
-Release:	1
+Release:	2
 Epoch:		4
 License:	GPL
 Group:		Applications/Mail
@@ -18,6 +18,7 @@ Group(pt):	Aplicações/Correio Eletrônico
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
+Source3:	%{name}.1.pl
 Patch0:		%{name}-forcedotlock.patch
 Patch1:		%{name}-home_etc.patch
 Patch2:		%{name}-muttbug-tmp.patch
@@ -107,12 +108,14 @@ CFLAGS="%{optflags} -I%{_includedir}/slang" \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}}
+install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}} \
+	$RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
+install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 gzip -9nf contrib/{*rc*,*cap*} \
 	ChangeLog README TODO NEWS README.SECURITY README.SSL 
@@ -138,3 +141,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_applnkdir}/Network/Mail/mutt.desktop
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
+%lang(pl) %{_mandir}/pl/man*/*
