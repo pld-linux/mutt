@@ -7,9 +7,9 @@ Summary(pt_BR):	Mutt, cliente de correio eletrônico
 Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.3.25i
-Release:	2
-Epoch:		5
+Version:	1.3.26i
+Release:	1
+Epoch:		1
 License:	GPL
 Group:		Applications/Mail
 Group(de):	Applikationen/Post
@@ -19,9 +19,7 @@ Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Patch0:		%{name}-forcedotlock.patch
-Patch1:		%{name}-home_etc.patch
-Patch2:		%{name}-muttbug-tmp.patch
+Patch0:		%{name}-home_etc.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -72,8 +70,6 @@ desteði, renk ve POP3 desteði içerir.
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 
 %build
 
@@ -93,6 +89,7 @@ CFLAGS="%{optflags} -I%{_includedir}/slang" \
 	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
 	--without-included-nls \
 	--with-homespool=Maildir \
+	--with-mixmaster \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
 	--with-docdir=%{_docdir}/%{name}-%{version} \
