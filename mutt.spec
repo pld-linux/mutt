@@ -4,8 +4,8 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.2i
-Release:	3
+Version:	1.2.2i
+Release:	1
 Serial:		2
 License:	GPL
 Group:		Applications/Mail
@@ -36,6 +36,7 @@ Patch22:	http://sec.42.org/mutt/patch-1.02.sec._A.1
 #Patch23:	http://www.murkworks.to/blank-line.patch
 #Patch24:	http://www.albedo.art.pl/~kbryd/mutt/mutt_package.tar.gz
 Patch25:	mutt-dot-lock.patch
+Patch26:	mutt-pl.po.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
@@ -90,6 +91,7 @@ desteði, renk ve POP3 desteði içerir.
 %patch22 -p1
 #%patch23 -p0
 %patch25 -p1
+%patch26 -p1
 
 %build
 mv aclocal.m4 acinclude.m4
@@ -97,7 +99,7 @@ aclocal
 automake
 autoconf
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
-LDFLAGS=""
+LDFLAGS="-s"
 export CFLAGS LDFLAGS
 %configure \
 	--with-sharedir=%{_datadir} \
