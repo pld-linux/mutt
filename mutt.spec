@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.1.11i
-Release:	2
+Release:	2.1
 License:	GPL
 Group:		Applications/Mail
 Group(pt):	Aplicações/Correio Eletrônico
@@ -33,6 +33,7 @@ Patch20:	http://sec.42.org/mutt/patch-0.95.sec.condense_pgp.1
 Patch22:	http://sec.42.org/mutt/patch-1.02.sec._A.1
 Patch23:	http://www.murkworks.to/blank-line.patch
 #Patch24:	http://www.albedo.art.pl/~kbryd/mutt/mutt_package.tar.gz
+Patch25:	mutt-dot-lock.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
@@ -69,7 +70,7 @@ desteði, renk ve POP3 desteði içerir.
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
 %patch0 -p0
-# %patch1 -p1 
+#%patch1 -p1 
 %patch2 -p1 
 %patch3 -p1
 %patch7 -p1
@@ -84,10 +85,11 @@ desteði, renk ve POP3 desteði içerir.
 %patch20 -p1
 %patch22 -p1
 %patch23 -p0
+%patch25 -p1
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
-LDFLAGS="-s"
+LDFLAGS=""
 export CFLAGS LDFLAGS
 %configure \
 	--with-sharedir=%{_datadir} \
@@ -96,10 +98,11 @@ export CFLAGS LDFLAGS
 	--with-curses \
 	--disable-warnings \
 	--disable-domain \
+        --enable-compressed \
+	--with-mailpath=/var/mail \
+	--with-homespool=Mailbox \
 	--with-ssl \
 	--with-charmaps \
-	--with-homespool=Mailbox \
-	--enable-compressed \
 	--with-docdir=%{_defaultdocdir}/%{name}-%{version}
 
 make keymap.h
