@@ -77,10 +77,12 @@ gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
 	contrib/{*rc,*cap} \
 	$RPM_BUILD_ROOT/usr/doc/mutt-%{version}/{*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
 
+%find_lang %{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc /usr/doc/%{name}-%{version}/*.gz
 
@@ -92,18 +94,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %lang(en) %{_mandir}/man1/*
 %{_datadir}/charsets
-
-%lang(cs) %{_datadir}/locale/cs/LC_MESSAGES/mutt.mo
-%lang(dn) %{_datadir}/locale/de/LC_MESSAGES/mutt.mo
-%lang(es) %{_datadir}/locale/es/LC_MESSAGES/mutt.mo
-%lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/mutt.mo
-%lang(id) %{_datadir}/locale/id/LC_MESSAGES/mutt.mo
-%lang(it) %{_datadir}/locale/it/LC_MESSAGES/mutt.mo
-%lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/mutt.mo
-%lang(pl) %{_datadir}/locale/pl/LC_MESSAGES/mutt.mo
-%lang(ru) %{_datadir}/locale/ru/LC_MESSAGES/mutt.mo
-%lang(sk) %{_datadir}/locale/sk/LC_MESSAGES/mutt.mo
-%lang(uk) %{_datadir}/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
 * Thu May  6 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
