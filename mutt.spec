@@ -38,7 +38,6 @@ Patch14:	%{name}-LIBOBJ.patch
 Patch15:	%{name}-pgp_hook.patch
 Patch16:	%{name}-manual.patch
 Patch17:	%{name}-send_charset.patch
-Patch18:	%{name}-nntp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
