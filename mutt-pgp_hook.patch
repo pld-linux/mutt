@@ -1,0 +1,351 @@
+diff -rU3 --new-file mutt-1.3.99-vanilla/PATCHES mutt-1.3.99/PATCHES
+--- mutt-1.3.99-vanilla/PATCHES	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/PATCHES	Thu May 23 14:13:33 2002
+@@ -1,3 +1,4 @@
++patch-1.3.28.dw.pgp-hook.3
+ vvv.quote
+ patch-1.3.27.cd.signatures_menu.2.1
+ patch-1.3.25.cd.purge_command.2
+diff -rU3 --new-file mutt-1.3.99-vanilla/doc/manual.sgml.head mutt-1.3.99/doc/manual.sgml.head
+--- mutt-1.3.99-vanilla/doc/manual.sgml.head	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/doc/manual.sgml.head	Thu May 23 14:13:33 2002
+@@ -1389,7 +1389,9 @@
+ or because, for some reasons, you need to override the key Mutt would
+ normally use.  The pgp-hook command provides a method by which you can
+ specify the ID of the public key to be used when encrypting messages to
+-a certain recipient.
++a certain recipient.  You may use multiple pgp-hook's with the same
++pattern; multiple matching pgp-hook's result in the use of multiple
++keyids for recipient.
+ 
+ <sect1>Adding key sequences to the keyboard buffer<label id="push">
+ <p>
+diff -rU3 --new-file mutt-1.3.99-vanilla/doc/muttrc.man.head mutt-1.3.99/doc/muttrc.man.head
+--- mutt-1.3.99-vanilla/doc/muttrc.man.head	Thu May 23 14:12:13 2002
++++ mutt-1.3.99/doc/muttrc.man.head	Thu May 23 14:15:38 2002
+@@ -257,7 +257,9 @@
+ \fBpgp-hook\fP \fIpattern\fP \fIkey-id\fP
+ The pgp-hook command provides a method by which you can
+ specify the ID of the public key to be used when encrypting messages
+-to a certain recipient.
++to a certain recipient.  You may use multiple \fBpgp-hook\fPs with the
++same \fIpattern\fP; multiple matching \fBpgp-hook\fPs result in the use
++of multiple \fIkey-id\fPs for recipient.
+ .PP
+ .nf
+ \fBopen-hook\fP \fIregexp\fP "\fIcommand\fP"
+diff -rU3 --new-file mutt-1.3.99-vanilla/hook.c mutt-1.3.99/hook.c
+--- mutt-1.3.99-vanilla/hook.c	Thu May 23 14:12:13 2002
++++ mutt-1.3.99/hook.c	Thu May 23 14:13:33 2002
+@@ -129,7 +129,11 @@
+ 	ptr->rx.not == not &&
+ 	!mutt_strcmp (pattern.data, ptr->rx.pattern))
+     {
++#ifdef M_PGPHOOK
++      if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK | M_PGPHOOK))
++#else
+       if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK))
++#endif /* M_PGPHOOK */
+       {
+ 	/* these hooks allow multiple commands with the same
+ 	 * pattern, so if we've already seen this pattern/command pair, just
+@@ -456,9 +460,25 @@
+ }
+ 
+ #ifdef HAVE_PGP
+-char *mutt_pgp_hook (ADDRESS *adr)
++LIST *mutt_pgp_hook (ADDRESS *adr)
+ {
+-  return _mutt_string_hook (adr->mailbox, M_PGPHOOK);
++  HOOK *hook;
++  LIST *key_list = NULL;
++
++  if (!adr && !adr->mailbox)
++    return (NULL);
++
++  for (hook = Hooks; hook; hook = hook->next)
++  {
++    if (!hook->command)
++      continue;
++    if (!(hook->type & M_PGPHOOK))
++      continue;
++
++    if ((regexec (hook->rx.rx, adr->mailbox, 0, NULL, 0) == 0) ^ hook->rx.not)
++      key_list = mutt_add_list (key_list, hook->command);
++  }
++  return (key_list);
+ }
+ #endif /* HAVE_PGP */
+ 
+diff -rU3 --new-file mutt-1.3.99-vanilla/init.h mutt-1.3.99/init.h
+--- mutt-1.3.99-vanilla/init.h	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/init.h	Thu May 23 14:13:33 2002
+@@ -1183,6 +1183,14 @@
+ 
+ #ifdef HAVE_PGP
+ 
++  { "pgp_autoselectkey",	DT_BOOL, R_NONE, OPTPGPAUTOSELECT, 0 },
++  /*
++  ** .pp
++  ** If set, then a list of keys is not presented for selection when only
++  ** one matching key is available.  This may be useful in conjunction with
++  ** the \fIpgp-hook\fP command (with ``$$pgp_confirmhook'' set) and the
++  ** ``$$pgp_ignore_subkeys'' variable.
++  */
+   { "pgp_autosign",	DT_BOOL, R_NONE, OPTPGPAUTOSIGN, 0 },
+   /*
+   ** .pp
+@@ -1200,6 +1208,14 @@
+   ** \fIpgp-menu\fP, when encryption is not required or signing is
+   ** requested as well.
+   */
++  { "pgp_confirmhook",	DT_BOOL, R_NONE, OPTPGPCONFIRMHOOK, 1 },
++  /*
++  ** .pp
++  ** If set, then you will be prompted for confirmation of keys when using
++  ** the \fIpgp-hook\fP command.  If unset, no such confirmation prompt will
++  ** be presented.  This is generally considered unsafe, especially where
++  ** typos are concerned.
++  */
+   { "pgp_ignore_subkeys", DT_BOOL, R_NONE, OPTPGPIGNORESUB, 1},
+   /*
+   ** .pp
+diff -rU3 --new-file mutt-1.3.99-vanilla/mutt-1.3.28/PATCHES mutt-1.3.99/mutt-1.3.28/PATCHES
+--- mutt-1.3.99-vanilla/mutt-1.3.28/PATCHES	Thu Jan  1 01:00:00 1970
++++ mutt-1.3.99/mutt-1.3.28/PATCHES	Thu May 23 14:13:28 2002
+@@ -0,0 +1 @@
++patch-1.3.28.dw.pgp-hook.3
+diff -rU3 --new-file mutt-1.3.99-vanilla/mutt.h mutt-1.3.99/mutt.h
+--- mutt-1.3.99-vanilla/mutt.h	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/mutt.h	Thu May 23 14:13:33 2002
+@@ -427,8 +427,10 @@
+   /* PGP options */
+   
+ #ifdef HAVE_PGP
++  OPTPGPAUTOSELECT,
+   OPTPGPAUTOSIGN,
+   OPTPGPAUTOENCRYPT,
++  OPTPGPCONFIRMHOOK,
+   OPTPGPIGNORESUB,
+   OPTPGPLONGIDS,
+   OPTPGPREPLYENCRYPT,
+diff -rU3 --new-file mutt-1.3.99-vanilla/pgp.c mutt-1.3.99/pgp.c
+--- mutt-1.3.99-vanilla/pgp.c	Wed Jan  9 16:39:28 2002
++++ mutt-1.3.99/pgp.c	Thu May 23 14:13:33 2002
+@@ -1327,6 +1327,8 @@
+   char *keyID, *keylist = NULL, *t;
+   size_t keylist_size = 0;
+   size_t keylist_used = 0;
++  LIST *hook_list = NULL;
++  LIST *hook = NULL;
+   ADDRESS *tmp = NULL, *addr = NULL;
+   ADDRESS **last = &tmp;
+   ADDRESS *p, *q;
+@@ -1360,62 +1362,88 @@
+     char buf[LONG_STRING];
+ 
+     q = p;
+-    k_info = NULL;
+ 
+-    if ((keyID = mutt_pgp_hook (p)) != NULL)
++    /*
++     * grab the list of matching hooks (matching on recipient address)
++     * process each entry singly so that auto key selection still works
++     */
++    hook_list = mutt_pgp_hook (p);
++    hook = hook_list;
++    while (1)
+     {
+       int r;
+-      snprintf (buf, sizeof (buf), _("Use keyID = \"%s\" for %s?"), keyID, p->mailbox);
+-      if ((r = mutt_yesorno (buf, M_YES)) == M_YES)
++
++      k_info = NULL;
++
++      if (hook)
+       {
+-	/* check for e-mail address */
+-	if ((t = strchr (keyID, '@')) && 
+-	    (addr = rfc822_parse_adrlist (NULL, keyID)))
++	keyID = (char *)hook->data;
++	snprintf (buf, sizeof (buf), _("Use keyID = \"%s\" for %s?"), keyID, p->mailbox);
++	if (!option(OPTPGPCONFIRMHOOK) || (r = mutt_yesorno (buf, M_YES)) == M_YES)
+ 	{
+-	  if (fqdn) rfc822_qualify (addr, fqdn);
+-	  q = addr;
++	  /* check for e-mail address */
++	  if ((t = strchr (keyID, '@')) && 
++	      (addr = rfc822_parse_adrlist (NULL, keyID)))
++	  {
++	    if (fqdn) rfc822_qualify (addr, fqdn);
++	    q = addr;
++	  }
++	  else
++	    k_info = pgp_getkeybystr (keyID, KEYFLAG_CANENCRYPT, PGP_PUBRING);
++	}
++	else if (r == -1)
++	{
++	  /*
++	   * yes, this implies that if one key fails they all do
++	   */
++	  safe_free ((void **) &keylist);
++	  rfc822_free_address (&tmp);
++	  rfc822_free_address (&addr);
++	  mutt_free_list (&hook_list);
++	  return NULL;
+ 	}
+-	else
+-	  k_info = pgp_getkeybystr (keyID, KEYFLAG_CANENCRYPT, PGP_PUBRING);
+-      }
+-      else if (r == -1)
+-      {
+-	safe_free ((void **) &keylist);
+-	rfc822_free_address (&tmp);
+-	rfc822_free_address (&addr);
+-	return NULL;
+       }
+-    }
+ 
+-    if (k_info == NULL)
+-      pgp_invoke_getkeys (q);
++      if (k_info == NULL)
++	pgp_invoke_getkeys (q);
+ 
+-    if (k_info == NULL && (k_info = pgp_getkeybyaddr (q, KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
+-    {
+-      snprintf (buf, sizeof (buf), _("Enter keyID for %s: "), q->mailbox);
+-
+-      if ((key = pgp_ask_for_key (buf, q->mailbox,
+-				  KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
++      if (k_info == NULL && (k_info = pgp_getkeybyaddr (q, KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
+       {
+-	safe_free ((void **)&keylist);
+-	rfc822_free_address (&tmp);
+-	rfc822_free_address (&addr);
+-	return NULL;
++	snprintf (buf, sizeof (buf), _("Enter keyID for %s: "), q->mailbox);
++
++	if ((key = pgp_ask_for_key (buf, q->mailbox,
++				    KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
++	{
++	  safe_free ((void **)&keylist);
++	  rfc822_free_address (&tmp);
++	  rfc822_free_address (&addr);
++	  mutt_free_list (&hook_list);
++	  return NULL;
++	}
+       }
+-    }
+-    else
+-      key = k_info;
++      else
++	key = k_info;
+ 
+-    keyID = pgp_keyid (key);
+-    
+-    keylist_size += mutt_strlen (keyID) + 4;
+-    safe_realloc ((void **)&keylist, keylist_size);
+-    sprintf (keylist + keylist_used, "%s0x%s", keylist_used ? " " : "",	/* __SPRINTF_CHECKED__ */
+-	     keyID);
+-    keylist_used = mutt_strlen (keylist);
++      keyID = pgp_keyid (key);
++      
++      keylist_size += mutt_strlen (keyID) + 4;
++      safe_realloc ((void **)&keylist, keylist_size);
++      sprintf (keylist + keylist_used, "%s0x%s", keylist_used ? " " : "",	/* __SPRINTF_CHECKED__ */
++	       keyID);
++      keylist_used = mutt_strlen (keylist);
++
++      pgp_free_key (&key);
++      rfc822_free_address (&addr);
++
++      if (!hook_list)
++	break;
++
++      hook = hook->next;
++      if (!hook)
++	break;
+ 
+-    pgp_free_key (&key);
+-    rfc822_free_address (&addr);
++    }
++    mutt_free_list (&hook_list);
+ 
+   }
+   rfc822_free_address (&tmp);
+diff -rU3 --new-file mutt-1.3.99-vanilla/pgpkey.c mutt-1.3.99/pgpkey.c
+--- mutt-1.3.99-vanilla/pgpkey.c	Tue Jan 15 10:04:28 2002
++++ mutt-1.3.99/pgpkey.c	Thu May 23 14:13:33 2002
+@@ -435,6 +435,11 @@
+   return rv;
+ }
+ 
++
++#define pgp_trusted_id(uid) (!option(OPTPGPCHECKTRUST) \
++			     || (pgp_id_is_valid((uid)) \
++				 && pgp_id_is_strong((uid))))
++
+ static pgp_key_t *pgp_select_key (pgp_key_t *keys,
+ 				  ADDRESS * p, const char *s)
+ {
+@@ -450,6 +455,7 @@
+   pgp_uid_t *a;
+   int (*f) (const void *, const void *);
+ 
++  int keymatch = 0;		/* count matching keys */
+   int unusable = 0;
+ 
+   keymax = 0;
+@@ -479,6 +485,7 @@
+       
+       KeyTable[i++] = a;
+     }
++    keymatch++;
+   }
+ 
+   if (!i && unusable)
+@@ -487,6 +494,21 @@
+     mutt_sleep (1);
+     return NULL;
+   }
++  else if (keymatch == 1 && option(OPTPGPAUTOSELECT))
++  {
++    /*
++     * Only one matching key...see if there's an id with enough trust to auto-select
++     */
++    kp = KeyTable[0]->parent;
++    for (a = kp->address; a; a = a->next)
++    {
++      if (pgp_trusted_id(a))
++      {
++	safe_free ((void **) &KeyTable);
++	return (kp);
++      }
++    }
++  }
+ 
+   switch (PgpSortKeys & SORT_MASK)
+   {
+@@ -597,9 +619,7 @@
+ 	  break;
+ 	}
+       
+-      if (option (OPTPGPCHECKTRUST) &&
+-	  (!pgp_id_is_valid (KeyTable[menu->current])
+-	   || !pgp_id_is_strong (KeyTable[menu->current])))
++      if (!pgp_trusted_id(KeyTable[menu->current]))
+       {
+ 	char *s = "";
+ 	char buff[LONG_STRING];
+diff -rU3 --new-file mutt-1.3.99-vanilla/protos.h mutt-1.3.99/protos.h
+--- mutt-1.3.99-vanilla/protos.h	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/protos.h	Thu May 23 14:13:33 2002
+@@ -130,7 +130,7 @@
+ char *mutt_get_name (ADDRESS *);
+ char *mutt_get_parameter (const char *, PARAMETER *);
+ #ifdef HAVE_PGP
+-char *mutt_pgp_hook (ADDRESS *);
++LIST *mutt_pgp_hook (ADDRESS *);
+ #endif /* HAVE_PGP */
+ char *mutt_make_date (char *, size_t);
+ 
