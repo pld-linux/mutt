@@ -27,7 +27,6 @@ Patch4:         %{name}-cd.edit_threads.patch
 Patch5:         %{name}-bj.status-time.patch
 Patch6:         %{name}-devl.narrow_tree.patch
 Patch7:         %{name}-vvv.quote.gz
-
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
