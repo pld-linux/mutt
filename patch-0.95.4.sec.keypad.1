@@ -1,0 +1,21 @@
+--- mutt-0.95.4/curs_lib.c.orig	Thu Jan 14 12:29:17 1999
++++ mutt-0.95.4/curs_lib.c	Mon Mar 22 18:24:46 1999
+@@ -256,6 +256,7 @@
+     
+     attrset (A_NORMAL);
+     mutt_refresh ();
++    keypad (stdscr, FALSE);
+     endwin ();
+ #ifndef SLANG_CURSES
+     fputc ('\n', stdout);
+--- mutt-0.95.4/patchlist.c.orig	Mon Mar 22 18:11:49 1999
++++ mutt-0.95.4/patchlist.c	Mon Mar 22 18:25:35 1999
+@@ -16,6 +16,8 @@
+ 
+ 
+ 
++  printf("Bugfix  patch: keypad               0.95.4 by Stefan `Sec` Zehl\n");
++
+ 
+ 
+   /* DO NOT MODIFY AFTER THIS LINE */

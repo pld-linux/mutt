@@ -1,0 +1,77 @@
+
+                              Patches for [1]Mutt
+                                       
+   My patches have name after the version of mutt that they are made for.
+   But they should always be usable with the newest version, too. If not,
+   please [2]notify me about the problem, and I will update the patch.
+   
+Bugfixes
+
+   [3]patch-0.95.3i.bj.keyattach.1.
+          Avoid to send out a temporary filename from your box when
+          sending a pgp key.
+          
+New features and other changes in behaviour
+
+   [4]patch-0.95.bj.noquote_hdr_term.1.
+          Don't quote the header terminator when replying with headers.
+          
+   [5]patch-0.95.4.bj.status-time.1.
+          You can show the current time in your preferred format in the
+          status line with this patch. (A bug which prevented compilation
+          of this patch on some systems was fixed on March 14).
+          
+   [6]patch-0.95.4.bj.my_hdr_subject.3
+          Use this patch:
+          
+          + To execute sendhooks before setting subject to make it
+            possible to set the subject in a sendhook. The price is that
+            you miss the possibility to let the sendhook depend upon the
+            subject.
+          + To let "my_hdr Subject" commands be controlled by $hdrs. Now
+            $hdrs only controls all other kinds of my_hdr commands.
+          + To let sendhooks work in batch mode.
+            
+          Thank you to [7]Rob Reid for fixing a bug in the second version
+          of this patch.
+          
+   [8]patch-0.95.3.bj.ed_mtime.1.
+          When you leave the editor, mutt will check if the edited file's
+          modification time have changed to decide if the file has been
+          modified. This means that it you are able to modify it in less
+          than one second (e.g. by running a script to generate some
+          text), Mutt may think that it is unmodified.
+          
+          This patch solves this problem by seting the time stamp of a
+          new file to `one second ago' before calling the editor.
+          
+   [9]patch-0.94.13.bj.current_shortcut.1
+          This patch will make the ^ character a shortcut for the
+          currently open mailbox.
+          
+Optimizations
+
+   [10]patch-0.95.bj.hash_destroy.2.
+          This patch will speed up a little bit closing of mailboxes.
+     _________________________________________________________________
+   
+   
+    1999-04-17 [11]Byrial Jensen <[12]byrial@image.dk>
+    
+   This page: http://www.image.dk/~byrial/mutt/patches/
+     _________________________________________________________________
+
+References
+
+   1. http://www.mutt.org/
+   2. mailto:byrial@image.dk
+   3. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.95.3i.bj.keyattach.1
+   4. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.95.bj.noquote_hdr_term.1
+   5. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.95.4.bj.status-time.1
+   6. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.95.4.bj.my_hdr_subject.3
+   7. http://astro.utoronto.ca/~reid/
+   8. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.95.3.bj.ed_mtime.1
+   9. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.94.13.bj.current_shortcut.1
+  10. http://home.worldonline.dk/~byrial/mutt/patches/patch-0.95.bj.hash_destroy.2
+  11. http://home.worldonline.dk/~byrial/
+  12. mailto:byrial@image.dk

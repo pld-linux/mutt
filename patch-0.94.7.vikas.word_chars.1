@@ -1,0 +1,61 @@
+Index: enter.c
+===================================================================
+RCS file: /export/home/vikas/CVS/Mutt/enter.c,v
+retrieving revision 1.1.1.4
+diff -u -p -r1.1.1.4 enter.c
+--- enter.c	1998/09/18 13:09:38	1.1.1.4
++++ enter.c	1998/09/21 23:05:21
+@@ -274,9 +274,9 @@ int mutt_enter_string (unsigned char *bu
+ 	      j--;
+ 	    if (j > 0)
+ 	    {
+-	      if (isalnum (buf[j - 1]))
++	      if (!strchr (NONULL (Wordchars), (buf[j - 1])))
+ 	      {
+-		for (j--; j > 0 && isalnum (buf[j - 1]); j--)
++		for (j--; j > 0 && !strchr (NONULL (Wordchars), buf[j - 1]); j--)
+ 		  ;
+ 	      }
+ 	      else
+Index: globals.h
+===================================================================
+RCS file: /export/home/vikas/CVS/Mutt/globals.h,v
+retrieving revision 1.1.1.2
+diff -u -p -r1.1.1.2 globals.h
+--- globals.h	1998/08/24 19:42:35	1.1.1.2
++++ globals.h	1998/09/21 23:01:27
+@@ -80,6 +80,7 @@ WHERE char *Tempdir;
+ WHERE char *Tochars;
+ WHERE char *Username;
+ WHERE char *Visual;
++WHERE char *Wordchars;
+ 
+ WHERE char *LastFolder;
+ 
+Index: init.h
+===================================================================
+RCS file: /export/home/vikas/CVS/Mutt/init.h,v
+retrieving revision 1.1.1.8
+diff -Nru mutt-1.1.11.orig/init.h mutt-1.1.11/init.h
+--- init.h	Sun Apr  2 22:54:00 2000
++++ init.h	Sun Apr  2 22:54:46 2000
+@@ -2074,6 +2074,7 @@
+   ** When set, Mutt will always ask for a key. When unset, Mutt will wait
+   ** for a key only if the external command returned a non-zero status.
+   */
++  { "word_chars",   DT_STR,   R_NONE, UL &Wordchars, UL " *?_-.[]~=/&;!#$%^(){}<>@" },
+   { "weed",		DT_BOOL, R_NONE, OPTWEED, 1 },
+   /*
+   ** .pp
+diff -u -p -r1.1.1.8 init.h
+--- patchlist.c.orig	Sat Sep 19 02:29:51 1998
++++ patchlist.c	Sat Sep 19 02:54:16 1998
+@@ -16,6 +16,8 @@
+ 
+ 
+ 
++  printf("Feature patch: word_chars           0.94.7 by Vikas Agnihotri\n");
++
+ 
+ 
+   /* DO NOT MODIFY AFTER THIS LINE */

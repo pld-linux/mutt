@@ -1,0 +1,197 @@
+diff -udpr -X diff-excludes mutt-0.95.4-orig/curs_main.c mutt-0.95.4/curs_main.c
+--- mutt-0.95.4-orig/curs_main.c	Thu Mar  4 08:16:48 1999
++++ mutt-0.95.4/curs_main.c	Sun Mar 14 09:21:51 1999
+@@ -483,7 +483,8 @@ int mutt_index_menu (void)
+ 	  menu_redraw_current (menu);
+       }
+ 
+-      if (menu->redraw & REDRAW_STATUS) 
++      if ((menu->redraw & REDRAW_STATUS) ||
++	  update_status_time ())
+       {
+ 	menu_status_line (buf, sizeof (buf), menu, NONULL (Status));
+ 	CLEARLINE (option (OPTSTATUSONTOP) ? 0 : LINES-2);
+diff -Nru mutt-1.1.11/doc/manual.sgml mutt-1.1.11.status_update/doc/manual.sgml
+--- mutt-1.1.11/doc/manual.sgml	Sun Apr  2 23:17:35 2000
++++ mutt-1.1.11.status_update/doc/manual.sgml	Sun Apr  2 23:17:27 2000
+@@ -5395,6 +5395,8 @@
+ %u      number of unread messages *
+ %v      Mutt version string
+ %V      currently active limit pattern, if any *
++%[fmt]  the current date and time. `fmt'' is expanded by the system
++        call ``strftime''; a leading bang disables locales
+ %>X     right justify the rest of the string and
+         pad with "X"
+ %|X     pad to the end of the line with "X"
+@@ -5441,6 +5443,17 @@
+ Setting this variable causes the ``status bar'' to be displayed on
+ the first line of the screen rather than near the bottom.
+ 
++<sect2>status&lowbar;update<label id="status_update">
++<p>
++Type: number<newline>
++Default: -1
++
++This variable controls, if positive, the maximum interval in seconds
++before the time in the status line is updated. It is checked at
++every key press, and after a keyboard <ref id="timeout"
++name="timeout">. If the value is zero, the status line will updated
++at every check. If it is negative, the status time will only be updated
++if it necessary to update to the status line for some other reason.
+ 
+ <sect2>strict&lowbar;threads<label id="strict_threads">
+ <p>
+diff -Nru mutt-1.1.11/init.h mutt-1.1.11.status_update/init.h
+--- mutt-1.1.11/init.h	Sun Apr  2 23:17:35 2000
++++ mutt-1.1.11.status_update/init.h	Sun Apr  2 23:17:25 2000
+@@ -1963,6 +1963,7 @@
+   ** Setting this variable causes the ``$status bar'' to be displayed on
+   ** the first line of the screen rather than near the bottom.
+   */
++  { "status_update",	DT_NUM,	 R_NONE, UL &StatusUpdate, -1 },	
+   { "strict_threads",	DT_BOOL, R_RESORT|R_INDEX, OPTSTRICTTHREADS, 0 },
+   /*
+   ** .pp
+diff -udpr -X diff-excludes mutt-0.95.4-orig/globals.h mutt-0.95.4/globals.h
+--- mutt-0.95.4-orig/globals.h	Thu Jan  7 10:14:40 1999
++++ mutt-0.95.4/globals.h	Sun Mar 14 09:21:51 1999
+@@ -107,6 +107,7 @@ WHERE short PagerIndexLines;
+ WHERE short PopPort;
+ WHERE short ReadInc;
+ WHERE short SendmailWait;
++WHERE short StatusUpdate;
+ WHERE short Timeout;
+ WHERE short WriteInc;
+ 
+diff -udpr -X diff-excludes mutt-0.95.4-orig/menu.c mutt-0.95.4/menu.c
+--- mutt-0.95.4-orig/menu.c	Thu Jan  7 10:14:42 1999
++++ mutt-0.95.4/menu.c	Sun Mar 14 09:21:51 1999
+@@ -840,3 +840,23 @@ int mutt_menuLoop (MUTTMENU *menu)
+   }
+   /* not reached */
+ }
++
++int update_status_time ()
++{
++  static time_t Last;
++  time_t now;
++
++  if (StatusUpdate < 0)
++    return 0;
++  else if (StatusUpdate == 0)
++    return 1;
++
++  now = time (NULL);
++  if (now - Last >= StatusUpdate)
++  {
++    Last = now;
++    return 1;
++  }
++  else
++    return 0;
++}
+diff -udpr -X diff-excludes mutt-0.95.4-orig/mutt_menu.h mutt-0.95.4/mutt_menu.h
+--- mutt-0.95.4-orig/mutt_menu.h	Thu Jan  7 10:14:43 1999
++++ mutt-0.95.4/mutt_menu.h	Sun Mar 14 09:21:51 1999
+@@ -98,3 +98,5 @@ int mutt_menuLoop (MUTTMENU *);
+ /* used in both the index and pager index to make an entry. */
+ void index_make_entry (char *, size_t, struct menu_t *, int);
+ int index_color (int);
++
++int update_status_time (void);
+diff -udpr -X diff-excludes mutt-0.95.4-orig/pager.c mutt-0.95.4/pager.c
+--- mutt-0.95.4-orig/pager.c	Thu Jan  7 10:14:44 1999
++++ mutt-0.95.4/pager.c	Sun Mar 14 09:21:51 1999
+@@ -1636,7 +1636,7 @@ mutt_pager (const char *banner, const ch
+       SETCOLOR (MT_COLOR_NORMAL);
+     }
+ 
+-    if ((redraw & REDRAW_INDEX) && index)
++    if (index && ((redraw & REDRAW_INDEX) || update_status_time ()))
+     {
+       /* redraw the pager_index indicator, because the
+        * flags for this message might have changed. */
+diff -udpr -X diff-excludes mutt-0.95.4-orig/status.c mutt-0.95.4/status.c
+--- mutt-0.95.4-orig/status.c	Thu Jan  7 10:14:47 1999
++++ mutt-0.95.4/status.c	Sun Mar 14 09:21:59 1999
+@@ -25,6 +25,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <unistd.h>
++#include <locale.h>
+ 
+ static char *get_sort_str (char *buf, size_t buflen, int method)
+ {
+@@ -269,6 +270,61 @@ status_format_str (char *buf, size_t buf
+     case 0:
+       *buf = 0;
+       return (src);
++
++    case '[':
++      {
++	int do_locales;
++	int len = sizeof (fmt) - 1;
++
++	cp = fmt;
++	if (*src == '!')
++	{
++	  do_locales = 0;
++	  src++;
++	}
++	else
++	  do_locales = 1;
++
++	while (len > 0 && *src != ']')
++	{
++	  if (*src == '%')
++	  {
++	    src++;
++	    if (len >= 2)
++	    {
++	      *cp++ = '%';
++	      *cp++ = *src;
++	      len -= 2;
++	    }
++	    else
++	      break; /* not enough space */
++	    src++;
++	  }
++	  else
++	  {
++	    *cp++ = *src++;
++	    len--;
++	  }
++	}
++	*cp = 0;
++	src++;
++
++	if (do_locales && Locale)
++	  setlocale (LC_TIME, Locale);
++	
++	{
++	  time_t now = time (NULL);
++
++	  strftime (tmp, sizeof (tmp), fmt, localtime (&now));
++	}
++
++	if (do_locales && Locale)
++	  setlocale (LC_TIME, "C");
++
++	snprintf (fmt, sizeof (fmt), "%%%ss", prefix);
++	snprintf (buf, buflen, fmt, tmp);
++      }
++      break;
+ 
+     default:
+       snprintf (buf, buflen, "%%%s%c", prefix, op);
+--- mutt-0.94.7i/patchlist.c.orig	Sat Sep 19 02:29:51 1998
++++ mutt-0.94.7i/patchlist.c	Sat Sep 19 02:54:16 1998
+@@ -16,6 +16,8 @@
+ 
+ 
+ 
++  printf("Feature patch: status-time          0.95.4 by Byrial Jensen\n");
++
+ 
+ 
+   /* DO NOT MODIFY AFTER THIS LINE */
