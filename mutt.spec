@@ -22,6 +22,12 @@ Source3:	%{name}.1.pl
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
+Patch3:         %{name}-rr.compressed.patch.gz
+Patch4:         %{name}-cd.edit_threads.patch
+Patch5:         %{name}-bj.status-time.patch
+Patch6:         %{name}-devl.narrow_tree.patch
+Patch7:         %{name}-vvv.quote.gz
+
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -74,6 +80,11 @@ desteði, renk ve POP3 desteði içerir.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p1
 
 %build
 autoconf
@@ -84,6 +95,7 @@ CFLAGS="%{optflags} -I%{_includedir}/slang" \
 	--enable-imap \
 	--enable-mailtool \
 	--enable-external-dotlock \
+	--enable-compressed \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--disable-warnings \
 	--with-curses \
