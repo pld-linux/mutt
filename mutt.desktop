@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=Mutt
 Comment=The Mutt Mail User Agent
+Comment[es]=Cliente de Correo Electrónico
 Comment[pl]=Mutt - program pocztowy
+Comment[pt_BR]=Cliente de Correio Eletrônico
 Icon=mutt.png
 Exec=mutt
 Terminal=1
