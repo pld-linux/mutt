@@ -17,7 +17,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.1
-Release:	4
+Release:	5
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -187,14 +187,14 @@ rm -f doc/{manual*.html,manual.txt}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}} \
-	$RPM_BUILD_ROOT%{_mandir}/pl/man1
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 
-%{__make} install DESTDIR=$RPM_BUILD_ROOT
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
 
 %{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %PATCH17
 
-install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
+install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
@@ -218,7 +218,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pgp*
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
-%{_applnkdir}/Network/Mail/mutt.desktop
+%{_desktopdir}/*.desktop
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
 %lang(pl) %{_mandir}/pl/man*/*
