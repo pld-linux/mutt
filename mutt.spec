@@ -32,6 +32,7 @@ Patch11:	%{name}-cd.signatures_menu.patch
 Patch12:	%{name}-folder_columns.patch
 Patch13:	%{name}-nr.tag_prefix_cond.patch
 Patch14:	%{name}-LIBOBJ.patch
+Patch15:	%{name}-pgp_hook.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -111,6 +112,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch12 -p1
 #%patch13 -p0
 %patch14 -p1
+%patch15 -p1
 
 %build
 %{__gettextize}
