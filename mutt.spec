@@ -67,7 +67,7 @@ Requires:	mailcap
 %{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		specflags_ia32	"-fomit-frame-pointer"
+%define		specflags_ia32	 -fomit-frame-pointer 
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
