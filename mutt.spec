@@ -16,7 +16,7 @@ Source2:	patches_sec.txt
 Source3:	patches_bj.txt
 Patch0:		mutt-mail.patch
 #Patch1:	mutt-confdir.patch
-Patch2:		http://www.spinnaker.de/mutt/patch-1.1.12.rr.compressed.1.gz
+Patch2:		http://www.spinnaker.de/mutt/patch-1.2.rr.compressed.1.gz
 # Part of that patches I changed by hand to fit them into newer version
 # (bonkey)
 Patch3:		patch-0.00.sec+bonk.patchlist.1
