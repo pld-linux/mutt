@@ -1,5 +1,5 @@
 Summary:	The Mutt Mail User Agent
-Summary(de):	Der Mutt Mail-User-Agent 
+Summary(de):	Der Mutt Mail-User-Agent
 Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
@@ -88,7 +88,7 @@ automake -a -c
 	--without-included-nls
 
 %{__make} keymap.h
-%{__make} 
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
