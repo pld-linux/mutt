@@ -1,4 +1,4 @@
-%define		_pre	pre2
+%define		_pre	pre4
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent 
 Summary(fr):	Agent courrier Mutt
