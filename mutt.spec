@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.2.5i
-Release:	2
+Release:	3
 Epoch:		2
 License:	GPL
 Group:		Applications/Mail
@@ -113,7 +113,8 @@ CFLAGS="%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g} -fno-strict-aliasing"
 	--with-ssl \
 	--with-charmaps \
 	--with-docdir=%{_defaultdocdir}/%{name}-%{version} \
-	--enable-external-dotlock
+	--enable-external-dotlock \
+  --enable-locales-fix
 
 %{__make} keymap.h
 %{__make} 
