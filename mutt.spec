@@ -16,7 +16,7 @@ Patch:		mutt-mail.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
-BuildRequires:	ncureses-devel >= 5.0
+BuildRequires:	ncurses-devel >= 5.0
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %define		_sysconfdir		/etc
