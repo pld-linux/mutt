@@ -1,16 +1,141 @@
-diff -urN mutt-1.3.18/init.c mutt-1.3.18.my/init.c
---- mutt-1.3.18/init.c	Thu Apr 26 14:59:07 2001
-+++ mutt-1.3.18.my/init.c	Sat Jun 30 08:39:00 2001
-@@ -1852,7 +1852,11 @@
+diff -Nru mutt-1.4.1.orig/doc/mutt.man mutt-1.4.1/doc/mutt.man
+--- mutt-1.4.1.orig/doc/mutt.man	Wed Jul 24 10:41:31 2002
++++ mutt-1.4.1/doc/mutt.man	Wed Oct  8 20:11:11 2003
+@@ -122,13 +122,13 @@
+ Specifies the editor to use when composing messages.
+ .SH FILES
+ .PP
+-.IP "~/.muttrc or ~/.mutt/muttrc"
++.IP "$HOME_ETC/.muttrc" or "$HOME_ETC/.mutt/muttrc" or "~/.muttrc" or "~/.mutt/muttrc"
+ User configuration file.
+ .IP "/etc/Muttrc"
+ System-wide configuration file.
+ .IP "/tmp/muttXXXXXX"
+ Temporary files created by Mutt.
+-.IP "~/.mailcap"
++.IP "$HOME_ETC/.mailcap" or "~/.mailcap"
+ User definition for handling non-text MIME types.
+ .IP "/etc/mailcap"
+ System definition for handling non-text MIME types.
+diff -Nur mutt-1.4.1.orig/init.c mutt-1.4.1/init.c
+--- mutt-1.4.1.orig/init.c	Sun Dec  7 14:34:23 2003
++++ mutt-1.4.1/init.c	Sun Dec  7 15:08:22 2003
+@@ -25,6 +25,7 @@
+ #include "mbyte.h"
+ #include "charset.h"
+ 
++#include <home_etc.h>
+ 
+ #ifdef HAVE_PGP
+ #include "pgp.h"
+@@ -1892,13 +1893,13 @@
    
    if (!Muttrc)
    {
 -    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
-+    snprintf (buffer, sizeof(buffer), "%s/%s/muttrc-%s", NONULL(Homedir), getenv ("CONFIG_DIR"), MUTT_VERSION);
-+    if (access(buffer, F_OK) == -1)
-+      snprintf (buffer, sizeof(buffer), "%s/%s/muttrc", NONULL(Homedir), getenv ("CONFIG_DIR"));
-+    if (access(buffer, F_OK) == -1)
-+      snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
++    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(_HEdir), MUTT_VERSION);
      if (access(buffer, F_OK) == -1)
-       snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
+-      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
++      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(_HEdir));
      if (access(buffer, F_OK) == -1)
+-      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(Homedir), MUTT_VERSION);
++      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(_HEdir), MUTT_VERSION);
+     if (access(buffer, F_OK) == -1)
+-      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(Homedir));
++      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(_HEdir));
+     
+     default_rc = 1;
+     Muttrc = safe_strdup (buffer);
+diff -Nru mutt-1.4.1.orig/muttbug.sh.in mutt-1.4.1/muttbug.sh.in
+--- mutt-1.4.1.orig/muttbug.sh.in	Wed Oct  8 19:33:11 2003
++++ mutt-1.4.1/muttbug.sh.in	Wed Oct  8 20:19:05 2003
+@@ -244,13 +244,21 @@
+ if test "$personal" = "yes" ; then
+ 	CANDIDATES=".muttrc-${MUTTVERSION} .muttrc .mutt/muttrc-${MUTTVERSION} .mutt/muttrc"
+ 	MATCHED="none"
++	if test -n "$HOME_ETC" ; then
++		for f in $CANDIDATES; do
++			if test -f "${HOME_ETC}/$f" ; then
++				MATCHED="${HOME_ETC}/$f"
++				break
++	    fi
++		done
++	else 
+ 	for f in $CANDIDATES; do
+ 		if test -f "${HOME}/$f" ; then
+ 			MATCHED="${HOME}/$f"
+ 			break
+ 	        fi
+ 	done
+-	
++	fi
+ 	if test "$MATCHED" = "none" ; then
+ 		echo "Warning: Can't find your personal .muttrc." >&2
+ 	else
+diff -Nur mutt-1.4.1.orig/sendlib.c mutt-1.4.1/sendlib.c
+--- mutt-1.4.1.orig/sendlib.c	Sun Dec  7 14:34:23 2003
++++ mutt-1.4.1/sendlib.c	Sun Dec  7 15:18:25 2003
+@@ -40,6 +40,8 @@
+ #include <sys/wait.h>
+ #include <fcntl.h>
+ 
++#include <home_etc.h>
++
+ #ifdef HAVE_SYSEXITS_H
+ #include <sysexits.h>
+ #else /* Make sure EX_OK is defined <philiph@pobox.com> */
+@@ -958,9 +960,9 @@
+ 
+ /* Given a file with path ``s'', see if there is a registered MIME type.
+  * returns the major MIME type, and copies the subtype to ``d''.  First look
+- * for ~/.mime.types, then look in a system mime.types if we can find one.
+- * The longest match is used so that we can match `ps.gz' when `gz' also
+- * exists.
++ * for either $HOME_ETC/.mime.types or ~/.mime.types, then look in a system
++ * mime.types if we can find one. The longest match is used so that we can
++ * match `ps.gz' when `gz' also exists.
+  */
+ 
+ static int lookup_mime_type (BODY *att, const char *path)
+@@ -989,7 +991,7 @@
+     switch (count)
+     {
+       case 0:
+-	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(Homedir));
++	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(_HEdir));
+ 	break;
+       case 1:
+ 	strfcpy (buf, SYSCONFDIR"/mime.types", sizeof(buf));
+diff -Nur mutt-1.4.1.orig/configure.in mutt-1.4.1/configure.in
+--- mutt-1.4.1.orig/configure.in	Sun Dec  7 14:34:23 2003
++++ mutt-1.4.1/configure.in	Sun Dec  7 18:38:04 2003
+@@ -592,6 +592,29 @@
+         ])
+ AM_CONDITIONAL(USE_SASL, test x$need_sasl = xyes)
+ 
++AC_ARG_WITH(home-etc, [  --with-home-etc[=PFX]          Use HOME-ETC library to allow user keeping it's configuration files in a non-standard place ],
++        [
++        if test "$with_home_etc" != "no"
++        then
++          if test "$with_home_etc" != "yes"
++          then
++            LDFLAGS="$LDFLAGS -L$with_home_etc/lib"
++          fi
++
++          saved_LIBS="$LIBS"
++
++          AC_CHECK_LIB(home_etc, get_home_etc_static,,
++            AC_MSG_ERROR([could not find libhome_etc]),)
++
++          MUTTLIBS="$MUTTLIBS -lhome_etc"
++          LIBS="$saved_LIBS"
++          AC_DEFINE(USE_SASL,1,
++                  [ Define if want to use the HOME-ETC library. ])
++          need_home_etc=yes
++        fi
++        ])
++AM_CONDITIONAL(USE_HOME_ETC, test x$need_home_etc = xyes)
++
+ if test "$need_md5" = "yes"
+ then
+         MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS md5c.o"

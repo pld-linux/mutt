@@ -4,6 +4,7 @@
 # _with_nntp	- use VVV's NNTP patch
 # _with_esmtp   - use esmtp patch
 # _without_sasl - don't use sasl
+# _without_home_etc - don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -26,7 +27,6 @@ Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
 Patch3:		%{name}-rr.compressed.patch
@@ -48,11 +48,12 @@ Patch18:	%{name}-xface.patch
 Patch19:	%{name}-sasl2.patch
 Patch20:	%{name}-nntp.patch
 Patch21:	%{name}-esmtp.patch
-Patch22:	%{name}-home_etc2.patch
+Patch22:	%{name}-home_etc.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+%{!?_without_home_etc:BuildRequires:	home-etc-devel >= 1.0.3}
 BuildRequires:	gettext-devel
 %{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7c
@@ -62,6 +63,7 @@ BuildRequires:	sgml-tools-dtd
 %{?_with_esmtp:BuildRequires:       libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
+%{!?_without_home_etc:Requires:	home-etc >= 1.0.3}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	"-fomit-frame-pointer"
@@ -125,7 +127,6 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -146,7 +147,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %{!?_without_sasl:%patch19 -p1}
 %{?_with_nntp:%patch20 -p1}
 %{?_with_esmtp:%patch21 -p1}
-%patch22 -p1
+%{!?_without_home_etc:%patch22 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -169,6 +170,7 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?_with_nntp:--enable-nntp} \
 	--with-regex \
 	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
+	%{!?_without_home_etc:--with-home-etc} %{?_without_home_etc:--without-home-etc} \
     %{?_with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
