@@ -141,6 +141,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch12 -p1
 #%patch13 -p0
 %patch14 -p1
+%patch15 -p1
 %patch16 -p1
 %patch17 -p1
 %{?with_sasl:%patch18 -p1}
@@ -174,7 +175,7 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
-	--with-docdir=%{_datadir}/%{name} \
+	--with-docdir=%{_docdir}/%{name}-%{version} \
 	--with-homespool=Maildir \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
