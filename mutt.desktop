@@ -1,15 +1,15 @@
 [Desktop Entry]
 Name=Mutt
 Comment=The Mutt Mail User Agent
-Comment[es]=Cliente de Correo Electr√≥nico
+Comment[es]=Cliente de Correo ElectrÛnico
 Comment[pl]=Program pocztowy mutt
-Comment[pt]=Cliente de Correio Eletr√¥nico
-Comment[pt_BR]=Cliente de Correio Eletr√¥nico
-Comment[sv]=E-postl√§sare
+Comment[pt]=Cliente de Correio EletrÙnico
+Comment[pt_BR]=Cliente de Correio EletrÙnico
+Comment[sv]=E-postl‰sare
 Icon=mutt.png
 Exec=mutt
 Terminal=true
 Type=Application
 Encoding=UTF-8
-Categories=Application;Network;Email;
+Categories=ConsoleOnly;Network;Email;
 # vi: encoding=utf-8
