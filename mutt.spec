@@ -59,11 +59,7 @@ CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 	--disable-warnings \
 	--disable-domain \
         --enable-compressed \
-<<<<<<< mutt.spec
 	--with-docdir=%{_defaultdocdir}/%{name}-%{version}
-=======
-	--with-docdir=$RPM_BUILD_ROOT%{_datadir}/doc/mutt-%{version}
->>>>>>> 1.19
 
 make 
 
