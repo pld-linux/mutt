@@ -12,13 +12,13 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.5.5.1
+Version:	1.5.6
 Release:	0.1
-Epoch:		5
+Epoch:		6
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}i.tar.gz
-# Source0-md5:	9729ee2a2024b57e2a903ec7753970a5
+# Source0-md5:	aa1433635d7c86beba1675a3408b0324
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -48,7 +48,7 @@ BuildRequires:	automake
 %{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 BuildRequires:	gettext-devel
 %{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools
 %{?_with_slang:BuildRequires:		slang-devel}
 Requires:	iconv
