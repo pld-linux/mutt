@@ -61,9 +61,9 @@ desteði, renk ve POP3 desteði içerir.
 
 %build
 aclocal -I m4
-automake -a -c
 autoheader
 autoconf
+automake -a -c
 %configure \
 	--with-curses \
 	--with-regex \
