@@ -112,7 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc *.gz contrib/{*rc*,*cap*} doc/manual*html
+%doc *.gz contrib/{*rc*,*cap*} doc/manual*html doc/manual.txt
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
