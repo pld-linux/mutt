@@ -130,7 +130,6 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch18 -p1
 
 %build
-%{__gettextize}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
