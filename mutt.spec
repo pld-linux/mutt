@@ -27,11 +27,13 @@ Patch4:         %{name}-cd.edit_threads.patch
 Patch5:         %{name}-bj.status-time.patch
 Patch6:         %{name}-devl.narrow_tree.patch
 Patch7:         %{name}-vvv.quote.gz
+Patch8:		%{name}-null_name.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.6a
+BuildRequires:	sgml-tools
 %{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
 Requires:	iconv
 Requires:	mailcap
@@ -79,17 +81,18 @@ desteði, renk ve POP3 desteði içerir.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
+#%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %build
 autoconf
 #PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk
 CFLAGS="%{optflags} -I%{_includedir}/slang" \
-./configure \
+%configure \
 	--enable-pop \
 	--enable-imap \
 	--enable-mailtool \
