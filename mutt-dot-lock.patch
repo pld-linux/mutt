@@ -1,0 +1,14 @@
+--- mutt-1.1.11/Makefile.am.wiget	Mon Apr 10 11:59:06 2000
++++ mutt-1.1.11/Makefile.am	Mon Apr 10 12:02:41 2000
+@@ -115,11 +115,6 @@
+ 		rm -f $(DESTDIR)$(bindir)/mutt.dotlock ;		\
+ 		ln -sf $(DESTDIR)$(bindir)/mutt_dotlock $(DESTDIR)$(bindir)/mutt.dotlock ; \
+ 	fi
+-	if test -f $(DESTDIR)$(bindir)/mutt_dotlock && test x@DOTLOCK_GROUP@ != x ; then \
+-		chgrp @DOTLOCK_GROUP@ $(DESTDIR)$(bindir)/mutt_dotlock && \
+-		chmod @DOTLOCK_PERMISSION@ $(DESTDIR)$(bindir)/mutt_dotlock || \
+-		{ echo "Can't fix mutt_dotlock's permissions!" >&2 ; exit 1 ; } \
+-	fi
+ 
+ install-data-local: Muttrc
+ 	$(srcdir)/mkinstalldirs $(DESTDIR)$(sharedir)

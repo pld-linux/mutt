@@ -1,0 +1,57 @@
+--- mutt-1.0pre1/main.c.orig	Mon Aug 23 14:22:20 1999
++++ mutt-1.0pre1/main.c	Wed Aug 25 15:20:48 1999
+@@ -285,6 +285,8 @@
+ 
+   puts(_(ReachingUs));
+ 
++  mutt_print_patchlist ();
++
+   exit (0);
+ }
+ 
+--- mutt-1.0pre1/patchlist.c.orig	Wed Aug 25 15:20:48 1999
++++ mutt-1.0pre1/patchlist.c	Wed Aug 25 15:20:48 1999
+@@ -0,0 +1,22 @@
++#include <stdio.h>
++
++void mutt_print_patchlist (void)
++{
++  /*
++   * If you add a patch, include a line identifying it within this
++   * section.  It should include the type of patch (Feature, Bugfix, or
++   * Merge), the name of the patch, the version of mutt to which the   
++   * patch should be applied, the version of the patch itself, and your
++   * name.  This line should be a printf, terminated by a single \n, and
++   * should fit in one line of code.  It should be inserted after all   
++   * other patch-ID lines.  It should be preceded by three blank lines, 
++   * and followed by three blank lines and the DO NOT MODIFY AFTER... line.
++   */
++  /* DO NOT MODIFY BEFORE THIS LINE */
++
++
++
++
++
++  /* DO NOT MODIFY AFTER THIS LINE */
++}
+--- mutt-1.0pre1/protos.h.orig	Mon Jul 26 16:52:27 1999
++++ mutt-1.0pre1/protos.h	Wed Aug 25 15:20:49 1999
+@@ -180,6 +180,7 @@
+ void mutt_pretty_mailbox (char *);
+ void mutt_pretty_size (char *, size_t, long);
+ void mutt_print_message (HEADER *);
++void mutt_print_patchlist (void);
+ void mutt_query_exit (void);
+ void mutt_query_menu (char *, size_t);
+ void mutt_safe_path (char *s, size_t l, ADDRESS *a);
+--- mutt-1.1.11/Makefile.am	Mon Apr  3 00:35:18 2000
++++ mutt-1.1.11/Makefile.am.patchlist	Mon Apr  3 00:38:05 2000
+@@ -30,7 +30,7 @@
+ 	curs_main.c date.c \
+ 	edit.c enter.c flags.c init.c filter.c from.c getdomain.c \
+ 	handler.c hash.c hdrline.c headers.c help.c hook.c keymap.c \
+-	main.c mbox.c menu.c mh.c mx.c pager.c parse.c pattern.c \
++	main.c mbox.c menu.c mh.c mx.c pager.c parse.c patchlist.c pattern.c \
+ 	postpone.c query.c recvattach.c recvcmd.c \
+ 	rfc822.c rfc1524.c rfc2047.c rfc2231.c \
+ 	score.c send.c sendlib.c signal.c sort.c \

@@ -4,7 +4,7 @@
 %bcond_with nntp		# use VVV's NNTP patch
 %bcond_with esmtp		# use esmtp patch
 %bcond_without sasl		# don't use sasl
-%bcond_without home_etc		# don't use home_etc
+%bcond_with home_etc		# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -18,7 +18,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.2.1
-Release:	2
+Release:	3
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -44,7 +44,6 @@ Patch14:	%{name}-pgp_hook.patch
 Patch15:	%{name}-manual.patch
 Patch16:	%{name}-send_charset.patch
 Patch17:	%{name}-xface.patch
-Patch18:	%{name}-sasl2.patch
 Patch19:	%{name}-nntp.patch
 Patch20:	%{name}-esmtp.patch
 Patch21:	%{name}-home_etc.patch
@@ -52,11 +51,11 @@ Patch22:	%{name}-kill_warnings.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+%{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 1.5.27}
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
-BuildRequires:	openssl-devel >= 0.9.7c
+BuildRequires:	openssl-devel >= 0.9.6k
 BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
@@ -67,6 +66,7 @@ Requires:	mailcap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	"-fomit-frame-pointer"
+%define		_desktopdir	%{_applnkdir}/Network/Mail
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
@@ -143,7 +143,6 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch14 -p1
 %patch16 -p1
 %patch17 -p1
-%{?with_sasl:%patch18 -p1}
 %{?with_nntp:%patch19 -p1}
 %{?with_esmtp:%patch20 -p1}
 %{?with_home_etc:%patch21 -p1}
