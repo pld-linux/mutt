@@ -42,11 +42,14 @@ Patch26:	%{name}-pl.po.patch
 Patch27:	%{name}-nosetgid.patch
 Patch28:	%{name}-md5.patch
 Patch29:	%{name}-imap.patch
+Patch30:	%{name}-amfix.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel
+BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 
@@ -100,12 +103,12 @@ desteði, renk ve POP3 desteði içerir.
 %patch27 -p1
 %patch28 -p1
 %patch29 -p1
+%patch30 -p1
 
 %build
-mv -f aclocal.m4 acinclude.m4
 aclocal
-automake
 autoconf
+automake -a -c
 CFLAGS="%{?debug:-O0 -g}%{!?debug:$RPM_OPT_FLAGS} -fno-strict-aliasing"
 %configure \
 	--with-sharedir=%{_datadir} \
