@@ -60,6 +60,8 @@ Requires:	iconv
 Requires:	mailcap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		specflags_ia32	"-fomit-frame-pointer"
+
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
 Features include MIME support, color, POP3 support, message threading,
