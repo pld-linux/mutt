@@ -595,14 +595,10 @@ diff -pruN mutt-1.5.5.1-orig/PATCHES mutt-1.5.5.1/PATCHES
 +patch-1.5.5.1.cd.edit_threads.9.5
 --- mutt-1.5.9/po/pl.po.orig	2005-03-31 15:58:18.914964000 +0200
 +++ mutt-1.5.9/po/pl.po	2005-03-31 16:06:53.533730096 +0200
-@@ -1014,6 +1014,38 @@
+@@ -1014,6 +1014,34 @@
  msgid "Exit Mutt without saving?"
  msgstr "Wyj¶æ z Mutta bez zapisywania zmian?"
  
-+#: curs_main.c:1193 curs_main.c:1231
-+msgid "Threading is not enabled."
-+msgstr "W±tkowanie nie jest w³±czone."
-+
 +#: curs_main.c:1197
 +msgid "Compile Mutt with --enable-imap-edit-threads for break-thread support"
 +msgstr "Do obs³ugi break-thread Mutt musi byæ skompilowany z --enable-imap-edit-threads"
