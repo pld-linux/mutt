@@ -4,19 +4,19 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.1.11i
-Release:	4
+Version:	1.2i
+Release:	1
 License:	GPL
 Group:		Applications/Mail
 Group(pt):	Aplicações/Correio Eletrônico
 Group(pl):	Aplikacje/Poczta
-Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}.tar.gz
+Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	mutt.desktop
 Source2:	patches_sec.txt
 Source3:	patches_bj.txt
 Patch0:		mutt-mail.patch
 #Patch1:	mutt-confdir.patch
-Patch2:		http://www.spinnaker.de/mutt/patch-1.1.10.rr.compressed.1.gz
+Patch2:		http://www.spinnaker.de/mutt/patch-1.1.12.rr.compressed.1.gz
 # Part of that patches I changed by hand to fit them into newer version
 # (bonkey)
 Patch3:		patch-0.00.sec+bonk.patchlist.1
@@ -90,6 +90,10 @@ desteði, renk ve POP3 desteði içerir.
 %patch25 -p1
 
 %build
+mv aclocal.m4 acinclude.m4
+aclocal
+automake
+autoconf
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
 LDFLAGS=""
 export CFLAGS LDFLAGS
