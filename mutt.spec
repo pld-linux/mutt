@@ -152,7 +152,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 gzip -9nf contrib/{*rc*,*cap*} \
-	ChangeLog README TODO NEWS README.SECURITY README.SSL 
+	ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
@@ -164,7 +164,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc *.gz contrib/{*rc*,*cap*} doc/manual*html doc/manual.txt
+%doc *.gz contrib/{*rc*,*cap*} doc/manual*html doc/manual.txt.gz
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
