@@ -1,0 +1,211 @@
+diff -durN mutt-1.4.orig/configure.in mutt-1.4/configure.in
+--- mutt-1.4.orig/configure.in	Thu Jan  9 15:51:35 2003
++++ mutt-1.4/configure.in	Thu Jan  9 15:55:52 2003
+@@ -570,22 +570,24 @@
+         then
+           if test "$with_sasl" != "yes"
+           then
+-            CPPFLAGS="$CPPFLAGS -I$with_sasl/include"
++            CPPFLAGS="$CPPFLAGS -I$with_sasl/include/sasl"
+             LDFLAGS="$LDFLAGS -L$with_sasl/lib"
++	  else
++            CPPFLAGS="$CPPFLAGS -I/usr/include/sasl"
+           fi
+ 
+           saved_LIBS="$LIBS"
+ 
+-          AC_CHECK_LIB(sasl, sasl_client_init,,
+-            AC_MSG_ERROR([could not find libsasl]),)
++          AC_CHECK_LIB(sasl2, sasl_client_init,,
++            AC_MSG_ERROR([could not find libsasl2]),)
+ 
+           MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS mutt_sasl.o"
+-          MUTTLIBS="$MUTTLIBS -lsasl"
++          MUTTLIBS="$MUTTLIBS -lsasl2"
+           LIBS="$saved_LIBS"
+           AC_DEFINE(USE_SASL,1,
+                   [ Define if want to use the Cyrus SASL library for POP/IMAP authentication. ])
+           need_sasl=yes
+-          need_md5=no
++          need_md5=yes
+         fi
+         ])
+ AM_CONDITIONAL(USE_SASL, test x$need_sasl = xyes)
+diff -durN mutt-1.4.orig/imap/auth_sasl.c mutt-1.4/imap/auth_sasl.c
+--- mutt-1.4.orig/imap/auth_sasl.c	Sun Jan 13 22:16:34 2002
++++ mutt-1.4/imap/auth_sasl.c	Thu Jan  9 15:55:42 2003
+@@ -34,7 +34,7 @@
+   int rc, irc;
+   char buf[LONG_STRING];
+   const char* mech;
+-  char* pc = NULL;
++  const char* pc = NULL;
+   unsigned int len, olen;
+   unsigned char client_start;
+ 
+@@ -63,15 +63,13 @@
+     if (mutt_bit_isset (idata->capabilities, AUTH_ANON) &&
+ 	(!idata->conn->account.user[0] ||
+ 	 !ascii_strncmp (idata->conn->account.user, "anonymous", 9)))
+-      rc = sasl_client_start (saslconn, "AUTH=ANONYMOUS", NULL, NULL, &pc, &olen,
+-			      &mech);
++      rc = sasl_client_start (saslconn, "AUTH=ANONYMOUS", NULL, &pc, &olen, &mech);
+   }
+   
+   if (rc != SASL_OK && rc != SASL_CONTINUE)
+     do
+     {
+-      rc = sasl_client_start (saslconn, method, NULL, &interaction,
+-        &pc, &olen, &mech);
++      rc = sasl_client_start (saslconn, method, &interaction, &pc, &olen, &mech);
+       if (rc == SASL_INTERACT)
+ 	mutt_sasl_interact (interaction);
+     }
+@@ -109,7 +107,7 @@
+     if (irc == IMAP_CMD_RESPOND)
+     {
+       if (sasl_decode64 (idata->cmd.buf+2, strlen (idata->cmd.buf+2), buf,
+-			 &len) != SASL_OK)
++			 LONG_STRING,&len) != SASL_OK)
+       {
+ 	dprint (1, (debugfile, "imap_auth_sasl: error base64-decoding server response.\n"));
+ 	goto bail;
+diff -durN mutt-1.4.orig/mutt_sasl.c mutt-1.4/mutt_sasl.c
+--- mutt-1.4.orig/mutt_sasl.c	Tue Feb 26 11:38:27 2002
++++ mutt-1.4/mutt_sasl.c	Thu Jan  9 15:55:42 2003
+@@ -92,10 +92,13 @@
+  * probably stop exporting mutt_sasl_get_callbacks(). */
+ int mutt_sasl_client_new (CONNECTION* conn, sasl_conn_t** saslconn)
+ {
+-  sasl_security_properties_t secprops;
+-  sasl_external_properties_t extprops;
+   const char* service;
+   int rc;
++  struct sockaddr_in local, remote;
++  char buf[LONG_STRING];
++  char localip[LONG_STRING], remoteip[LONG_STRING];
++  socklen_t size;
++  sasl_security_properties_t secprops;
+ 
+   if (mutt_sasl_start () != SASL_OK)
+     return -1;
+@@ -112,9 +115,21 @@
+       dprint (1, (debugfile, "mutt_sasl_client_new: account type unset\n"));
+       return -1;
+   }
+-  
+-  rc = sasl_client_new (service, conn->account.host,
+-    mutt_sasl_get_callbacks (&conn->account), SASL_SECURITY_LAYER, saslconn);
++ 
++  size = sizeof (local);
++  if (getsockname (conn->fd, (struct sockaddr*) &local, &size))
++    return -1;
++  inet_ntop(local.sin_family, &local.sin_addr,buf,LONG_STRING);
++  sprintf(localip,"%s:%i",buf,local.sin_port);
++
++  size = sizeof(remote);
++  if (getpeername(conn->fd, (struct sockaddr*) &remote, &size))
++    return -1;
++  inet_ntop(remote.sin_family, &remote.sin_addr,buf,LONG_STRING);
++  sprintf(remoteip,"%s:%i",buf,local.sin_port);
++
++  rc = sasl_client_new (service, conn->account.host, localip, remoteip,
++    mutt_sasl_get_callbacks (&conn->account), 0, saslconn);
+   
+   if (rc != SASL_OK)
+   {
+@@ -123,40 +138,6 @@
+     return -1;
+   }
+ 
+-  /*** set sasl IP properties, necessary for use with krb4 ***/
+-  /* Do we need to fail if this fails? I would assume having these unset
+-   * would just disable KRB4. Who wrote this code? I'm not sure how this
+-   * interacts with the NSS code either, since that mucks with the fd. */
+-  {
+-    struct sockaddr_in local, remote;
+-    socklen_t size;
+-
+-    size = sizeof (local);
+-    if (getsockname (conn->fd, (struct sockaddr*) &local, &size))
+-      return -1;
+-
+-    size = sizeof(remote);
+-    if (getpeername(conn->fd, (struct sockaddr*) &remote, &size))
+-      return -1;
+-
+-#ifdef SASL_IP_LOCAL
+-    if (sasl_setprop(*saslconn, SASL_IP_LOCAL, &local) != SASL_OK)
+-    {
+-      dprint (1, (debugfile,
+-	"mutt_sasl_client_new: Error setting local IP address\n"));
+-      return -1;
+-    }
+-#endif
+-
+-#ifdef SASL_IP_REMOTE
+-    if (sasl_setprop(*saslconn, SASL_IP_REMOTE, &remote) != SASL_OK)
+-    {
+-      dprint (1, (debugfile,
+-	"mutt_sasl_client_new: Error setting remote IP address\n"));
+-      return -1;
+-    }
+-#endif
+-  }
+ 
+   /* set security properties. We use NOPLAINTEXT globally, since we can
+    * just fall back to LOGIN in the IMAP case anyway. If that doesn't
+@@ -181,10 +162,9 @@
+ #if defined(USE_SSL) && !defined(USE_NSS)
+   if (conn->account.flags & M_ACCT_SSL)
+   {
+-    memset (&extprops, 0, sizeof (extprops));
+-    extprops.ssf = conn->ssf;
+-    dprint (2, (debugfile, "External SSF: %d\n", extprops.ssf));
+-    if (sasl_setprop (*saslconn, SASL_SSF_EXTERNAL, &extprops) != SASL_OK)
++    sasl_ssf_t ssf=conn->ssf; 
++    dprint (2, (debugfile, "External SSF: %d\n", ssf));
++    if (sasl_setprop (*saslconn, SASL_SSF_EXTERNAL, &ssf) != SASL_OK)
+     {
+       dprint (1, (debugfile, "mutt_sasl_client_new: Error setting external properties\n"));
+       return -1;
+@@ -274,7 +254,7 @@
+ 
+   sasldata->saslconn = saslconn;
+   /* get ssf so we know whether we have to (en|de)code read/write */
+-  sasl_getprop (saslconn, SASL_SSF, (void**) &sasldata->ssf);
++  sasl_getprop (saslconn, SASL_SSF, (const void**) &sasldata->ssf);
+   dprint (3, (debugfile, "SASL protection strength: %u\n", *sasldata->ssf));
+   /* Add SASL SSF to transport SSF */
+   conn->ssf += *sasldata->ssf;
+diff -durN mutt-1.4.orig/pop_auth.c mutt-1.4/pop_auth.c
+--- mutt-1.4.orig/pop_auth.c	Thu Aug 30 10:11:06 2001
++++ mutt-1.4/pop_auth.c	Thu Jan  9 15:55:42 2003
+@@ -41,7 +41,7 @@
+   char buf[LONG_STRING];
+   char inbuf[LONG_STRING];
+   const char* mech;
+-  char* pc = NULL;
++  const char* pc = NULL;
+   unsigned int len, olen;
+   unsigned char client_start;
+ 
+@@ -56,8 +56,7 @@
+ 
+   FOREVER
+   {
+-    rc = sasl_client_start (saslconn, method, NULL,
+-			    &interaction, &pc, &olen, &mech);
++    rc = sasl_client_start (saslconn, method, &interaction, &pc, &olen, &mech);
+     if (rc != SASL_INTERACT)
+       break;
+     mutt_sasl_interact (interaction);
+@@ -96,7 +95,7 @@
+     if (mutt_strncmp (inbuf, "+ ", 2))
+       goto bail;
+ 
+-    if (sasl_decode64 (inbuf, strlen (inbuf), buf, &len) != SASL_OK)
++    if (sasl_decode64 (inbuf, strlen (inbuf), buf, LONG_STRING, &len) != SASL_OK)
+     {
+       dprint (1, (debugfile, "pop_auth_sasl: error base64-decoding server response.\n"));
+       goto bail;
