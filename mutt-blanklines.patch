@@ -1,0 +1,101 @@
+diff -ur mutt-1.1.11.orig/curs_main.c mutt-1.1.11/curs_main.c
+--- mutt-1.1.11.orig/curs_main.c	Sun Apr 16 12:33:30 2000
++++ mutt-1.1.11/curs_main.c	Sun Apr 16 12:43:02 2000
+@@ -399,8 +399,8 @@
+   
+   menu = mutt_new_menu ();
+   menu->menu = MENU_MAIN;
+-  menu->offset = 1;
+-  menu->pagelen = LINES - 3;
++  menu->offset = 1 + BlankLines;
++  menu->pagelen = LINES - 3 - 2*BlankLines;
+   menu->make_entry = index_make_entry;
+   menu->color = index_color;
+   menu->current = ci_first_message ();
+diff -ur mutt-1.1.11.orig/globals.h mutt-1.1.11/globals.h
+--- mutt-1.1.11.orig/globals.h	Fri Mar  3 11:10:08 2000
++++ mutt-1.1.11/globals.h	Sun Apr 16 12:41:08 2000
+@@ -122,6 +122,7 @@
+ 
+ WHERE unsigned short Counter INITVAL (0);
+ 
++WHERE short BlankLines;
+ WHERE short HistSize;
+ WHERE short PagerContext;
+ WHERE short PagerIndexLines;
+diff -ur mutt-1.1.11.orig/init.h mutt-1.1.11/init.h
+--- mutt-1.1.11.orig/init.h	Sun Apr 16 12:33:30 2000
++++ mutt-1.1.11/init.h	Sun Apr 16 12:40:07 2000
+@@ -254,6 +254,12 @@
+   ** notifying you of new mail.  This is independent of the setting of the
+   ** ``$$beep'' variable.
+   */
++  { "blank_lines",	DT_NUM,	 R_NONE, UL &BlankLines, 0 },
++  /*
++  ** .pp
++  ** This variable controls the number of blank lines below help line and
++  ** above status line. Should not be set to big values.
++  */
+   { "bounce_delivered", DT_BOOL, R_NONE, OPTBOUNCEDELIVERED, 1 },
+   /*
+   ** .pp
+diff -ur mutt-1.1.11.orig/menu.c mutt-1.1.11/menu.c
+--- mutt-1.1.11.orig/menu.c	Fri Mar  3 11:10:10 2000
++++ mutt-1.1.11/menu.c	Sun Apr 16 13:39:23 2000
+@@ -125,13 +125,13 @@
+     SETCOLOR (MT_COLOR_STATUS);
+     mvprintw (option (OPTSTATUSONTOP) ? LINES-2 : 0, 0, "%-*.*s", COLS, COLS, menu->help);
+     SETCOLOR (MT_COLOR_NORMAL);
+-    menu->offset = 1;
+-    menu->pagelen = LINES - 3;
++    menu->offset = 1 + BlankLines;
++    menu->pagelen = LINES - 3 - 2*BlankLines;
+   }
+   else
+   {
+     menu->offset = option (OPTSTATUSONTOP) ? 1 : 0;
+-    menu->pagelen = LINES - 2;
++    menu->pagelen = LINES - 2 - BlankLines;
+   }
+ 
+   mutt_show_error ();
+diff -ur mutt-1.1.11.orig/pager.c mutt-1.1.11/pager.c
+--- mutt-1.1.11.orig/pager.c	Fri Mar  3 11:10:11 2000
++++ mutt-1.1.11/pager.c	Sun Apr 16 13:44:39 2000
+@@ -1510,9 +1510,9 @@
+       {
+ 	indexoffset = 0;
+ 	statusoffset = IsHeader (extra) ? indexlen : 0;
+-	bodyoffset = statusoffset + 1;
++	bodyoffset = statusoffset + 1 + BlankLines;
+ 	helpoffset = LINES - 2;
+-	bodylen = helpoffset - bodyoffset;
++	bodylen = helpoffset - bodyoffset - BlankLines;
+ 	if (!option (OPTHELP))
+ 	  bodylen++;
+       }
+@@ -1523,8 +1523,9 @@
+ 	statusoffset = LINES - 2;
+ 	if (!option (OPTHELP))
+ 	  indexoffset = 0;
+-	bodyoffset = indexoffset + (IsHeader (extra) ? indexlen : 0);
+-	bodylen = statusoffset - bodyoffset;
++	bodyoffset = indexoffset + (IsHeader (extra) ? indexlen : 0) +
++	  (option (OPTHELP) ? BlankLines : 0);
++	bodylen = statusoffset - bodyoffset - BlankLines;
+       }
+ 
+       if (option (OPTHELP))
+diff -ur mutt-1.1.11.orig/patchlist.c mutt-1.1.11/patchlist.c
+--- mutt-1.1.11.orig/patchlist.c	Sun Apr 16 12:33:41 2000
++++ mutt-1.1.11/patchlist.c	Sun Apr 16 13:10:52 2000
+@@ -15,7 +15,8 @@
+   /* DO NOT MODIFY BEFORE THIS LINE */
+ 
+ 
+-
++  printf("Feature patch: blank_lines          1.1.11 by Michal Kochanowicz\n"
++         "     based on: blank_line           1.0pre3i by Ken Weingold / Claus Aßmann\n");
+ 
+ 
+   /* DO NOT MODIFY AFTER THIS LINE */
