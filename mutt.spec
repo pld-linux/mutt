@@ -12,7 +12,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4
-Release:	3
+Release:	4
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -38,6 +38,7 @@ Patch14:	%{name}-LIBOBJ.patch
 Patch15:	%{name}-pgp_hook.patch
 Patch16:	%{name}-manual.patch
 Patch17:	%{name}-send_charset.patch
+Patch18:	%{name}-nntp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -122,6 +123,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p0
+%patch18 -p1
 
 %build
 %{__gettextize}
@@ -139,6 +141,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 	--enable-mailtool \
 	--with-mixmaster \
 	--enable-pop \
+	--enable-nntp \
 	--with-regex \
 	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
 	--with-ssl \
