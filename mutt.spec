@@ -16,6 +16,7 @@ Patch:		mutt-mail.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
+BuildRequires:	ncurese-devel >= 5.0
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %define		_sysconfdir		/etc
@@ -30,16 +31,16 @@ Mutt ist ein kleiner aber leistungsfähiger Vollbild-Mail-Client für Unix mit
 MIME-Unterstützung, Farbe, POP3-Unterstützung, Nachrichten-Threading,
 zuweisbaren Tasten und Sortieren nach Threads.
 
+%description -l fr
+mutt est un client courrier Unix plein écran, petit mais très puissant.
+Il dispose de la gestion MIME, des couleurs, de la gestion POP, des fils
+de discussion, des touches liées et d'un mode de tri sur les fils.
+
 %description -l pl
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych
 posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty
 skrzynek pocztowych, kolory, w±tki, ocenê wa¿no¶ci listów (scoring)
 oraz skompresowane foldery.
-
-%description -l fr
-mutt est un client courrier Unix plein écran, petit mais très puissant.
-Il dispose de la gestion MIME, des couleurs, de la gestion POP, des fils
-de discussion, des touches liées et d'un mode de tri sur les fils.
 
 %description -l tr
 Mutt, küçük ama çok güçlü bir tam-ekran Unix mektup istemcisidir. MIME desteði,
