@@ -5,15 +5,18 @@ Summary(pl): Program pocztowy Mutt
 Summary(tr): Mutt elektronik posta programý
 Name:        mutt
 Version:     0.95
-Release:     1i
+Release:     3d
 Copyright:   GPL
 Group:       Applications/Mail
-Source:      ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
-Source1:     mutt.wmconfig
+Group(pl):   Aplikacje/Poczta
+Source0:     ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
+Source1:     %{name}.wmconfig
 Source2:     Muttrc
-Patch0:      http://www.rhein.de/~roland/mutt/patch-0.95.rr.compressed.1.gz
+Source3:     %{name}.pl.po
+Patch0:	     %{name}-mail.patch
+Patch1:      %{name}-pl.patch
 URL:         http://www.mutt.org/
-Requires:    smtpdaemon, mailcap, pgp, slang >= 1.2.2-2
+Requires:    smtpdaemon
 Buildroot:   /tmp/%{name}-%{version}-root
 
 %description
@@ -26,99 +29,100 @@ Mutt ist ein kleiner aber leistungsfähiger Vollbild-Mail-Client für Unix mit
 MIME-Unterstützung, Farbe, POP3-Unterstützung, Nachrichten-Threading,
 zuweisbaren Tasten und Sortieren nach Threads.
 
+%description -l pl
+Mutt jest niewielkim programem pocztowym dla terminali tekstowych
+posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty
+skrzynek pocztowych, obs³uguje kolory, w±tki i ocenê wa¿no¶ci listów
+(scoring).  W tej wersji dodano tak¿e obs³ugê skompresowanych folderów.
+
 %description -l fr
 mutt est un client courrier Unix plein écran, petit mais très puissant.
 Il dispose de la gestion MIME, des couleurs, de la gestion POP, des fils
 de discussion, des touches liées et d'un mode de tri sur les fils.
-                                                                                                              
-%description -l it
-Mutt è un piccolo ma potente programma per la gestione della posta in gardo
-di gestire il formato MIME. E' altamente configurabile ed è ben equipaggiato
-per l'utente avanzato con opzioni quali come associazioni dei tasti, macro,
-gestione dei threads, ricerche ed un potente linguaggio per la selezione di
-gruppi di messaggi.
-
-%description -l pl
-Mutt jest niewielkim programem pocztowym dla terminali tekstowych
-posiadaj±cym du¿e mo¿liwo¶ci.  Obs³uguje MIME, POP3, cztery formaty skrzynek
-pocztowych, obs³uguje kolory, w±tki i ocenê wa¿no¶ci listów (scoring). W tej
-wersji dodano tak¿e obs³ugê skompresowanych folderów.
 
 %description -l tr
 Mutt, küçük ama çok güçlü bir tam-ekran Unix mektup istemcisidir. MIME desteði,
 renk ve POP3 desteði içerir.
 
 %prep
-%setup -q
-%patch0 -p1
+%setup -q 
+%patch0 -p0
+%patch1 -p0
+
+install %{SOURCE3} $RPM_BUILD_DIR/%{name}-%{version}/po/pl.po
 
 %build
-./configure \
+CFLAGS="$RPM_OPT_FLAGS -I/usr/include/slang" LDFLAGS=-s \
+        ./configure \
 	--prefix=/usr \
-	--sysconfdir=/etc \
-	--with-sharedir=/usr/share \
-	--with-slang \
-	--with-docdir=/usr/doc/%{name}-%{version} \
+	--with-sharedir=/etc \
 	--enable-pop \
-	--without-domain \
+	--enable-imap \
+	--with-slang \
 	--disable-warnings \
-        --enable-compressed
-make	mutt_LDFLAGS="-s" \
-	AM_CFLAGS="$RPM_OPT_FLAGS"
+	--disable-domain \
+        --enable-compressed \
+	--with-docdir=$RPM_BUILD_DIR/%{name}-%{version}/rpm_docs 
+
+make 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/X11/wmconfig
 
-make install DESTDIR=$RPM_BUILD_ROOT
+make prefix=$RPM_BUILD_ROOT/usr sharedir=$RPM_BUILD_ROOT/etc install
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
 gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/*
+gzip -9nf contrib/{*rc,*cap} rpm_docs/{html/*,*.txt,ChangeLog,README,TODO,NEWS}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%defattr(644, root, root, 755)
-%doc NEWS TODO contrib/*rc doc/manual.txt
-%config /etc/Muttrc
-/etc/X11/wmconfig/mutt
-/usr/share/charsets
-%attr(2755, root, mail) /usr/bin/mutt
-%attr(0755, root,  man) /usr/man/man1/mutt.1.gz
-%lang(de) /usr/share/locale/de/LC_MESSAGES/mutt.mo
+%defattr(644,root,root,755)
+%doc contrib/*.gz rpm_docs/{html,*.gz}
+
+%config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
+%config(missingok) /etc/X11/wmconfig/mutt
+
+%attr(0711,root,root) /usr/bin/mutt
+%attr(2711,root,mail) /usr/bin/mutt_dotlock
+
+%lang(en) %attr(644,root, man) /usr/man/man1/*
+
+%lang(en) /usr/share/locale/de/LC_MESSAGES/mutt.mo
 %lang(es) /usr/share/locale/es/LC_MESSAGES/mutt.mo
 %lang(fr) /usr/share/locale/fr/LC_MESSAGES/mutt.mo
 %lang(it) /usr/share/locale/it/LC_MESSAGES/mutt.mo
+%lang(pl) /usr/share/locale/pl/LC_MESSAGES/mutt.mo
 %lang(ru) /usr/share/locale/ru/LC_MESSAGES/mutt.mo
 %lang(uk) /usr/share/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
-* Sat Dec 12 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [0.95i-1]
-- added gzipping man pages,
-- added /usr/share/locale/*/LC_MESSAGES/mutt.mo to %files,
-- updated patch for compressed folders,
-- fixed sysconfdir (added --sysconfdir=/etc for ./configure parameters),
-- --with-sharedir changed to /usr/share,
-- added using DESTDIR on "make install",
-- revisited list %doc files,
-- added "Requires: slang >= 1.2.2-2",
-- added /usr/share/charsets to %files,
-- fixed passing "-s" ld flag,
-- fixed way passing $RPM_OPT_FLAGS,
-- Italian description (Fabio Coatti <cova@felix.unife.it>).
+* Thu Feb 10 1999 Micha³ Kuratczyk <kurkens@polbox.com>
+  [0.95i-3d]
+- added gzipping documentation
+- simplification in %files
+- cosmetic changes
+
+* Mon Dec 14 1998 Marcin Korzonek <mkorz@shadow.eu.org>
+[0.95i-1]
+- remove patch for compressed folders (not available yet)
+- added %%lang macros
+- added some missing doc files
+- locale files included
 
 * Sat Sep 19 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-  [0.93.2i-1]
+[0.93.2i-1d]
 - added pl translation,
 - added patch for compressed folders,
 - rewrites system Muttrc based on ones from Roland Rosenfeld.
 
 * Sun Sep  6 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [0.93.2i-1]
+[0.93.2i-1]
 - added -q %setup parameter,
 - changed Buildroot to /tmp/%%{name}-%%{version}-root,
 - added using %%{name} and %%{version} in Source,
