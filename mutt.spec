@@ -9,19 +9,20 @@ Release:	1
 Epoch:		2
 License:	GPL
 Group:		Applications/Mail
-Group(pt):	Aplicações/Correio Eletrônico
+Group(de):	Applikationen/Post
 Group(pl):	Aplikacje/Poczta
+Group(pt):	Aplicações/Correio Eletrônico
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
-Source1:	mutt.desktop
+Source1:	%{name}.desktop
 Source2:	patches_sec.txt
 Source3:	patches_bj.txt
-Patch0:		mutt-mail.patch
-#Patch1:	mutt-confdir.patch
+Patch0:		%{name}-mail.patch
+#Patch1:	%{name}-confdir.patch
 Patch2:		http://www.spinnaker.de/mutt/patch-1.2.rr.compressed.1.gz
 # Part of that patches I changed by hand to fit them into newer version
 # (bonkey)
 Patch3:		patch-0.00.sec+bonk.patchlist.1
-Patch4:		mutt-blanklines.patch
+Patch4:		%{name}-blanklines.patch
 Patch7:		http://sec.42.org/mutt/patch-0.94.7.sec.previous_jump.1
 Patch9:		http://sec.42.org/mutt/patch-0.94.7.vikas.word_chars.1
 Patch10:	http://sec.42.org/mutt/patch-0.95.3.bj.ed_mtime.1
@@ -34,9 +35,9 @@ Patch19:	http://sec.42.org/mutt/patch-0.95.bj.hash_destroy.2
 Patch20:	http://sec.42.org/mutt/patch-0.95.sec.condense_pgp.1
 Patch22:	http://sec.42.org/mutt/patch-1.02.sec._A.1
 #Patch23:	http://www.murkworks.to/blank-line.patch
-#Patch24:	http://www.albedo.art.pl/~kbryd/mutt/mutt_package.tar.gz
-Patch25:	mutt-dot-lock.patch
-Patch26:	mutt-pl.po.patch
+#Patch24:	http://www.albedo.art.pl/~kbryd/mutt/%{name}_package.tar.gz
+Patch25:	%{name}-dot-lock.patch
+Patch26:	%{name}-pl.po.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
@@ -94,13 +95,11 @@ desteði, renk ve POP3 desteði içerir.
 %patch26 -p1
 
 %build
-mv aclocal.m4 acinclude.m4
+mv -f aclocal.m4 acinclude.m4
 aclocal
 automake
 autoconf
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
-LDFLAGS="-s"
-export CFLAGS LDFLAGS
 %configure \
 	--with-sharedir=%{_datadir} \
 	--enable-pop \
@@ -127,10 +126,10 @@ install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
 install %{SOURCE2} %{SOURCE3} .
 
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
-	contrib/{*rc*,*cap*} \
+gzip -9nf contrib/{*rc*,*cap*} \
 	ChangeLog README TODO NEWS README.SECURITY README.SSL README.UPGRADE \
-	patches_{bj,sec}.txt
+	patches_{bj,sec}.txt \
+	$RPM_BUILD_ROOT%{_mandir}/man1/*
 
 %find_lang %{name}
 
@@ -139,13 +138,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc {ChangeLog,README,TODO,NEWS,README.SECURITY,README.SSL,README.UPGRADE}.gz
-%doc contrib/{*rc*,*cap*}
-%doc doc/manual*html
-%doc patches_{bj,sec}.txt.gz
-
+%doc *.gz contrib/{*rc*,*cap*} doc/manual*html
 %config(noreplace) %verify(not size md5 mtime) %{_sysconfdir}/Muttrc
-%{_applnkdir}/Network/Mail/mutt.desktop
-
 %attr(755,root,root) %{_bindir}/*
+%{_applnkdir}/Network/Mail/mutt.desktop
 %{_mandir}/man*/*
