@@ -18,7 +18,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.2.1
-Release:	0.2
+Release:	1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -138,7 +138,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-#%patch12 -p1
+%patch12 -p1
 #%patch13 -p0
 %patch14 -p1
 %patch16 -p1
@@ -194,7 +194,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %PATCH17
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %PATCH16
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
