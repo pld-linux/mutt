@@ -1,0 +1,16 @@
+diff -urN mutt-1.3.18/init.c mutt-1.3.18.my/init.c
+--- mutt-1.3.18/init.c	Thu Apr 26 14:59:07 2001
++++ mutt-1.3.18.my/init.c	Sat Jun 30 08:39:00 2001
+@@ -1852,7 +1852,11 @@
+   
+   if (!Muttrc)
+   {
+-    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
++    snprintf (buffer, sizeof(buffer), "%s/%s/muttrc-%s", NONULL(Homedir), getenv ("CONFIG_DIR"), MUTT_VERSION);
++    if (access(buffer, F_OK) == -1)
++      snprintf (buffer, sizeof(buffer), "%s/%s/muttrc", NONULL(Homedir), getenv ("CONFIG_DIR"));
++    if (access(buffer, F_OK) == -1)
++      snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
+     if (access(buffer, F_OK) == -1)
+       snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
+     if (access(buffer, F_OK) == -1)
