@@ -4,7 +4,7 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	0.96.4
+Version:	0.95.7
 Release:	1i
 Copyright:	GPL
 Group:		Applications/Mail
@@ -52,13 +52,18 @@ CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 %configure \
 	--with-sharedir=%{_datadir} \
 	--sysconfdir=/etc \
+	--mandir=%{_mandir} \
 	--enable-pop \
 	--enable-imap \
 	--with-curses \
 	--disable-warnings \
 	--disable-domain \
         --enable-compressed \
+<<<<<<< mutt.spec
+	--with-docdir=%{_defaultdocdir}/%{name}-%{version}
+=======
 	--with-docdir=$RPM_BUILD_ROOT%{_datadir}/doc/mutt-%{version}
+>>>>>>> 1.19
 
 make 
 
@@ -71,9 +76,15 @@ make install DESTDIR=$RPM_BUILD_ROOT
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
+<<<<<<< mutt.spec
+gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
+	contrib/{*rc,*cap} \
+	$RPM_BUILD_ROOT%{_defaultdocdir}/%{name}-%{version}/{*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
+=======
 gzip -9nf		$RPM_BUILD_ROOT%{_mandir}/man1/* \
 			contrib/{*rc,*cap} \
 			ChangeLog README TODO NEWS README.SECURITY
+>>>>>>> 1.19
 
 %find_lang %{name}
 
@@ -82,7 +93,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
+<<<<<<< mutt.spec
+%doc %{_defaultdocdir}/%{name}-%{version}/*.gz
+=======
 %doc {ChangeLog,README,TODO,NEWS,README.SECURITY}.gz
+>>>>>>> 1.19
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
 %config(missingok) /etc/X11/wmconfig/mutt
