@@ -8,8 +8,8 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.3.28i
-Release:	2
+Version:	1.3.99i
+Release:	1
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -31,6 +31,7 @@ Patch10:	%{name}-cd.purge_message.patch
 Patch11:	%{name}-cd.signatures_menu.patch
 Patch12:	%{name}-folder_columns.patch
 Patch13:	%{name}-nr.tag_prefix_cond.patch
+Patch14:	%{name}-LIBOBJ.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -109,11 +110,15 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch11 -p1
 %patch12 -p1
 #%patch13 -p0
+%patch14 -p1
 
 %build
+%{__gettextize}
+%{__aclocal} -I m4
 %{__autoconf}
+%{__automake}
 #PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk
-CFLAGS="%{optflags} -I%{_includedir}/slang" \
+#CFLAGS="%{optflags} -I%{_includedir}/slang" \
 %configure \
 	--enable-pop \
 	--enable-imap \
@@ -123,11 +128,10 @@ CFLAGS="%{optflags} -I%{_includedir}/slang" \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--disable-warnings \
 	--with-curses \
-	--with-iconv \
 	--with-regex \
 	--with-ssl \
 	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
-	--without-included-nls \
+	--without-included-gettext \
 	--with-homespool=Maildir \
 	--with-mixmaster \
 	--with-mailpath=/var/mail \
