@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Mutt
+Comment=The Mutt Mail User Agent
+Comment[pl]=Mutt - program pocztowy
+Icon=mail2.xpm
+Exec=/usr/X11R6/bin/xterm -e mutt &
+Terminal=0
+Type=Application
