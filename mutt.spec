@@ -52,6 +52,7 @@ BuildRequires:	gettext-devel
 %{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7
 BuildRequires:	sgml-tools
+BuildRequires:	sgml-tools-dtd
 %{?_with_slang:BuildRequires:		slang-devel}
 Requires:	iconv
 Requires:	mailcap
