@@ -1,10 +1,10 @@
 #
 # Conditional build:
-%bcond_with slang		# use slang library instead of ncurses
-%bcond_with nntp		# use VVV's NNTP patch
-%bcond_with esmtp		# use esmtp patch
-%bcond_without sasl		# don't use sasl
-%bcond_without home_etc		# don't use home_etc
+%bcond_with	slang		# use slang library instead of ncurses
+%bcond_with	nntp		# use VVV's NNTP patch
+%bcond_with	esmtp		# use esmtp patch
+%bcond_without	sasl		# don't use sasl
+%bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -177,7 +177,7 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
-	--with-docdir=%{_docdir}/%{name}-%{version} \
+	--with-docdir=%{_docdir}/%{name} \
 	--with-homespool=Maildir \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
@@ -192,7 +192,7 @@ rm -f doc/{manual*.html,manual.txt}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1,%{_datadir}/%{name}}
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -202,7 +202,10 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1,%{_d
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
-install doc/manual.txt $RPM_BUILD_ROOT%{_datadir}/%{name}
+
+# keep manual.txt.gz, the rest is installed as %doc
+rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
+gzip -9nf $RPM_BUILD_ROOT%{_docdir}/%{name}/manual.txt
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
@@ -224,7 +227,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/pgp*
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
-%{_datadir}/%{name}
+%{_docdir}/%{name}
 %{_desktopdir}/*.desktop
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
