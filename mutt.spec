@@ -1,7 +1,8 @@
-# conditionals:
-# --with slang:	use slang library instead of ncurses
-# --with nntp:	use VVV's NNTP patch
-
+#
+# Conditional build:
+# _with_slang	- use slang library instead of ncurses
+# _with_nntp	- use VVV's NNTP patch
+#
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
 Summary(es):	Mutt, cliente de correo electrСnico
@@ -14,7 +15,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.1
-Release:	1
+Release:	2
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -131,7 +132,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch12 -p1
 #%patch13 -p0
 %patch14 -p1
-#%patch15 -p1
+%patch15 -p1
 %patch16 -p1
 %patch18 -p1
 %{!?_without_sasl:%patch19 -p1}
