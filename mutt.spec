@@ -9,7 +9,7 @@ Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.27i
 Release:	1
-Epoch:		4
+Epoch:		5
 License:	GPL
 Group:		Applications/Mail
 Group(de):	Applikationen/Post
