@@ -53,7 +53,6 @@ renk ve POP3 desteði içerir.
 %patch0 -p1
 
 %build
-CFLAGS="$RPM_OPT_FLAGS -I/usr/include/slang" \
 ./configure \
 	--prefix=/usr \
 	--sysconfdir=/etc \
@@ -64,7 +63,8 @@ CFLAGS="$RPM_OPT_FLAGS -I/usr/include/slang" \
 	--without-domain \
 	--disable-warnings \
         --enable-compressed
-make mutt_LDFLAGS="-s"
+make	mutt_LDFLAGS="-s" \
+	AM_CFLAGS="$RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -108,6 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 - added "Requires: slang >= 1.2.2-2",
 - added /usr/share/charsets to %files,
 - fixed passing "-s" ld flag,
+- fixed way passing $RPM_OPT_FLAGS,
 - Italian description (Fabio Coatti <cova@felix.unife.it>).
 
 * Sat Sep 19 1998 Marcin Korzonek <mkorz@shadow.eu.org>
