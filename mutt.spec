@@ -1,3 +1,6 @@
+# conditionals:
+# --with slang:	use slang library instead of ncurses
+
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
 Summary(es):	Mutt, cliente de correo electrСnico
@@ -8,8 +11,8 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.3.99i
-Release:	2
+Version:	1.4
+Release:	1
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -36,10 +39,11 @@ Patch15:	%{name}-pgp_hook.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-BuildRequires:	ncurses-devel >= 5.0
+%{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
+%{?_with_slang:BuildRequires:		slang-devel}
+%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
 BuildRequires:	openssl-devel >= 0.9.6a
 BuildRequires:	sgml-tools
-%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
 Requires:	iconv
 Requires:	mailcap
 Requires:	smtpdaemon
@@ -119,31 +123,30 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %{__aclocal} -I m4
 %{__autoconf}
 %{__automake}
-#PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk
-#CFLAGS="%{optflags} -I%{_includedir}/slang" \
 %configure \
-	--enable-pop \
-	--enable-imap \
-	--enable-mailtool \
-	--enable-external-dotlock \
-	--enable-compressed \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
-	--disable-warnings \
-	--with-curses \
-	--with-regex \
-	--with-ssl \
-	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
+	%{!?_with_slang:--with-curses} \
+	%{?_with_slang:--with-slang} \
+	--enable-compressed \
+	--enable-external-dotlock \
+	--enable-imap \
 	--without-included-gettext \
-	--with-homespool=Maildir \
+	--enable-mailtool \
 	--with-mixmaster \
+	--enable-pop \
+	--with-regex \
+	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
+	--with-ssl \
+	--disable-warnings \
+	--with-docdir=%{_docdir}/%{name}-%{version} \
+	--with-homespool=Maildir \
 	--with-mailpath=/var/mail \
 	--with-sharedir=%{_datadir} \
-	--with-docdir=%{_docdir}/%{name}-%{version} \
 	--prefix=%{_prefix} \
 	--bindir=%{_bindir} \
-	--sysconfdir=%{_sysconfdir} \
 	--datadir=%{_datadir} \
-	--mandir=%{_mandir}
+	--mandir=%{_mandir} \
+	--sysconfdir=%{_sysconfdir}
 
 %{__make}
 %{__make} manual.txt -C doc
