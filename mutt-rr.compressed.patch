@@ -1499,10 +1499,10 @@ diff -urN mutt-1.5.8/po/de.po mutt-1.5.8-ro/po/de.po
  msgid "Help for %s"
  msgstr "Pomoc dla menu %s"
  
-++#: hook.c:96
-++msgid "bad formatted command string"
-++msgstr "¼le sformatowany ³añcuch polecenia"
-++
++#: hook.c:96
++msgid "bad formatted command string"
++msgstr "¼le sformatowany ³añcuch polecenia"
++
  #: hook.c:246
  #, c-format
  msgid "unhook: Can't do unhook * from within a hook."
