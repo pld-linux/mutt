@@ -5,8 +5,8 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.2.5i
-Release:	3
-Epoch:		2
+Release:	5
+Epoch:		4
 License:	GPL
 Group:		Applications/Mail
 Group(de):	Applikationen/Post
@@ -16,6 +16,7 @@ Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	patches_sec.txt
 Source3:	patches_bj.txt
+Source4:	%{name}.png
 #Patch0:	%{name}-mail.patch
 #Patch1:	%{name}-confdir.patch
 Patch2:		http://www.spinnaker.de/mutt/patch-1.2.rr.compressed.1.gz
@@ -38,6 +39,9 @@ Patch22:	http://sec.42.org/mutt/patch-1.02.sec._A.1
 #Patch24:	http://www.albedo.art.pl/~kbryd/mutt/%{name}_package.tar.gz
 Patch25:	%{name}-dot-lock.patch
 Patch26:	%{name}-pl.po.patch
+Patch27:	%{name}-nosetgid.patch
+Patch28:	%{name}-md5.patch
+Patch29:	%{name}-imap.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
@@ -93,6 +97,9 @@ desteði, renk ve POP3 desteði içerir.
 #%patch23 -p0
 %patch25 -p1
 %patch26 -p1
+%patch27 -p1
+%patch28 -p1
+%patch29 -p1
 
 %build
 mv -f aclocal.m4 acinclude.m4
@@ -114,18 +121,20 @@ CFLAGS="%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g} -fno-strict-aliasing"
 	--with-charmaps \
 	--with-docdir=%{_defaultdocdir}/%{name}-%{version} \
 	--enable-external-dotlock \
-  --enable-locales-fix
+	--enable-locales-fix
 
 %{__make} keymap.h
 %{__make} 
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
+install -d $RPM_BUILD_ROOT{%{_applnkdir}/Network/Mail,%{_pixmapsdir}}
 
 %{__make} install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Network/Mail
+install %{SOURCE4} $RPM_BUILD_ROOT%{_pixmapsdir}
+
 install %{SOURCE2} %{SOURCE3} .
 
 gzip -9nf contrib/{*rc*,*cap*} \
@@ -141,10 +150,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc *.gz contrib/{*rc*,*cap*} doc/manual*html
 %config(noreplace) %verify(not size md5 mtime) %{_sysconfdir}/Muttrc
-%attr(755,root,root)  %{_bindir}/mutt
-%attr(755,root,root)  %{_bindir}/pgpewrap
-%attr(755,root,root)  %{_bindir}/pgpring
-%attr(2755,root,mail) %{_bindir}/mutt_dotlock
+%attr(755,root,root) %{_bindir}/mutt
+%attr(755,root,root) %{_bindir}/pgpewrap
+%attr(755,root,root) %{_bindir}/pgpring
+%attr(755,root,root) %{_bindir}/mutt_dotlock
 
 %{_applnkdir}/Network/Mail/mutt.desktop
+%{_pixmapsdir}/mutt.png
 %{_mandir}/man*/*
