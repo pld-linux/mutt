@@ -4,7 +4,7 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.3.23i
+Version:	1.3.23.2i
 Release:	1
 Epoch:		4
 License:	GPL
