@@ -6,7 +6,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.0
-Release:	1.%{_pre}i
+Release:	2.%{_pre}i
 Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
@@ -18,6 +18,8 @@ URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
 Buildroot:	/tmp/%{name}-%{version}-root
+
+%define		_sysconfdir		/etc
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
@@ -49,10 +51,11 @@ renk ve POP3 desteði içerir.
 %patch -p0
 
 %build
-CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing" LDFLAGS="-s" \
+CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
+LDFLAGS="-s"
+export CFLAGS LDFLAGS
 %configure \
 	--with-sharedir=%{_datadir} \
-	--sysconfdir=/etc \
 	--enable-pop \
 	--enable-imap \
 	--with-curses \
