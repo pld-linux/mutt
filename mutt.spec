@@ -122,12 +122,12 @@ install -d $RPM_BUILD_ROOT%{_applnkdir}/Networking/Mail
 make install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_applnkdir}/Networking/Mail
-install %{SOURCE2} %{SOURCE3} $RPM_BUILD_ROOT/%{_docdir}
+install %{SOURCE2} %{SOURCE3} .
 
 gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
 	contrib/{*rc*,*cap*} \
 	ChangeLog README TODO NEWS README.SECURITY README.SSL README.UPGRADE \
-	$RPM_BUILD_ROOT%{_docdir}/patches_{bj,sec}.txt
+	patches_{bj,sec}.txt
 
 %find_lang %{name}
 
@@ -139,7 +139,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc {ChangeLog,README,TODO,NEWS,README.SECURITY,README.SSL,README.UPGRADE}.gz
 %doc contrib/{*rc*,*cap*}
 %doc doc/manual*html
-%doc doc/patches_{bj,sec}.txt.gz
+%doc patches_{bj,sec}.txt.gz
 
 %config(noreplace) %verify(not size md5 mtime) %{_sysconfdir}/Muttrc
 %{_applnkdir}/Networking/Mail/mutt.desktop
