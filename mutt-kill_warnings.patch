@@ -1,0 +1,199 @@
+diff -dur mutt-1.4.1.orig/curs_lib.c mutt-1.4.1/curs_lib.c
+--- mutt-1.4.1.orig/curs_lib.c	2001-10-10 14:49:37.000000000 +0200
++++ mutt-1.4.1/curs_lib.c	2004-02-05 08:53:53.097928184 +0100
+@@ -16,6 +16,8 @@
+  *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+  */ 
+ 
++#define _GNU_SOURCE 1
++
+ #include "mutt.h"
+ #include "mutt_menu.h"
+ #include "mutt_curses.h"
+@@ -30,6 +32,7 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <ctype.h>
++#include <wchar.h>
+ 
+ #ifdef HAVE_LANGINFO_YESEXPR
+ #include <langinfo.h>
+diff -dur mutt-1.4.1.orig/enter.c mutt-1.4.1/enter.c
+--- mutt-1.4.1.orig/enter.c	2001-10-03 00:20:03.000000000 +0200
++++ mutt-1.4.1/enter.c	2004-02-05 08:54:06.695860984 +0100
+@@ -17,6 +17,8 @@
+  *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+  */ 
+ 
++#define _GNU_SOURCE 1
++
+ #include "mutt.h"
+ #include "mutt_menu.h"
+ #include "mutt_curses.h"
+@@ -24,6 +26,7 @@
+ #include "history.h"
+ 
+ #include <string.h>
++#include <wchar.h>
+ 
+ /* redraw flags for mutt_enter_string() */
+ enum
+diff -dur mutt-1.4.1.orig/extlib.c mutt-1.4.1/extlib.c
+--- mutt-1.4.1.orig/extlib.c	2000-04-22 10:47:31.000000000 +0200
++++ mutt-1.4.1/extlib.c	2004-02-05 08:53:31.728176880 +0100
+@@ -28,6 +28,7 @@
+ #define _EXTLIB_C
+ 
+ #include "lib.h"
++#include <stdlib.h>
+ 
+ void (*mutt_error) (const char *, ...) = mutt_nocurses_error;
+ 
+diff -dur mutt-1.4.1.orig/help.c mutt-1.4.1/help.c
+--- mutt-1.4.1.orig/help.c	2000-10-07 20:06:24.000000000 +0200
++++ mutt-1.4.1/help.c	2004-02-05 08:54:24.125211320 +0100
+@@ -16,6 +16,7 @@
+  *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+  */ 
+ 
++#define _GNU_SOURCE 1
+ #define HELP_C
+ 
+ #include "mutt.h"
+@@ -26,6 +27,7 @@
+ 
+ #include <ctype.h>
+ #include <string.h>
++#include <wchar.h>
+ 
+ static struct binding_t *help_lookupFunction (int op, int menu)
+ {
+diff -dur mutt-1.4.1.orig/imap/message.c mutt-1.4.1/imap/message.c
+--- mutt-1.4.1.orig/imap/message.c	2002-04-07 23:19:57.000000000 +0200
++++ mutt-1.4.1/imap/message.c	2004-02-05 08:53:31.729176728 +0100
+@@ -435,7 +435,7 @@
+   rewind (fp);
+   
+   imap_munge_mbox_name (mbox, sizeof (mbox), mailbox);
+-  snprintf (buf, sizeof (buf), "APPEND %s (\\Seen) {%d}", mbox, len);
++  snprintf (buf, sizeof (buf), "APPEND %s (\\Seen) {%ld}", mbox, (long)len);
+ 
+   imap_cmd_start (idata, buf);
+ 
+diff -dur mutt-1.4.1.orig/init.c mutt-1.4.1/init.c
+--- mutt-1.4.1.orig/init.c	2004-02-05 08:38:03.000000000 +0100
++++ mutt-1.4.1/init.c	2004-02-05 08:53:31.730176576 +0100
+@@ -16,6 +16,8 @@
+  *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+  */ 
+ 
++#define _GNU_SOURCE 1
++
+ #include "mutt.h"
+ #include "mapping.h"
+ #include "mutt_curses.h"
+diff -dur mutt-1.4.1.orig/main.c mutt-1.4.1/main.c
+--- mutt-1.4.1.orig/main.c	2004-02-05 08:38:03.000000000 +0100
++++ mutt-1.4.1/main.c	2004-02-05 08:53:31.731176424 +0100
+@@ -74,6 +74,9 @@
+     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.\n\
+ ");
+ 
++void mutt_start_slrnface(void);
++void mutt_stop_slrnface(void);
++
+ void mutt_exit (int code)
+ {
+   mutt_endwin (NULL);
+diff -dur mutt-1.4.1.orig/mutt_sasl.c mutt-1.4.1/mutt_sasl.c
+--- mutt-1.4.1.orig/mutt_sasl.c	2004-02-05 08:38:03.000000000 +0100
++++ mutt-1.4.1/mutt_sasl.c	2004-02-05 09:01:49.346527392 +0100
+@@ -26,6 +26,9 @@
+ #include <sasl.h>
+ #include <sys/socket.h>
+ #include <netinet/in.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <arpa/inet.h>
+ 
+ /* arbitrary. SASL will probably use a smaller buffer anyway. OTOH it's
+  * been a while since I've had access to an SASL server which negotiated
+@@ -212,6 +215,7 @@
+ {
+   char prompt[SHORT_STRING];
+   char resp[SHORT_STRING];
++  char * result;
+ 
+   while (interaction->id != SASL_CB_LIST_END)
+   {
+@@ -223,8 +227,9 @@
+       return SASL_FAIL;
+ 
+     interaction->len = mutt_strlen (resp)+1;
+-    interaction->result = safe_malloc (interaction->len);
+-    memcpy (interaction->result, resp, interaction->len);
++    result = safe_malloc (interaction->len);
++    memcpy (result, resp, interaction->len);
++    interaction->result=result;
+ 
+     interaction++;
+   }
+@@ -258,7 +263,7 @@
+   dprint (3, (debugfile, "SASL protection strength: %u\n", *sasldata->ssf));
+   /* Add SASL SSF to transport SSF */
+   conn->ssf += *sasldata->ssf;
+-  sasl_getprop (saslconn, SASL_MAXOUTBUF, (void**) &sasldata->pbufsize);
++  sasl_getprop (saslconn, SASL_MAXOUTBUF, (const void**) &sasldata->pbufsize);
+   dprint (3, (debugfile, "SASL protection buffer size: %u\n", *sasldata->pbufsize));
+ 
+   /* clear input buffer */
+@@ -424,7 +429,7 @@
+       if (rc <= 0)
+ 	goto out;
+ 
+-      rc = sasl_decode (sasldata->saslconn, buf, rc, &sasldata->buf,
++      rc = sasl_decode (sasldata->saslconn, buf, rc, (const char **)&sasldata->buf,
+         &sasldata->blen);
+       if (rc != SASL_OK)
+       {
+@@ -472,7 +477,7 @@
+     {
+       olen = (len > *sasldata->pbufsize) ? *sasldata->pbufsize : len;
+ 
+-      rc = sasl_encode (sasldata->saslconn, buf, olen, &pbuf, &plen);
++      rc = sasl_encode (sasldata->saslconn, buf, olen, (const char **)&pbuf, &plen);
+       if (rc != SASL_OK)
+       {
+ 	dprint (1, (debugfile, "SASL encoding failed: %s\n",
+diff -dur mutt-1.4.1.orig/pager.c mutt-1.4.1/pager.c
+--- mutt-1.4.1.orig/pager.c	2004-02-05 08:38:03.000000000 +0100
++++ mutt-1.4.1/pager.c	2004-02-05 08:54:45.326988160 +0100
+@@ -16,6 +16,8 @@
+  *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+  */ 
+ 
++#define _GNU_SOURCE 1
++
+ #include "mutt.h"
+ #include "mutt_curses.h"
+ #include "mutt_regex.h"
+@@ -52,6 +54,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
++#include <wchar.h>
+ 
+ #define ISHEADER(x) ((x) == MT_COLOR_HEADER || (x) == MT_COLOR_HDEFAULT)
+ 
+diff -dur mutt-1.4.1.orig/regex.c mutt-1.4.1/regex.c
+--- mutt-1.4.1.orig/regex.c	2001-01-09 00:09:30.000000000 +0100
++++ mutt-1.4.1/regex.c	2004-02-05 08:55:22.777294848 +0100
+@@ -3113,8 +3113,6 @@
+ #ifndef REGEX_MALLOC
+   char *destination;
+ #endif
+-  /* We don't push any register information onto the failure stack.  */
+-  unsigned num_regs = 0;
+ 
+   register char *fastmap = bufp->fastmap;
+   unsigned char *pattern = bufp->buffer;
