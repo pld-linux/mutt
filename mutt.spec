@@ -41,15 +41,14 @@ Patch15:	%{name}-pgp_hook.patch
 Patch16:	%{name}-manual.patch
 Patch17:	%{name}-send_charset.patch
 Patch18:	%{name}-xface.patch
-Patch19:	%{name}-sasl2.patch
-Patch20:	%{name}-nntp.patch
+Patch19:	%{name}-nntp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 1.5.27}
 BuildRequires:	gettext-devel
 %{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
-BuildRequires:	openssl-devel >= 0.9.7
+BuildRequires:	openssl-devel >= 0.9.6i
 BuildRequires:	sgml-tools
 %{?_with_slang:BuildRequires:		slang-devel}
 Requires:	iconv
@@ -134,8 +133,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 #%patch15 -p1
 %patch16 -p1
 %patch18 -p1
-%{!?_without_sasl:%patch19 -p1}
-%{?_with_nntp:%patch20 -p1}
+%{?_with_nntp:%patch19 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
