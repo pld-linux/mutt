@@ -51,7 +51,7 @@ renk ve POP3 desteði içerir.
 CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
 ./configure %{_target} \
 	--prefix=/usr \
-	--with-sharedir=/usr/share \
+	--with-sharedir=%{_datadir} \
 	--sysconfdir=/etc \
 	--enable-pop \
 	--enable-imap \
@@ -91,19 +91,19 @@ rm -rf $RPM_BUILD_ROOT
 %attr(2755,root,mail) /usr/bin/mutt_dotlock
 
 %lang(en) %{_mandir}/man1/*
-/usr/share/charsets
+%{_datadir}/charsets
 
-%lang(cs) /usr/share/locale/cs/LC_MESSAGES/mutt.mo
-%lang(dn) /usr/share/locale/de/LC_MESSAGES/mutt.mo
-%lang(es) /usr/share/locale/es/LC_MESSAGES/mutt.mo
-%lang(fr) /usr/share/locale/fr/LC_MESSAGES/mutt.mo
-%lang(id) /usr/share/locale/id/LC_MESSAGES/mutt.mo
-%lang(it) /usr/share/locale/it/LC_MESSAGES/mutt.mo
-%lang(nl) /usr/share/locale/nl/LC_MESSAGES/mutt.mo
-%lang(pl) /usr/share/locale/pl/LC_MESSAGES/mutt.mo
-%lang(ru) /usr/share/locale/ru/LC_MESSAGES/mutt.mo
-%lang(sk) /usr/share/locale/sk/LC_MESSAGES/mutt.mo
-%lang(uk) /usr/share/locale/uk/LC_MESSAGES/mutt.mo
+%lang(cs) %{_datadir}/locale/cs/LC_MESSAGES/mutt.mo
+%lang(dn) %{_datadir}/locale/de/LC_MESSAGES/mutt.mo
+%lang(es) %{_datadir}/locale/es/LC_MESSAGES/mutt.mo
+%lang(fr) %{_datadir}/locale/fr/LC_MESSAGES/mutt.mo
+%lang(id) %{_datadir}/locale/id/LC_MESSAGES/mutt.mo
+%lang(it) %{_datadir}/locale/it/LC_MESSAGES/mutt.mo
+%lang(nl) %{_datadir}/locale/nl/LC_MESSAGES/mutt.mo
+%lang(pl) %{_datadir}/locale/pl/LC_MESSAGES/mutt.mo
+%lang(ru) %{_datadir}/locale/ru/LC_MESSAGES/mutt.mo
+%lang(sk) %{_datadir}/locale/sk/LC_MESSAGES/mutt.mo
+%lang(uk) %{_datadir}/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
 * Thu May  6 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
@@ -114,9 +114,9 @@ rm -rf $RPM_BUILD_ROOT
 * Thu Mar 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.95.4-1i]
 - rewrited %install (now we use DESTDIR style install),
-- added --sysconfdir=/etc adnd changed --with-sharedir to /usr/share,
+- added --sysconfdir=/etc adnd changed --with-sharedir to %{_datadir},
 - added Requires: mailcap (mutt use /etc/mime.types).
-- added /usr/share/charsets in %files.
+- added %{_datadir}/charsets in %files.
 
 * Thu Mar 25 1999 Artur Frysiak <wiget@pld.org.pl>
 - upgraded to 0.95.4i
