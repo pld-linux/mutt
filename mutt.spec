@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.2.5i
-Release:	1
+Release:	2
 Epoch:		2
 License:	GPL
 Group:		Applications/Mail
@@ -99,7 +99,7 @@ mv -f aclocal.m4 acinclude.m4
 aclocal
 automake
 autoconf
-CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
+CFLAGS="%{!?debug:$RPM_OPT_FLAGS}%{?debug:-O -g} -fno-strict-aliasing"
 %configure \
 	--with-sharedir=%{_datadir} \
 	--enable-pop \
@@ -128,8 +128,7 @@ install %{SOURCE2} %{SOURCE3} .
 
 gzip -9nf contrib/{*rc*,*cap*} \
 	ChangeLog README TODO NEWS README.SECURITY README.SSL README.UPGRADE \
-	patches_{bj,sec}.txt \
-	$RPM_BUILD_ROOT%{_mandir}/man1/*
+	patches_{bj,sec}.txt
 
 %find_lang %{name}
 
