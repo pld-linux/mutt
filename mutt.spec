@@ -18,7 +18,7 @@ Summary(tr):	Mutt elektronik posta programý
 Summary(uk):	ðÏÛÔÏ×Á ËÌ¦¤ÎÔÓØËÁ ÐÒÏÇÒÁÍÁ Mutt
 Name:		mutt
 Version:	1.4.1
-Release:	6
+Release:	7
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -53,7 +53,7 @@ URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.7}
+%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7c
@@ -63,7 +63,7 @@ BuildRequires:	sgml-tools-dtd
 %{?with_esmtp:BuildRequires:	libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
-%{?with_home_etc:Requires:	home-etc >= 1.0.7}
+%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	"-fomit-frame-pointer"
