@@ -20,7 +20,6 @@ Patch1:		%{name}-in_reply_to.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
-BuildRequires:	iconv
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.6a
 BuildRequires:	cyrus-sasl-devel
