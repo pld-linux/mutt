@@ -16,6 +16,7 @@ Source3:	mutt.pl.po
 Patch:		mutt-mail.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
+Requires:	mailcap
 Buildroot:	/tmp/%{name}-%{version}-root
 
 %description
@@ -53,14 +54,15 @@ install %{SOURCE3} $RPM_BUILD_DIR/%{name}-%{version}/po/pl.po
 CFLAGS="$RPM_OPT_FLAGS" LDFLAGS=-s \
         ./configure \
 	--prefix=/usr \
-	--with-sharedir=/etc \
+	--with-sharedir=/usr/share \
+	--sysconfdir=/etc \
 	--enable-pop \
 	--enable-imap \
 	--with-curses \
 	--disable-warnings \
 	--disable-domain \
         --enable-compressed \
-	--with-docdir=$RPM_BUILD_DIR/%{name}-%{version}/rpm_docs 
+	--with-docdir=/usr/doc/mutt-%{version}
 
 make 
 
@@ -68,29 +70,31 @@ make
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/X11/wmconfig
 
-make prefix=$RPM_BUILD_ROOT/usr sharedir=$RPM_BUILD_ROOT/etc install
+#make prefix=$RPM_BUILD_ROOT/usr sharedir=$RPM_BUILD_ROOT/etc install
+make install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
 gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/* \
 	contrib/{*rc,*cap} \
-	rpm_docs/{html/*,*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
+	$RPM_BUILD_ROOT/usr/doc/mutt-%{version}/{*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc contrib/*.gz rpm_docs/{html,*.gz}
+%doc /usr/doc/%{name}-%{version}/*.gz
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
 %config(missingok) /etc/X11/wmconfig/mutt
 
-%attr(0711,root,root) /usr/bin/mutt
-%attr(2711,root,mail) /usr/bin/mutt_dotlock
+%attr(0755,root,root) /usr/bin/mutt
+%attr(2755,root,mail) /usr/bin/mutt_dotlock
 
 %lang(en) /usr/man/man1/*
+/usr/share/charsets
 
 %lang(en) /usr/share/locale/de/LC_MESSAGES/mutt.mo
 %lang(es) /usr/share/locale/es/LC_MESSAGES/mutt.mo
@@ -101,8 +105,14 @@ rm -rf $RPM_BUILD_ROOT
 %lang(uk) /usr/share/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
-* Thu Mar 25 1999 Artur Frysiak <wiget@pld.org.pl>
+* Thu Mar 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.95.4i-1]
+- rewrited %install (now we use DESTDIR style install),
+- added --sysconfdir=/etc adnd changed --with-sharedir to /usr/share,
+- added Requires: mailcap (mutt use /etc/mime.types).
+- added /usr/share/charsets in %files.
+
+* Thu Mar 25 1999 Artur Frysiak <wiget@pld.org.pl>
 - upgraded to 0.95.4i
 - linked with ncurses
 - removed man group from man pages
@@ -119,20 +129,20 @@ rm -rf $RPM_BUILD_ROOT
 - cosmetic changes
 
 * Mon Dec 14 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-[0.95i-1]
+  [0.95i-1]
 - remove patch for compressed folders (not available yet)
 - added %%lang macros
 - added some missing doc files
 - locale files included
 
 * Sat Sep 19 1998 Marcin Korzonek <mkorz@shadow.eu.org>
-[0.93.2i-1d]
+  [0.93.2i-1d]
 - added pl translation,
 - added patch for compressed folders,
 - rewrites system Muttrc based on ones from Roland Rosenfeld.
 
 * Sun Sep  6 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-[0.93.2i-1]
+  [0.93.2i-1]
 - added -q %setup parameter,
 - changed Buildroot to /tmp/%%{name}-%%{version}-root,
 - added using %%{name} and %%{version} in Source,
