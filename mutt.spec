@@ -8,7 +8,7 @@ Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.26i
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		Applications/Mail
@@ -73,6 +73,7 @@ desteði, renk ve POP3 desteði içerir.
 
 %build
 
+autoconf
 #PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk \
 CFLAGS="%{optflags} -I%{_includedir}/slang" \
 ./configure \
