@@ -4,23 +4,38 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	1.0
-Release:	2i
+Version:	1.1.11
+Release:	1i
 Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
 Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
 Source1:	mutt.desktop
-Source2:	Muttrc
 Patch0:		mutt-mail.patch
-Patch1:		ftp://dione.ids.pl/people/siewca/patches/mutt-confdir.patch
+#Patch1:		mutt-confdir.patch
+Patch2: http://www.spinnaker.de/mutt/patch-1.1.10.rr.compressed.1.gz
+# Part of that patches I changed by hand to fit them into newer version
+# (bonkey)
+Patch3: patch-0.00.sec+bonk.patchlist.1
+Patch7: http://sec.42.org/mutt/patch-0.94.7.sec.previous_jump.1
+Patch9: http://sec.42.org/mutt/patch-0.94.7.vikas.word_chars.1
+Patch10: http://sec.42.org/mutt/patch-0.95.3.bj.ed_mtime.1
+Patch12: http://sec.42.org/mutt/patch-0.95.4.bj.status-time.1
+Patch14: http://sec.42.org/mutt/patch-0.95.4.sec.keypad.1
+Patch16: http://sec.42.org/mutt/patch-0.95.4.sec.reverse_reply.1
+Patch17: http://sec.42.org/mutt/patch-0.95.4.vikas.print_index.1
+Patch18: http://sec.42.org/mutt/patch-0.95.6.as.mark-old.1
+Patch19: http://sec.42.org/mutt/patch-0.95.bj.hash_destroy.2
+Patch20: http://sec.42.org/mutt/patch-0.95.sec.condense_pgp.1
+Patch22: http://sec.42.org/mutt/patch-1.02.sec._A.1
+Patch23: http://www.murkworks.to/blank-line.patch
+#Patch24: http://www.albedo.art.pl/~kbryd/mutt/mutt_package.tar.gz
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
 BuildRequires:	ncurses-devel >= 5.0
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_sysconfdir		/etc
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
@@ -50,7 +65,22 @@ renk ve POP3 desteði içerir.
 %prep
 %setup -q
 %patch0 -p0
-%patch1 -p1 
+# %patch1 -p1 
+%patch2 -p1 
+%patch3 -p1
+%patch7 -p1
+%patch9 -p0
+%patch10 -p0
+%patch12 -p1
+%patch14 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p0
+%patch20 -p1
+%patch22 -p1
+%patch23 -p0
+
 
 %build
 CFLAGS="$RPM_OPT_FLAGS -fno-strict-aliasing"
@@ -63,9 +93,11 @@ export CFLAGS LDFLAGS
 	--with-curses \
 	--disable-warnings \
 	--disable-domain \
-        --enable-compressed \
+   --with-ssl \
+   --enable-compressed \
 	--with-docdir=%{_defaultdocdir}/%{name}-%{version}
 
+make keymap.h
 make 
 
 %install
@@ -75,11 +107,10 @@ install -d $RPM_BUILD_ROOT/usr/X11R6/share/applnk/Networking/Mail
 make install DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE1} $RPM_BUILD_ROOT/usr/X11R6/share/applnk/Networking/Mail
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
 gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
 	contrib/{*rc,*cap} \
-	ChangeLog README TODO NEWS README.SECURITY
+	ChangeLog README TODO NEWS README.SECURITY README.SSL
 
 %find_lang %{name}
 
@@ -88,7 +119,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc {ChangeLog,README,TODO,NEWS,README.SECURITY}.gz
+%doc {ChangeLog,README,TODO,NEWS,README.SECURITY,README.SSL}.gz
+%doc doc/manual*html
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
 /usr/X11R6/share/applnk/Networking/Mail/mutt.desktop
