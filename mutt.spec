@@ -18,7 +18,7 @@ URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
 BuildRequires:	ncurses-devel >= 5.0
-Buildroot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sysconfdir		/etc
 
