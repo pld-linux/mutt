@@ -4,7 +4,7 @@ Summary(fr): Agent courrier Mutt
 Summary(pl): Program pocztowy Mutt
 Summary(tr): Mutt elektronik posta programý
 Name:        mutt
-Version:     0.95
+Version:     0.95.3
 Release:     3d
 Copyright:   GPL
 Group:       Applications/Mail
@@ -13,8 +13,7 @@ Source0:     ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
 Source1:     %{name}.wmconfig
 Source2:     Muttrc
 Source3:     %{name}.pl.po
-Patch0:	     %{name}-mail.patch
-Patch1:      %{name}-pl.patch
+Patch:	     %{name}-mail.patch
 URL:         http://www.mutt.org/
 Requires:    smtpdaemon
 Buildroot:   /tmp/%{name}-%{version}-root
@@ -46,8 +45,7 @@ renk ve POP3 desteði içerir.
 
 %prep
 %setup -q 
-%patch0 -p0
-%patch1 -p0
+%patch -p0
 
 install %{SOURCE3} $RPM_BUILD_DIR/%{name}-%{version}/po/pl.po
 
@@ -76,7 +74,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
 gzip -9nf $RPM_BUILD_ROOT/usr/man/man1/*
-gzip -9nf contrib/{*rc,*cap} rpm_docs/{html/*,*.txt,ChangeLog,README,TODO,NEWS}
+gzip -9nf contrib/{*rc,*cap} rpm_docs/{html/*,*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -102,6 +100,10 @@ rm -rf $RPM_BUILD_ROOT
 %lang(uk) /usr/share/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
+* Sat Feb 13 1999 Micha³ Kuratczyk <kura@wroclaw.art.pl>
+  [0.95.3i-3d]
+- upgraded to 0.95.3i
+
 * Thu Feb 10 1999 Micha³ Kuratczyk <kurkens@polbox.com>
   [0.95i-3d]
 - added gzipping documentation
