@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.0
-Release:	1i
+Release:	2i
 Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
