@@ -13,7 +13,7 @@ Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
 Source1:	mutt.desktop
 Source2:	Muttrc
 Patch0:		mutt-mail.patch
-Patch1:		ftp://dione.ids.pl/people/siewca/patches/mutt-etc.patch
+Patch1:		ftp://dione.ids.pl/people/siewca/patches/mutt-confdir.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
 Requires:	mailcap
