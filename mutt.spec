@@ -1,5 +1,6 @@
 # conditionals:
 # --with slang:	use slang library instead of ncurses
+# --with nntp:  use VVV's NNTP patch
 
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -11,9 +12,9 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.4
-Release:	4
-Epoch:		5
+Version:	1.4.1
+Release:	1
+Epoch:		1
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
@@ -38,7 +39,8 @@ Patch14:	%{name}-LIBOBJ.patch
 Patch15:	%{name}-pgp_hook.patch
 Patch16:	%{name}-manual.patch
 Patch17:	%{name}-send_charset.patch
-Patch18:	%{name}-nntp.patch
+Patch18:        %{name}-xface.patch
+Patch19:	%{name}-nntp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -120,10 +122,12 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch12 -p1
 #%patch13 -p0
 %patch14 -p1
-%patch15 -p1
+#%patch15 -p1
 %patch16 -p1
 %patch17 -p0
 %patch18 -p1
+# fix me :(
+%{?_with_nntp:%patch19 -p1}
 
 %build
 %{__gettextize}
