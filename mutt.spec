@@ -141,7 +141,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch12 -p1
 #%patch13 -p0
 %patch14 -p1
-%patch14 -p1
+%patch15 -p1
 %patch16 -p1
 %patch17 -p1
 %{?with_nntp:%patch19 -p1}
