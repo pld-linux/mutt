@@ -624,13 +624,13 @@ diff -Nur mutt-1.3.27.orig/config.h.in mutt-1.3.27/config.h.in
 --- mutt-1.3.27.orig/config.h.in	Fri Aug  3 18:52:17 2001
 +++ mutt-1.3.27/config.h.in	Fri Feb  1 22:52:59 2002
 @@ -151,6 +151,9 @@
- /* The Sun mailtool attachments support */
- #undef SUN_ATTACHMENT 
+ /*  Define to enable Sun mailtool attachments support.  */
+ #undef SUN_ATTACHMENT
  
 +/* Define to enable compressed mailboxes support */
 +#undef USE_COMPRESSED
 +
- /* The result of isprint() is unreliable? */
+ /*  Define if the result of isprint() is unreliable.  */
  #undef LOCALES_HACK
  
 diff -Nur mutt-1.3.27.orig/configure mutt-1.3.27/configure
