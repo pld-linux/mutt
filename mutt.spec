@@ -72,15 +72,9 @@ make install DESTDIR=$RPM_BUILD_ROOT
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/wmconfig/mutt
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
-<<<<<<< mutt.spec
-gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
-	contrib/{*rc,*cap} \
-	$RPM_BUILD_ROOT%{_defaultdocdir}/%{name}-%{version}/{*.txt,ChangeLog,README,TODO,NEWS,README.SECURITY}
-=======
 gzip -9nf		$RPM_BUILD_ROOT%{_mandir}/man1/* \
 			contrib/{*rc,*cap} \
 			ChangeLog README TODO NEWS README.SECURITY
->>>>>>> 1.19
 
 %find_lang %{name}
 
@@ -89,11 +83,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-<<<<<<< mutt.spec
-%doc %{_defaultdocdir}/%{name}-%{version}/*.gz
-=======
 %doc {ChangeLog,README,TODO,NEWS,README.SECURITY}.gz
->>>>>>> 1.19
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
 %config(missingok) /etc/X11/wmconfig/mutt
