@@ -33,8 +33,7 @@ Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-rr.compressed.patch
 Patch3:		%{name}-cd.edit_threads.patch
 Patch4:		%{name}-bj.status-time.patch
-Patch6:		%{name}-devl.narrow_tree.patch
-Patch7:		%{name}-vvv.quote.gz
+Patch5:		%{name}-vvv.quote.patch
 Patch8:		%{name}-null_name.patch
 Patch9:		%{name}-cd.trash_folder.patch
 Patch10:	%{name}-cd.purge_message.patch
@@ -135,7 +134,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-#%patch7 -p1
+%patch5 -p1
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
