@@ -122,7 +122,7 @@ CFLAGS="%{optflags} -I%{_includedir}/slang" \
 	--bindir=%{_bindir} \
 	--sysconfdir=%{_sysconfdir} \
 	--datadir=%{_datadir} \
-	--mandir=%{_mandir} 
+	--mandir=%{_mandir}
 
 %{__make}
 %{__make} manual.txt -C doc
