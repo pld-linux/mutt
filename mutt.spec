@@ -1,10 +1,10 @@
 #
 # Conditional build:
-# _with_slang	- use slang library instead of ncurses
-# _with_nntp	- use VVV's NNTP patch
-# _with_esmtp   - use esmtp patch
-# _without_sasl - don't use sasl
-# _without_home_etc - don't use home_etc
+%bcond_with slang		# use slang library instead of ncurses
+%bcond_with nntp		# use VVV's NNTP patch
+%bcond_with esmtp		# use esmtp patch
+%bcond_without sasl		# don't use sasl
+%bcond_without home_etc		# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -52,18 +52,18 @@ Patch22:	%{name}-home_etc.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
-%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-%{!?_without_home_etc:BuildRequires:	home-etc-devel >= 1.0.7}
+%{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.7}
 BuildRequires:	gettext-devel
-%{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
+%{!?with_slang:BuildRequires:		ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7c
 BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
-%{?_with_slang:BuildRequires:		slang-devel}
-%{?_with_esmtp:BuildRequires:       libesmtp-devel}
+%{?with_slang:BuildRequires:		slang-devel}
+%{?with_esmtp:BuildRequires:       libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
-%{!?_without_home_etc:Requires:	home-etc >= 1.0.7}
+%{?with_home_etc:Requires:	home-etc >= 1.0.7}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	"-fomit-frame-pointer"
@@ -144,10 +144,10 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch15 -p1
 %patch16 -p1
 %patch18 -p1
-%{!?_without_sasl:%patch19 -p1}
-%{?_with_nntp:%patch20 -p1}
-%{?_with_esmtp:%patch21 -p1}
-%{!?_without_home_etc:%patch22 -p1}
+%{?with_sasl:%patch19 -p1}
+%{?with_nntp:%patch20 -p1}
+%{?with_esmtp:%patch21 -p1}
+%{?with_home_etc:%patch22 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -158,8 +158,8 @@ rm -f doc/{manual*.html,manual.txt}
 %{__automake}
 %configure \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
-	%{!?_with_slang:--with-curses} \
-	%{?_with_slang:--with-slang} \
+	%{!?with_slang:--with-curses} \
+	%{?with_slang:--with-slang} \
 	--enable-compressed \
 	--enable-external-dotlock \
 	--enable-imap \
@@ -167,11 +167,11 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-mailtool \
 	--with-mixmaster \
 	--enable-pop \
-	%{?_with_nntp:--enable-nntp} \
+	%{?with_nntp:--enable-nntp} \
 	--with-regex \
-	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
-	%{!?_without_home_etc:--with-home-etc} %{?_without_home_etc:--without-home-etc} \
-    %{?_with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
+	%{?with_sasl:--with-sasl} %{!?with_sasl:--without-sasl} \
+	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
+    %{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
 	--with-docdir=%{_docdir}/%{name}-%{version} \
@@ -212,7 +212,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt README.xface %{?_with_esmtp: Muttrc.esmtp}
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt README.xface %{?with_esmtp: Muttrc.esmtp}
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
