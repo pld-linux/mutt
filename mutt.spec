@@ -3,6 +3,7 @@
 %bcond_with	slang		# use slang library instead of ncurses
 %bcond_with	nntp		# use VVV's NNTP patch
 %bcond_with	esmtp		# use esmtp patch
+%bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
 %bcond_without	home_etc	# don't use home_etc
 #
@@ -18,7 +19,7 @@ Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
 Version:	1.4.2.1
-Release:	8
+Release:	8.1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -140,7 +141,8 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-%patch12 -p1
+# breaks display if arrow_cursor is set
+%{?with_folder_column:%patch12 -p1}
 # disabled - changes default behaviour
 ##%patch13 -p0
 %patch14 -p1
