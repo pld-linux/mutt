@@ -44,25 +44,26 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 
 %description
-Mutt is a small but very poweful full-screen Unix mail client. Features
-include MIME support, color, POP3 support, message threading, bindable
-keys, and threaded sorting mode.
+Mutt is a small but very poweful full-screen Unix mail client.
+Features include MIME support, color, POP3 support, message threading,
+bindable keys, and threaded sorting mode.
 
 %description -l de
-Mutt ist ein kleiner aber leistungsfähiger Vollbild-Mail-Client für Unix
-mit MIME-Unterstützung, Farbe, POP3-Unterstützung, Nachrichten-Threading,
-zuweisbaren Tasten und Sortieren nach Threads.
+Mutt ist ein kleiner aber leistungsfähiger Vollbild-Mail-Client für
+Unix mit MIME-Unterstützung, Farbe, POP3-Unterstützung,
+Nachrichten-Threading, zuweisbaren Tasten und Sortieren nach Threads.
 
 %description -l fr
-mutt est un client courrier Unix plein écran, petit mais très puissant. Il
-dispose de la gestion MIME, des couleurs, de la gestion POP, des fils de
-discussion, des touches liées et d'un mode de tri sur les fils.
+mutt est un client courrier Unix plein écran, petit mais très
+puissant. Il dispose de la gestion MIME, des couleurs, de la gestion
+POP, des fils de discussion, des touches liées et d'un mode de tri sur
+les fils.
 
 %description -l pl
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych
-posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty skrzynek
-pocztowych, kolory, w±tki, ocenê wa¿no¶ci listów (scoring) oraz
-skompresowane foldery.
+posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty
+skrzynek pocztowych, kolory, w±tki, ocenê wa¿no¶ci listów (scoring)
+oraz skompresowane foldery.
 
 %description -l tr
 Mutt, küçük ama çok güçlü bir tam-ekran Unix mektup istemcisidir. MIME
