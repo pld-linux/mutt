@@ -65,11 +65,11 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/X11/applnk/Networking/Mail
+install -d $RPM_BUILD_ROOT/usr/X11R6/share/applnk/Networking/Mail
 
 make install DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/X11/applnk/Networking/Mail
+install %{SOURCE1} $RPM_BUILD_ROOT/usr/X11R6/share/applnk/Networking/Mail
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/Muttrc
 
 gzip -9nf $RPM_BUILD_ROOT%{_mandir}/man1/* \
@@ -86,7 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc {ChangeLog,README,TODO,NEWS,README.SECURITY}.gz
 
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
-/etc/X11/applnk/Networking/Mail/mutt.desktop
+/usr/X11R6/share/applnk/Networking/Mail/mutt.desktop
 
 %attr(755,root,root) %{_bindir}/*
 %{_mandir}/man*/*
