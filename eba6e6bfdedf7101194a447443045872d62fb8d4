@@ -1,0 +1,51 @@
+
+- added using CVS keywords in %changelog (for automating them).
+
+* Thu May  6 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [0.96.2-1]
+- updated .mo files list,
+- added %%{_target_platform} macro to ./configure parameters.
+
+* Thu Mar 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [0.95.4-1i]
+- rewrited %install (now we use DESTDIR style install),
+- added --sysconfdir=/etc adnd changed --with-sharedir to %{_datadir},
+- added Requires: mailcap (mutt use /etc/mime.types).
+- added %{_datadir}/charsets in %files.
+
+* Thu Mar 25 1999 Artur Frysiak <wiget@pld.org.pl>
+- upgraded to 0.95.4i
+- linked with ncurses
+- removed man group from man pages
+- updated pl.po (sync with i18n CVS)
+
+* Sat Feb 13 1999 Micha³ Kuratczyk <kura@wroclaw.art.pl>
+  [0.95.3i-3d]
+- upgraded to 0.95.3i
+
+* Thu Feb 10 1999 Micha³ Kuratczyk <kurkens@polbox.com>
+  [0.95i-3d]
+- added gzipping documentation
+- simplification in %files
+- cosmetic changes
+
+* Mon Dec 14 1998 Marcin Korzonek <mkorz@shadow.eu.org>
+  [0.95i-1]
+- remove patch for compressed folders (not available yet)
+- added %%lang macros
+- added some missing doc files
+- locale files included
+
+* Sat Sep 19 1998 Marcin Korzonek <mkorz@shadow.eu.org>
+  [0.93.2i-1d]
+- added pl translation,
+- added patch for compressed folders,
+- rewrites system Muttrc based on ones from Roland Rosenfeld.
+
+* Sun Sep  6 1998 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [0.93.2i-1]
+- added -q %setup parameter,
+- changed Buildroot to /tmp/%%{name}-%%{version}-root,
+- added using %%{name} and %%{version} in Source,
+- added using %{SOURCE#} macro in %install,
+- changed base Source Url to ftp://riemann.iam.uni-bonn.de/pub/mutt/.
