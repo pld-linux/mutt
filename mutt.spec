@@ -8,8 +8,8 @@ Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.25i
-Release:	1
-Epoch:		4
+Release:	2
+Epoch:		5
 License:	GPL
 Group:		Applications/Mail
 Group(de):	Applikationen/Post
