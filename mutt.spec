@@ -106,7 +106,7 @@ mv -f aclocal.m4 acinclude.m4
 aclocal
 automake
 autoconf
-CFLAGS="%{?debug:-O -g}%{!?debug:$RPM_OPT_FLAGS} -fno-strict-aliasing"
+CFLAGS="%{?debug:-O0 -g}%{!?debug:$RPM_OPT_FLAGS} -fno-strict-aliasing"
 %configure \
 	--with-sharedir=%{_datadir} \
 	--enable-pop \
