@@ -108,7 +108,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
 %attr(755,root,root) %{_bindir}/pgp*
-%attr(2754,root,mail) %{_bindir}/mutt_dotlock
+%attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
 %{_applnkdir}/Network/Mail/mutt.desktop
 %{_pixmapsdir}/mutt.png
