@@ -22,7 +22,7 @@ Requires:	smtpdaemon
 Requires:	mailcap
 BuildRequires:	ncurses-devel >= 5.0
 BuildRequires:	openssl-devel >= 0.9.6a
-BuildRequires:	cyrus-sasl-devel
+%{!?_without_sasl:BuildRequires:	cyrus-sasl-devel}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -76,7 +76,7 @@ automake -a -c
 	--enable-pop \
 	--enable-imap \
 	--with-ssl \
-	--with-sasl \
+	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--disable-warnings \
 	--enable-mailtool \
