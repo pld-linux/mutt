@@ -197,7 +197,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH13}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
