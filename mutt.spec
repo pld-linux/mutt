@@ -49,6 +49,7 @@ Patch19:	%{name}-sasl2.patch
 Patch20:	%{name}-nntp.patch
 Patch21:	%{name}-esmtp.patch
 Patch22:	%{name}-home_etc.patch
+Patch23:	%{name}-kill_warnings.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -148,6 +149,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %{?with_nntp:%patch20 -p1}
 %{?with_esmtp:%patch21 -p1}
 %{?with_home_etc:%patch22 -p1}
+%patch23 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
