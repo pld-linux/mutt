@@ -1,0 +1,1153 @@
+diff -rU3 --new-file mutt-1.3.99-vanilla/PATCHES mutt-1.3.99/PATCHES
+--- mutt-1.3.99-vanilla/PATCHES	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/PATCHES	Thu May 23 14:13:33 2002
+@@ -1,3 +1,4 @@
++patch-1.3.28.dw.pgp-hook.3
+ vvv.quote
+ patch-1.3.27.cd.signatures_menu.2.1
+ patch-1.3.25.cd.purge_command.2
+diff -rU3 --new-file mutt-1.3.99-vanilla/doc/manual.sgml.head mutt-1.3.99/doc/manual.sgml.head
+--- mutt-1.3.99-vanilla/doc/manual.sgml.head	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/doc/manual.sgml.head	Thu May 23 14:13:33 2002
+@@ -1389,7 +1389,9 @@
+ or because, for some reasons, you need to override the key Mutt would
+ normally use.  The pgp-hook command provides a method by which you can
+ specify the ID of the public key to be used when encrypting messages to
+-a certain recipient.
++a certain recipient.  You may use multiple pgp-hook's with the same
++pattern; multiple matching pgp-hook's result in the use of multiple
++keyids for recipient.
+ 
+ <sect1>Adding key sequences to the keyboard buffer<label id="push">
+ <p>
+diff -rU3 --new-file mutt-1.3.99-vanilla/doc/manual.sgml.head.orig mutt-1.3.99/doc/manual.sgml.head.orig
+--- mutt-1.3.99-vanilla/doc/manual.sgml.head.orig	Thu Apr 25 15:28:00 2002
++++ mutt-1.3.99/doc/manual.sgml.head.orig	Thu May 23 14:12:14 2002
+@@ -525,6 +525,7 @@
+ c       edit-cc                 edit the Cc field
+ b       edit-bcc                edit the Bcc field
+ y       send-message            send the message
++ESC s	signature-menu		select a signature and append it to your mail
+ s       edit-subject            edit the Subject
+ f       edit-fcc                specify an ``Fcc'' mailbox
+ p       pgp-menu                select PGP options (``i'' version only)
+@@ -2115,8 +2116,40 @@
+ with large volume mailing lists easier because you can easily delete
+ uninteresting threads and quickly find topics of value.
+ 
++<sect1>Editing threads
++<p>
++Mutt has the ability to dynamically restructure threads that are broken
++either by misconfigured software or bad behaviour from some
++correspondents. This allows to clean your mailboxes (<em/mbox/ and <em/mmdf/
++formats) from these annoyances which make it hard to follow a discussion.
++
++<sect2>Linking threads
++<p>
++
++Some mailers tend to "forget" to correctly set the "In-Reply-To:" and
++"References:" headers when replying to a message. This results in broken
++discussions because Mutt has not enough information to guess the correct
++threading.
++You can fix this by tagging the reply to a mail, then go onto this mail
++and use the ``link-threads'' function (bound to & by default). The
++reply will then be connected to its "parent" message.
++
++You can also connect multiple childs at once, tagging them and using the
++tag-prefix command (';') or the auto_tag option.
++
++<sect2>Breaking threads
++<p>
++
++On mailing lists, some people are in the bad habit of starting a new
++discussion by hitting "reply" to any message from the list and changing
++the subject to a totally unrelated one.
++You can fix such threads by using the ``break-thread'' function (bound
++by default to #), which will turn the subthread starting from the
++current message into a whole different thread.
++
+ <sect1>Delivery Status Notification (DSN) Support
+ <p>
++
+ RFC1894 defines a set of MIME content types for relaying information
+ about the status of electronic mail messages.  These can be thought of as
+ ``return receipts.'' Berkeley sendmail 8.8.x currently has some command
+@@ -2319,6 +2352,176 @@
+ macro pager \cb |urlview\n
+ </verb></tscreen>
+ 
++<sect1>Compressed folders Support (OPTIONAL)
++<p>
++
++If Mutt was compiled with compressed folders support (by running the
++<em/configure/ script with the <em/--enable-compressed/ flag), Mutt
++can open folders stored in an arbitrary format, provided that the user
++has a script to convert from/to this format to one of the accepted.
++
++The most common use is to open compressed archived folders e.g. with
++gzip.
++
++In addition, the user can provide a script that gets a folder in an
++accepted format and appends its context to the folder in the
++user-defined format, which may be faster than converting the entire
++folder to the accepted format, appending to it and converting back to
++the user-defined format.
++
++There are three hooks defined (<ref id="open-hook" name="open-hook">,
++<ref id="close-hook" name="close-hook"> and <ref id="append-hook"
++name="append-hook">) which define commands to uncompress and compress
++a folder and to append messages to an existing compressed folder 
++respectively.
++
++For example:
++
++<tscreen><verb>
++open-hook \\.gz$ "gzip -cd %f &gt; %t" 
++close-hook \\.gz$ "gzip -c %t &gt; %f"
++append-hook \\.gz$ "gzip -c %t &gt;&gt; %f" 
++</verb></tscreen>
++
++You do not have to specify all of the commands. If you omit <ref
++id="append-hook" name="append-hook">, the folder will be open and
++closed again each time you will add to it. If you omit <ref
++id="close-hook" name="close-hook"> (or give empty command) , the
++folder will be open in the  mode. If you specify <ref
++id="append-hook" name="append-hook"> though you'll be able to append
++to the folder.
++
++Note that Mutt will only try to use hooks if the file is not in one of
++the accepted formats. In particular, if the file is empty, mutt
++supposes it is not compressed. This is important because it allows the
++use of programs that do not have well defined extensions. Just use
++&dquot;.&dquot; as a regexp. But this may be surprising if your
++compressing script produces empty files. In this situation, unset <ref
++id="save_empty" name="&dollar;save&lowbar;empty">, so that the compressed file
++will be removed if you delete all of the messages.
++
++<sect2>Open a compressed mailbox for reading<label id="open-hook">
++<p>
++Usage: <tt/open-hook/ <em/regexp/ &dquot;<em/command/&dquot;
++
++The <em/command/ is the command that can be used for opening the
++folders whose names match <em/regexp/.
++
++The <em/command/ string is the printf-like format string, and it
++should accept two parameters: &percnt;f, which is replaced with the
++(compressed) folder name, and &percnt;t which is replaced with the
++name of the temporary folder to which to write.
++
++&percnt;f and &percnt;t can be repeated any number of times in the
++command string, and all of the entries are replaced with the
++appropriate folder name. In addition, &percnt;&percnt; is replaced by
++&percnt;, as in printf, and any other &percnt;anything is left as is.
++
++The <em/command/ should <bf/not/ remove the original compressed file.
++The <em/command/ should return non-zero exit status if it fails, so
++mutt knows something's wrong.
++
++Example:
++
++<tscreen><verb>
++open-hook \\.gz$ "gzip -cd %f &gt; %t" 
++</verb></tscreen>
++
++If the <em/command/ is empty, this operation is disabled for this file
++type.
++
++<sect2>Write a compressed mailbox<label id="close-hook">
++<p>
++Usage: <tt/close-hook/ <em/regexp/ &dquot;<em/command/&dquot;
++
++This is used to close the folder that was open with the <ref id="open-hook" 
++name="open-hook"> command after some changes were made to it.
++
++The <em/command/ string is the command that can be used for closing the
++folders whose names match <em/regexp/. It has the same format as in 
++the <ref id="open-hook" name="open-hook"> command. Temporary folder
++in this case is the folder previously produced by the <ref id="open-hook"
++name="open-hook"> command.
++
++The <em/command/ should <bf/not/ remove the decompressed file. The
++<em/command/ should return non-zero exit status if it fails, so mutt
++knows something's wrong.
++
++Example:
++
++<tscreen><verb>
++close-hook \\.gz$ "gzip -c %t &gt; %f"
++</verb></tscreen>
++
++If the <em/command/ is empty, this operation is disabled for this file
++type, and the file can only be open in the read-only mode.
++
++<ref id="close-hook" name ="close-hook"> is not called when you exit
++from the folder if the folder was not changed.
++
++<sect2>Append a message to a compressed mailbox<label id="append-hook">
++<p>
++Usage: <tt/append-hook/ <em/regexp/ &dquot;<em/command/&dquot;
++
++This command is used for saving to an existing compressed folder.
++The <em/command/ is the command that can be used for appending to the
++folders whose names match <em/regexp/. It has the same format as in 
++ the <ref id="open-hook" name="open-hook"> command.
++The temporary folder in this case contains the messages that are being
++appended. 
++
++The <em/command/ should <bf/not/ remove the decompressed file. The
++<em/command/ should return non-zero exit status if it fails, so mutt
++knows something's wrong.
++
++Example:
++
++<tscreen><verb>
++append-hook \\.gz$ "gzip -c %t &gt;&gt; %f" 
++</verb></tscreen>
++
++When <ref id="append-hook" name="append-hook"> is used, the folder is
++not opened, which saves time, but this means that we can not find out
++what the folder type is. Thus the default (<ref id="mbox_type"
++name="&dollar;mbox&lowbar;type">) type is always supposed (i.e.
++this is the format used for the temporary folder).
++
++If the file does not exist when you save to it, <ref id="close-hook"
++name="close-hook"> is called, and not <ref id="append-hook"
++name="append-hook">. <ref id="append-hook" name="append-hook"> is only
++for appending to existing folders.
++
++If the <em/command/ is empty, this operation is disabled for this file
++type. In this case, the folder will be open and closed again (using
++<ref id="open-hook" name="open-hook"> and <ref id="close-hook" 
++name="close-hook">respectively) each time you will add to it.
++
++<sect2>Encrypted folders
++<p>
++The compressed folders support can also be used to handle encrypted
++folders. If you want to encrypt a folder with PGP, you may want to use
++the following hooks:
++
++<tscreen><verb>
++open-hook  \\.pgp$ "pgp -f &lt; %f &gt; %t"
++close-hook \\.pgp$ "pgp -fe YourPgpUserIdOrKeyId &lt; %t &gt; %f"
++</verb></tscreen>
++
++Please note, that PGP does not support appending to an encrypted
++folder, so there is no append-hook defined.
++
++If you are using GnuPG instead of PGP, you may use the following hooks
++instead:
++
++<tscreen><verb>
++open-hook  \\.gpg$ "gpg --decrypt &lt; %f &gt; %t"
++close-hook \\.gpg$ "gpg --encrypt --recipient YourGpgUserIdOrKeyId &lt; %t &gt; %f"
++</verb></tscreen>
++
++<bf/Note:/ the folder is temporary stored decrypted in the /tmp
++directory, where it can be read by your system administrator. So think
++about the security aspects of this.
++
+ <sect>Mutt's MIME Support
+ <p>
+ Quite a bit of effort has been made to make Mutt the premier text-mode
+@@ -2871,12 +3074,16 @@
+ <item>
+ <tt><ref id="alternative_order" name="alternative&lowbar;order"></tt> <em/mimetype/ &lsqb; <em/mimetype/ ... &rsqb;
+ <item>
++<tt><ref id="append-hook" name="append-hook"></tt> <em/regexp/ &dquot;<em/command/&dquot;
++<item>
+ <tt><ref id="auto_view" name="auto&lowbar;view"></tt> <em/mimetype/ &lsqb; <em/mimetype/ ... &rsqb;
+ <item>
+ <tt><ref id="bind" name="bind"></tt> <em/map/ <em/key/ <em/function/
+ <item>
+ <tt><ref id="charset-hook" name="charset-hook"></tt> <em/alias/ <em/charset/
+ <item>
++<tt><ref id="close-hook" name="close-hook"></tt> <em/regexp/ &dquot;<em/command/&dquot;
++<item>
+ <tt><ref id="color" name="color"></tt> <em/object/ <em/foreground/ <em/background/ &lsqb; <em/regexp/ &rsqb;
+ <item>
+ <tt><ref id="color" name="uncolor"></tt> <em/index/ <em/pattern/ &lsqb; <em/pattern/ ... &rsqb;
+@@ -2919,6 +3126,8 @@
+ <item>
+ <tt><ref id="my_hdr" name="unmy&lowbar;hdr"></tt> <em/field/ &lsqb; <em/field/ ... &rsqb;
+ <item>
++<tt><ref id="open-hook" name="open-hook"></tt> <em/regexp/ &dquot;<em/command/&dquot;
++<item>
+ <tt><ref id="pgp-hook" name="pgp-hook"></tt> <em/pattern/ <em/key-id/
+ <item>
+ <tt><ref id="push" name="push"></tt> <em/string/
+diff -rU3 --new-file mutt-1.3.99-vanilla/doc/muttrc.man.head mutt-1.3.99/doc/muttrc.man.head
+--- mutt-1.3.99-vanilla/doc/muttrc.man.head	Thu May 23 14:12:13 2002
++++ mutt-1.3.99/doc/muttrc.man.head	Thu May 23 14:15:38 2002
+@@ -257,7 +257,9 @@
+ \fBpgp-hook\fP \fIpattern\fP \fIkey-id\fP
+ The pgp-hook command provides a method by which you can
+ specify the ID of the public key to be used when encrypting messages
+-to a certain recipient.
++to a certain recipient.  You may use multiple \fBpgp-hook\fPs with the
++same \fIpattern\fP; multiple matching \fBpgp-hook\fPs result in the use
++of multiple \fIkey-id\fPs for recipient.
+ .PP
+ .nf
+ \fBopen-hook\fP \fIregexp\fP "\fIcommand\fP"
+diff -rU3 --new-file mutt-1.3.99-vanilla/hook.c mutt-1.3.99/hook.c
+--- mutt-1.3.99-vanilla/hook.c	Thu May 23 14:12:13 2002
++++ mutt-1.3.99/hook.c	Thu May 23 14:13:33 2002
+@@ -129,7 +129,11 @@
+ 	ptr->rx.not == not &&
+ 	!mutt_strcmp (pattern.data, ptr->rx.pattern))
+     {
++#ifdef M_PGPHOOK
++      if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK | M_PGPHOOK))
++#else
+       if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK))
++#endif /* M_PGPHOOK */
+       {
+ 	/* these hooks allow multiple commands with the same
+ 	 * pattern, so if we've already seen this pattern/command pair, just
+@@ -456,9 +460,25 @@
+ }
+ 
+ #ifdef HAVE_PGP
+-char *mutt_pgp_hook (ADDRESS *adr)
++LIST *mutt_pgp_hook (ADDRESS *adr)
+ {
+-  return _mutt_string_hook (adr->mailbox, M_PGPHOOK);
++  HOOK *hook;
++  LIST *key_list = NULL;
++
++  if (!adr && !adr->mailbox)
++    return (NULL);
++
++  for (hook = Hooks; hook; hook = hook->next)
++  {
++    if (!hook->command)
++      continue;
++    if (!(hook->type & M_PGPHOOK))
++      continue;
++
++    if ((regexec (hook->rx.rx, adr->mailbox, 0, NULL, 0) == 0) ^ hook->rx.not)
++      key_list = mutt_add_list (key_list, hook->command);
++  }
++  return (key_list);
+ }
+ #endif /* HAVE_PGP */
+ 
+diff -rU3 --new-file mutt-1.3.99-vanilla/hook.c.orig mutt-1.3.99/hook.c.orig
+--- mutt-1.3.99-vanilla/hook.c.orig	Thu Jan  1 01:00:00 1970
++++ mutt-1.3.99/hook.c.orig	Thu May 23 14:12:13 2002
+@@ -0,0 +1,497 @@
++/* 
++ * Copyright (C) 1996-2000 Michael R. Elkins <me@cs.hmc.edu>, and others
++ *
++ *     This program is free software; you can redistribute it and/or modify
++ *     it under the terms of the GNU General Public License as published by
++ *     the Free Software Foundation; either version 2 of the License, or
++ *     (at your option) any later version.
++ *
++ *     This program is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ *     You should have received a copy of the GNU General Public License
++ *     along with this program; if not, write to the Free Software
++ *     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
++ */
++
++#include "mutt.h"
++#include "mailbox.h"
++
++#ifdef USE_COMPRESSED
++#include "compress.h"
++#endif
++
++#include <limits.h>
++#include <string.h>
++#include <stdlib.h>
++#include <ctype.h>
++#include <unistd.h>
++
++typedef struct hook
++{
++  int type;		/* hook type */
++  REGEXP rx;		/* regular expression */
++  char *command;	/* filename, command or pattern to execute */
++  pattern_t *pattern;	/* used for fcc,save,send-hook */
++  struct hook *next;
++} HOOK;
++
++static HOOK *Hooks = NULL;
++
++static int current_hook_type = 0;
++
++int mutt_parse_hook (BUFFER *buf, BUFFER *s, unsigned long data, BUFFER *err)
++{
++  HOOK *ptr;
++  BUFFER command, pattern;
++  int rc, not = 0;
++  regex_t *rx = NULL;
++  pattern_t *pat = NULL;
++  char path[_POSIX_PATH_MAX];
++
++  memset (&pattern, 0, sizeof (pattern));
++  memset (&command, 0, sizeof (command));
++
++  if (*s->dptr == '!')
++  {
++    s->dptr++;
++    SKIPWS (s->dptr);
++    not = 1;
++  }
++
++  mutt_extract_token (&pattern, s, 0);
++
++  if (!MoreArgs (s))
++  {
++    strfcpy (err->data, _("too few arguments"), err->dsize);
++    goto error;
++  }
++
++  mutt_extract_token (&command, s, (data & (M_FOLDERHOOK | M_SENDHOOK | M_ACCOUNTHOOK)) ?  M_TOKEN_SPACE : 0);
++
++  if (!command.data)
++  {
++    strfcpy (err->data, _("too few arguments"), err->dsize);
++    goto error;
++  }
++
++  if (MoreArgs (s))
++  {
++    strfcpy (err->data, _("too many arguments"), err->dsize);
++    goto error;
++  }
++
++  if (data & (M_FOLDERHOOK | M_MBOXHOOK))
++  {
++    strfcpy (path, pattern.data, sizeof (path));
++    _mutt_expand_path (path, sizeof (path), 1);
++    FREE (&pattern.data);
++    memset (&pattern, 0, sizeof (pattern));
++    pattern.data = safe_strdup (path);
++  }
++#ifdef USE_COMPRESSED
++  else if (data & (M_APPENDHOOK | M_OPENHOOK | M_CLOSEHOOK))
++  {
++    if (mutt_test_compress_command (command.data))
++    {
++      strfcpy (err->data, _("bad formatted command string"), err->dsize);
++      return (-1);
++    }
++  }
++#endif
++  else if (DefaultHook && (data & (M_FOLDERHOOK | M_MBOXHOOK | M_SENDHOOK |
++				   M_FCCHOOK | M_SAVEHOOK | M_MESSAGEHOOK)))
++  {
++    char tmp[HUGE_STRING];
++
++    strfcpy (tmp, pattern.data, sizeof (tmp));
++    mutt_check_simple (tmp, sizeof (tmp), DefaultHook);
++    FREE (&pattern.data);
++    memset (&pattern, 0, sizeof (pattern));
++    pattern.data = safe_strdup (tmp);
++  }
++
++  if (data & (M_MBOXHOOK | M_SAVEHOOK | M_FCCHOOK))
++  {
++    strfcpy (path, command.data, sizeof (path));
++    mutt_expand_path (path, sizeof (path));
++    FREE (&command.data);
++    memset (&command, 0, sizeof (command));
++    command.data = safe_strdup (path);
++  }
++
++  /* check to make sure that a matching hook doesn't already exist */
++  for (ptr = Hooks; ptr; ptr = ptr->next)
++  {
++    if (ptr->type == data &&
++	ptr->rx.not == not &&
++	!mutt_strcmp (pattern.data, ptr->rx.pattern))
++    {
++      if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK))
++      {
++	/* these hooks allow multiple commands with the same
++	 * pattern, so if we've already seen this pattern/command pair, just
++	 * ignore it instead of creating a duplicate */
++	if (!mutt_strcmp (ptr->command, command.data))
++	{
++	  FREE (&command.data);
++	  FREE (&pattern.data);
++	  return 0;
++	}
++      }
++      else
++      {
++	/* other hooks only allow one command per pattern, so update the
++	 * entry with the new command.  this currently does not change the
++	 * order of execution of the hooks, which i think is desirable since
++	 * a common action to perform is to change the default (.) entry
++	 * based upon some other information. */
++	FREE (&ptr->command);
++	ptr->command = command.data;
++	FREE (&pattern.data);
++	return 0;
++      }
++    }
++    if (!ptr->next)
++      break;
++  }
++
++  if (data & (M_SENDHOOK | M_SAVEHOOK | M_FCCHOOK | M_MESSAGEHOOK))
++  {
++    if ((pat = mutt_pattern_comp (pattern.data,
++	   (data & (M_SENDHOOK | M_FCCHOOK)) ? 0 : M_FULL_MSG,
++				  err)) == NULL)
++      goto error;
++  }
++  else
++  {
++    rx = safe_malloc (sizeof (regex_t));
++#ifdef M_PGPHOOK
++    if ((rc = REGCOMP (rx, NONULL(pattern.data), ((data & (M_PGPHOOK|M_CHARSETHOOK)) ? REG_ICASE : 0))) != 0)
++#else
++    if ((rc = REGCOMP (rx, NONULL(pattern.data), (data & (M_CHARSETHOOK|M_ICONVHOOK)) ? REG_ICASE : 0)) != 0)
++#endif /* HAVE_PGP */
++    {
++      regerror (rc, rx, err->data, err->dsize);
++      regfree (rx);
++      safe_free ((void **) &rx);
++      goto error;
++    }
++  }
++
++  if (ptr)
++  {
++    ptr->next = safe_calloc (1, sizeof (HOOK));
++    ptr = ptr->next;
++  }
++  else
++    Hooks = ptr = safe_calloc (1, sizeof (HOOK));
++  ptr->type = data;
++  ptr->command = command.data;
++  ptr->pattern = pat;
++  ptr->rx.pattern = pattern.data;
++  ptr->rx.rx = rx;
++  ptr->rx.not = not;
++  return 0;
++
++error:
++  FREE (&pattern.data);
++  FREE (&command.data);
++  return (-1);
++}
++
++static void delete_hook (HOOK *h)
++{
++  FREE (&h->command);
++  FREE (&h->rx.pattern);
++  if (h->rx.rx)
++  {
++    regfree (h->rx.rx);
++  }
++  mutt_pattern_free (&h->pattern);
++  FREE (&h);
++}
++
++/* Deletes all hooks of type ``type'', or all defined hooks if ``type'' is 0 */
++static void delete_hooks (int type)
++{
++  HOOK *h;
++  HOOK *prev;
++
++  while (h = Hooks, h && (type == 0 || type == h->type))
++  {
++    Hooks = h->next;
++    delete_hook (h);
++  }
++
++  prev = h; /* Unused assignment to avoid compiler warnings */
++
++  while (h)
++  {
++    if (type == h->type)
++    {
++      prev->next = h->next;
++      delete_hook (h);
++    }
++    else
++      prev = h;
++    h = prev->next;
++  }
++}
++
++int mutt_parse_unhook (BUFFER *buf, BUFFER *s, unsigned long data, BUFFER *err)
++{
++  while (MoreArgs (s))
++  {
++    mutt_extract_token (buf, s, 0);
++    if (mutt_strcmp ("*", buf->data) == 0)
++    {
++      if (current_hook_type)
++      {
++	snprintf (err->data, err->dsize,
++		  _("unhook: Can't do unhook * from within a hook."));
++	return -1;
++      }
++      delete_hooks (0);
++    }
++    else
++    {
++      int type = mutt_get_hook_type (buf->data);
++
++      if (!type)
++      {
++	snprintf (err->data, err->dsize,
++		 _("unhook: unknown hook type: %s"), buf->data);
++	return (-1);
++      }
++      if (current_hook_type == type)
++      {
++	snprintf (err->data, err->dsize,
++		  _("unhook: Can't delete a %s from within a %s."),
++		  buf->data, buf->data);
++	return -1;
++      }
++      delete_hooks (type);
++    }
++  }
++  return 0;
++}
++
++void mutt_folder_hook (char *path)
++{
++  HOOK *tmp = Hooks;
++  BUFFER err, token;
++  char buf[STRING];
++
++  current_hook_type = M_FOLDERHOOK;
++  
++  err.data = buf;
++  err.dsize = sizeof (buf);
++  memset (&token, 0, sizeof (token));
++  for (; tmp; tmp = tmp->next)
++  {
++    if(!tmp->command)
++      continue;
++
++    if (tmp->type & M_FOLDERHOOK)
++    {
++      if ((regexec (tmp->rx.rx, path, 0, NULL, 0) == 0) ^ tmp->rx.not)
++      {
++	if (mutt_parse_rc_line (tmp->command, &token, &err) == -1)
++	{
++	  mutt_error ("%s", err.data);
++	  FREE (&token.data);
++	  mutt_sleep (1);	/* pause a moment to let the user see the error */
++	  current_hook_type = 0;
++	  return;
++	}
++      }
++    }
++  }
++  FREE (&token.data);
++  
++  current_hook_type = 0;
++}
++
++char *mutt_find_hook (int type, const char *pat)
++{
++  HOOK *tmp = Hooks;
++
++  for (; tmp; tmp = tmp->next)
++    if (tmp->type & type)
++    {
++      if (regexec (tmp->rx.rx, pat, 0, NULL, 0) == 0)
++	return (tmp->command);
++    }
++  return (NULL);
++}
++
++void mutt_message_hook (CONTEXT *ctx, HEADER *hdr, int type)
++{
++  BUFFER err, token;
++  HOOK *hook;
++  char buf[STRING];
++
++  current_hook_type = type;
++  
++  err.data = buf;
++  err.dsize = sizeof (buf);
++  memset (&token, 0, sizeof (token));
++  for (hook = Hooks; hook; hook = hook->next)
++  {
++    if(!hook->command)
++      continue;
++
++    if (hook->type & type)
++      if ((mutt_pattern_exec (hook->pattern, 0, ctx, hdr) > 0) ^ hook->rx.not)
++	if (mutt_parse_rc_line (hook->command, &token, &err) != 0)
++	{
++	  FREE (&token.data);
++	  mutt_error ("%s", err.data);
++	  mutt_sleep (1);
++	  current_hook_type = 0;
++	  return;
++	}
++  }
++  FREE (&token.data);
++  current_hook_type = 0;
++}
++
++static int
++mutt_addr_hook (char *path, size_t pathlen, int type, CONTEXT *ctx, HEADER *hdr)
++{
++  HOOK *hook;
++
++  /* determine if a matching hook exists */
++  for (hook = Hooks; hook; hook = hook->next)
++  {
++    if(!hook->command)
++      continue;
++
++    if (hook->type & type)
++      if ((mutt_pattern_exec (hook->pattern, 0, ctx, hdr) > 0) ^ hook->rx.not)
++      {
++	mutt_make_string (path, pathlen, hook->command, ctx, hdr);
++	return 0;
++      }
++  }
++
++  return -1;
++}
++
++void mutt_default_save (char *path, size_t pathlen, HEADER *hdr)
++{
++  *path = 0;
++  if (mutt_addr_hook (path, pathlen, M_SAVEHOOK, Context, hdr) != 0)
++  {
++    char tmp[_POSIX_PATH_MAX];
++    ADDRESS *adr;
++    ENVELOPE *env = hdr->env;
++    int fromMe = mutt_addr_is_user (env->from);
++
++    if (!fromMe && env->reply_to && env->reply_to->mailbox)
++      adr = env->reply_to;
++    else if (!fromMe && env->from && env->from->mailbox)
++      adr = env->from;
++    else if (env->to && env->to->mailbox)
++      adr = env->to;
++    else if (env->cc && env->cc->mailbox)
++      adr = env->cc;
++    else
++      adr = NULL;
++    if (adr)
++    {
++      mutt_safe_path (tmp, sizeof (tmp), adr);
++      snprintf (path, pathlen, "=%s", tmp);
++    }
++  }
++}
++
++void mutt_select_fcc (char *path, size_t pathlen, HEADER *hdr)
++{
++  ADDRESS *adr;
++  char buf[_POSIX_PATH_MAX];
++  ENVELOPE *env = hdr->env;
++
++  if (mutt_addr_hook (path, pathlen, M_FCCHOOK, NULL, hdr) != 0)
++  {
++    if ((option (OPTSAVENAME) || option (OPTFORCENAME)) &&
++	(env->to || env->cc || env->bcc))
++    {
++      adr = env->to ? env->to : (env->cc ? env->cc : env->bcc);
++      mutt_safe_path (buf, sizeof (buf), adr);
++      snprintf (path, pathlen, "%s/%s", NONULL (Maildir), buf);
++      if (!option (OPTFORCENAME) && mx_access (path, W_OK) != 0)
++	strfcpy (path, NONULL (Outbox), pathlen);
++    }
++    else
++      strfcpy (path, NONULL (Outbox), pathlen);
++  }
++  mutt_pretty_mailbox (path);
++}
++
++static char *_mutt_string_hook (const char *match, int hook)
++{
++  HOOK *tmp = Hooks;
++
++  for (; tmp; tmp = tmp->next)
++  {
++    if ((tmp->type & hook) && ((match &&
++	 regexec (tmp->rx.rx, match, 0, NULL, 0) == 0) ^ tmp->rx.not))
++      return (tmp->command);
++  }
++  return (NULL);
++}
++
++char *mutt_charset_hook (const char *chs)
++{
++  return _mutt_string_hook (chs, M_CHARSETHOOK);
++}
++
++char *mutt_iconv_hook (const char *chs)
++{
++  return _mutt_string_hook (chs, M_ICONVHOOK);
++}
++
++#ifdef HAVE_PGP
++char *mutt_pgp_hook (ADDRESS *adr)
++{
++  return _mutt_string_hook (adr->mailbox, M_PGPHOOK);
++}
++#endif /* HAVE_PGP */
++
++#ifdef USE_SOCKET
++void mutt_account_hook (const char* url)
++{
++  HOOK* hook;
++  BUFFER token;
++  BUFFER err;
++  char buf[STRING];
++
++  err.data = buf;
++  err.dsize = sizeof (buf);
++  memset (&token, 0, sizeof (token));
++
++  for (hook = Hooks; hook; hook = hook->next)
++  {
++    if (! (hook->command && (hook->type & M_ACCOUNTHOOK)))
++      continue;
++
++    if ((regexec (hook->rx.rx, url, 0, NULL, 0) == 0) ^ hook->rx.not)
++    {
++      if (mutt_parse_rc_line (hook->command, &token, &err) == -1)
++      {
++	FREE (&token.data);
++	mutt_error ("%s", err.data);
++	mutt_sleep (1);
++
++	return;
++      }
++    }
++  }
++
++  FREE (&token.data);
++}
++#endif
+diff -rU3 --new-file mutt-1.3.99-vanilla/init.h mutt-1.3.99/init.h
+--- mutt-1.3.99-vanilla/init.h	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/init.h	Thu May 23 14:13:33 2002
+@@ -1183,6 +1183,14 @@
+ 
+ #ifdef HAVE_PGP
+ 
++  { "pgp_autoselectkey",	DT_BOOL, R_NONE, OPTPGPAUTOSELECT, 0 },
++  /*
++  ** .pp
++  ** If set, then a list of keys is not presented for selection when only
++  ** one matching key is available.  This may be useful in conjunction with
++  ** the \fIpgp-hook\fP command (with ``$$pgp_confirmhook'' set) and the
++  ** ``$$pgp_ignore_subkeys'' variable.
++  */
+   { "pgp_autosign",	DT_BOOL, R_NONE, OPTPGPAUTOSIGN, 0 },
+   /*
+   ** .pp
+@@ -1200,6 +1208,14 @@
+   ** \fIpgp-menu\fP, when encryption is not required or signing is
+   ** requested as well.
+   */
++  { "pgp_confirmhook",	DT_BOOL, R_NONE, OPTPGPCONFIRMHOOK, 1 },
++  /*
++  ** .pp
++  ** If set, then you will be prompted for confirmation of keys when using
++  ** the \fIpgp-hook\fP command.  If unset, no such confirmation prompt will
++  ** be presented.  This is generally considered unsafe, especially where
++  ** typos are concerned.
++  */
+   { "pgp_ignore_subkeys", DT_BOOL, R_NONE, OPTPGPIGNORESUB, 1},
+   /*
+   ** .pp
+diff -rU3 --new-file mutt-1.3.99-vanilla/init.h.orig mutt-1.3.99/init.h.orig
+--- mutt-1.3.99-vanilla/init.h.orig	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/init.h.orig	Thu May 23 14:12:14 2002
+@@ -519,6 +519,12 @@
+   ** you use `+' or `=' for any other variables since expansion takes place
+   ** during the `set' command.
+   */
++  { "folder_columns",   DT_NUM, R_NONE, UL &FolderColumns, UL 1 },
++  /*
++  ** .pp
++  ** Specifies the number of folder columns in folder browser.
++  **
++  */
+   { "folder_format",	DT_STR,	 R_INDEX, UL &FolderFormat, UL "%2C %t %N %F %2l %-8.8u %-8.8g %8s %d %f" },
+   /*
+   ** .pp
+diff -rU3 --new-file mutt-1.3.99-vanilla/mutt-1.3.28/PATCHES mutt-1.3.99/mutt-1.3.28/PATCHES
+--- mutt-1.3.99-vanilla/mutt-1.3.28/PATCHES	Thu Jan  1 01:00:00 1970
++++ mutt-1.3.99/mutt-1.3.28/PATCHES	Thu May 23 14:13:28 2002
+@@ -0,0 +1 @@
++patch-1.3.28.dw.pgp-hook.3
+diff -rU3 --new-file mutt-1.3.99-vanilla/mutt.h mutt-1.3.99/mutt.h
+--- mutt-1.3.99-vanilla/mutt.h	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/mutt.h	Thu May 23 14:13:33 2002
+@@ -427,8 +427,10 @@
+   /* PGP options */
+   
+ #ifdef HAVE_PGP
++  OPTPGPAUTOSELECT,
+   OPTPGPAUTOSIGN,
+   OPTPGPAUTOENCRYPT,
++  OPTPGPCONFIRMHOOK,
+   OPTPGPIGNORESUB,
+   OPTPGPLONGIDS,
+   OPTPGPREPLYENCRYPT,
+diff -rU3 --new-file mutt-1.3.99-vanilla/mutt.h.orig mutt-1.3.99/mutt.h.orig
+--- mutt-1.3.99-vanilla/mutt.h.orig	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/mutt.h.orig	Thu May 23 14:12:14 2002
+@@ -192,6 +192,7 @@
+   M_UNDELETE,
+   M_DELETED,
+   M_APPENDED,
++  M_PURGED,
+   M_FLAG,
+   M_TAG,
+   M_UNTAG,
+@@ -632,6 +633,7 @@
+   unsigned int flagged : 1; 		/* marked important? */
+   unsigned int tagged : 1;
+   unsigned int appended : 1; /* has been saved */
++  unsigned int purged : 1;   /* bypassing the trash folder */
+   unsigned int deleted : 1;
+   unsigned int changed : 1;
+   unsigned int attach_del : 1; 		/* has an attachment marked for deletion */
+diff -rU3 --new-file mutt-1.3.99-vanilla/pgp.c mutt-1.3.99/pgp.c
+--- mutt-1.3.99-vanilla/pgp.c	Wed Jan  9 16:39:28 2002
++++ mutt-1.3.99/pgp.c	Thu May 23 14:13:33 2002
+@@ -1327,6 +1327,8 @@
+   char *keyID, *keylist = NULL, *t;
+   size_t keylist_size = 0;
+   size_t keylist_used = 0;
++  LIST *hook_list = NULL;
++  LIST *hook = NULL;
+   ADDRESS *tmp = NULL, *addr = NULL;
+   ADDRESS **last = &tmp;
+   ADDRESS *p, *q;
+@@ -1360,62 +1362,88 @@
+     char buf[LONG_STRING];
+ 
+     q = p;
+-    k_info = NULL;
+ 
+-    if ((keyID = mutt_pgp_hook (p)) != NULL)
++    /*
++     * grab the list of matching hooks (matching on recipient address)
++     * process each entry singly so that auto key selection still works
++     */
++    hook_list = mutt_pgp_hook (p);
++    hook = hook_list;
++    while (1)
+     {
+       int r;
+-      snprintf (buf, sizeof (buf), _("Use keyID = \"%s\" for %s?"), keyID, p->mailbox);
+-      if ((r = mutt_yesorno (buf, M_YES)) == M_YES)
++
++      k_info = NULL;
++
++      if (hook)
+       {
+-	/* check for e-mail address */
+-	if ((t = strchr (keyID, '@')) && 
+-	    (addr = rfc822_parse_adrlist (NULL, keyID)))
++	keyID = (char *)hook->data;
++	snprintf (buf, sizeof (buf), _("Use keyID = \"%s\" for %s?"), keyID, p->mailbox);
++	if (!option(OPTPGPCONFIRMHOOK) || (r = mutt_yesorno (buf, M_YES)) == M_YES)
+ 	{
+-	  if (fqdn) rfc822_qualify (addr, fqdn);
+-	  q = addr;
++	  /* check for e-mail address */
++	  if ((t = strchr (keyID, '@')) && 
++	      (addr = rfc822_parse_adrlist (NULL, keyID)))
++	  {
++	    if (fqdn) rfc822_qualify (addr, fqdn);
++	    q = addr;
++	  }
++	  else
++	    k_info = pgp_getkeybystr (keyID, KEYFLAG_CANENCRYPT, PGP_PUBRING);
++	}
++	else if (r == -1)
++	{
++	  /*
++	   * yes, this implies that if one key fails they all do
++	   */
++	  safe_free ((void **) &keylist);
++	  rfc822_free_address (&tmp);
++	  rfc822_free_address (&addr);
++	  mutt_free_list (&hook_list);
++	  return NULL;
+ 	}
+-	else
+-	  k_info = pgp_getkeybystr (keyID, KEYFLAG_CANENCRYPT, PGP_PUBRING);
+-      }
+-      else if (r == -1)
+-      {
+-	safe_free ((void **) &keylist);
+-	rfc822_free_address (&tmp);
+-	rfc822_free_address (&addr);
+-	return NULL;
+       }
+-    }
+ 
+-    if (k_info == NULL)
+-      pgp_invoke_getkeys (q);
++      if (k_info == NULL)
++	pgp_invoke_getkeys (q);
+ 
+-    if (k_info == NULL && (k_info = pgp_getkeybyaddr (q, KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
+-    {
+-      snprintf (buf, sizeof (buf), _("Enter keyID for %s: "), q->mailbox);
+-
+-      if ((key = pgp_ask_for_key (buf, q->mailbox,
+-				  KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
++      if (k_info == NULL && (k_info = pgp_getkeybyaddr (q, KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
+       {
+-	safe_free ((void **)&keylist);
+-	rfc822_free_address (&tmp);
+-	rfc822_free_address (&addr);
+-	return NULL;
++	snprintf (buf, sizeof (buf), _("Enter keyID for %s: "), q->mailbox);
++
++	if ((key = pgp_ask_for_key (buf, q->mailbox,
++				    KEYFLAG_CANENCRYPT, PGP_PUBRING)) == NULL)
++	{
++	  safe_free ((void **)&keylist);
++	  rfc822_free_address (&tmp);
++	  rfc822_free_address (&addr);
++	  mutt_free_list (&hook_list);
++	  return NULL;
++	}
+       }
+-    }
+-    else
+-      key = k_info;
++      else
++	key = k_info;
+ 
+-    keyID = pgp_keyid (key);
+-    
+-    keylist_size += mutt_strlen (keyID) + 4;
+-    safe_realloc ((void **)&keylist, keylist_size);
+-    sprintf (keylist + keylist_used, "%s0x%s", keylist_used ? " " : "",	/* __SPRINTF_CHECKED__ */
+-	     keyID);
+-    keylist_used = mutt_strlen (keylist);
++      keyID = pgp_keyid (key);
++      
++      keylist_size += mutt_strlen (keyID) + 4;
++      safe_realloc ((void **)&keylist, keylist_size);
++      sprintf (keylist + keylist_used, "%s0x%s", keylist_used ? " " : "",	/* __SPRINTF_CHECKED__ */
++	       keyID);
++      keylist_used = mutt_strlen (keylist);
++
++      pgp_free_key (&key);
++      rfc822_free_address (&addr);
++
++      if (!hook_list)
++	break;
++
++      hook = hook->next;
++      if (!hook)
++	break;
+ 
+-    pgp_free_key (&key);
+-    rfc822_free_address (&addr);
++    }
++    mutt_free_list (&hook_list);
+ 
+   }
+   rfc822_free_address (&tmp);
+diff -rU3 --new-file mutt-1.3.99-vanilla/pgpkey.c mutt-1.3.99/pgpkey.c
+--- mutt-1.3.99-vanilla/pgpkey.c	Tue Jan 15 10:04:28 2002
++++ mutt-1.3.99/pgpkey.c	Thu May 23 14:13:33 2002
+@@ -435,6 +435,11 @@
+   return rv;
+ }
+ 
++
++#define pgp_trusted_id(uid) (!option(OPTPGPCHECKTRUST) \
++			     || (pgp_id_is_valid((uid)) \
++				 && pgp_id_is_strong((uid))))
++
+ static pgp_key_t *pgp_select_key (pgp_key_t *keys,
+ 				  ADDRESS * p, const char *s)
+ {
+@@ -450,6 +455,7 @@
+   pgp_uid_t *a;
+   int (*f) (const void *, const void *);
+ 
++  int keymatch = 0;		/* count matching keys */
+   int unusable = 0;
+ 
+   keymax = 0;
+@@ -479,6 +485,7 @@
+       
+       KeyTable[i++] = a;
+     }
++    keymatch++;
+   }
+ 
+   if (!i && unusable)
+@@ -487,6 +494,21 @@
+     mutt_sleep (1);
+     return NULL;
+   }
++  else if (keymatch == 1 && option(OPTPGPAUTOSELECT))
++  {
++    /*
++     * Only one matching key...see if there's an id with enough trust to auto-select
++     */
++    kp = KeyTable[0]->parent;
++    for (a = kp->address; a; a = a->next)
++    {
++      if (pgp_trusted_id(a))
++      {
++	safe_free ((void **) &KeyTable);
++	return (kp);
++      }
++    }
++  }
+ 
+   switch (PgpSortKeys & SORT_MASK)
+   {
+@@ -597,9 +619,7 @@
+ 	  break;
+ 	}
+       
+-      if (option (OPTPGPCHECKTRUST) &&
+-	  (!pgp_id_is_valid (KeyTable[menu->current])
+-	   || !pgp_id_is_strong (KeyTable[menu->current])))
++      if (!pgp_trusted_id(KeyTable[menu->current]))
+       {
+ 	char *s = "";
+ 	char buff[LONG_STRING];
+diff -rU3 --new-file mutt-1.3.99-vanilla/protos.h mutt-1.3.99/protos.h
+--- mutt-1.3.99-vanilla/protos.h	Thu May 23 14:12:14 2002
++++ mutt-1.3.99/protos.h	Thu May 23 14:13:33 2002
+@@ -130,7 +130,7 @@
+ char *mutt_get_name (ADDRESS *);
+ char *mutt_get_parameter (const char *, PARAMETER *);
+ #ifdef HAVE_PGP
+-char *mutt_pgp_hook (ADDRESS *);
++LIST *mutt_pgp_hook (ADDRESS *);
+ #endif /* HAVE_PGP */
+ char *mutt_make_date (char *, size_t);
+ 
+diff -rU3 --new-file mutt-1.3.99-vanilla/protos.h.orig mutt-1.3.99/protos.h.orig
+--- mutt-1.3.99-vanilla/protos.h.orig	Thu May 23 14:12:13 2002
++++ mutt-1.3.99/protos.h.orig	Thu May 23 14:12:14 2002
+@@ -220,6 +220,7 @@
+ void mutt_shell_escape (void);
+ void mutt_show_error (void);
+ void mutt_signal_init (void);
++void mutt_signature (char *);
+ void mutt_stamp_attachment (BODY *a);
+ void mutt_tabs_to_spaces (char *);
+ void mutt_tag_set_flag (int, int);
