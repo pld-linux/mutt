@@ -58,6 +58,7 @@ BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
+BuildRequires:	groff
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools >= 1.0.9-20
