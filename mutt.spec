@@ -4,7 +4,7 @@ Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
-Version:	0.95.4
+Version:	0.96.2
 Release:	1i
 Copyright:	GPL
 Group:		Applications/Mail
@@ -12,7 +12,6 @@ Group(pl):	Aplikacje/Poczta
 Source0:	ftp://riemann.iam.uni-bonn.de/pub/mutt/%{name}-%{version}i.tar.gz
 Source1:	mutt.wmconfig
 Source2:	Muttrc
-Source3:	mutt.pl.po
 Patch:		mutt-mail.patch
 URL:		http://www.mutt.org/
 Requires:	smtpdaemon
@@ -48,11 +47,9 @@ renk ve POP3 desteði içerir.
 %setup -q 
 %patch -p0
 
-install %{SOURCE3} $RPM_BUILD_DIR/%{name}-%{version}/po/pl.po
-
 %build
-CFLAGS="$RPM_OPT_FLAGS" LDFLAGS=-s \
-        ./configure \
+CFLAGS="$RPM_OPT_FLAGS" LDFLAGS="-s" \
+./configure %{_target} \
 	--prefix=/usr \
 	--with-sharedir=/usr/share \
 	--sysconfdir=/etc \
@@ -96,15 +93,24 @@ rm -rf $RPM_BUILD_ROOT
 %lang(en) /usr/man/man1/*
 /usr/share/charsets
 
-%lang(en) /usr/share/locale/de/LC_MESSAGES/mutt.mo
+%lang(cs) /usr/share/locale/cs/LC_MESSAGES/mutt.mo
+%lang(dn) /usr/share/locale/de/LC_MESSAGES/mutt.mo
 %lang(es) /usr/share/locale/es/LC_MESSAGES/mutt.mo
 %lang(fr) /usr/share/locale/fr/LC_MESSAGES/mutt.mo
+%lang(id) /usr/share/locale/id/LC_MESSAGES/mutt.mo
 %lang(it) /usr/share/locale/it/LC_MESSAGES/mutt.mo
+%lang(nl) /usr/share/locale/nl/LC_MESSAGES/mutt.mo
 %lang(pl) /usr/share/locale/pl/LC_MESSAGES/mutt.mo
 %lang(ru) /usr/share/locale/ru/LC_MESSAGES/mutt.mo
+%lang(sk) /usr/share/locale/sk/LC_MESSAGES/mutt.mo
 %lang(uk) /usr/share/locale/uk/LC_MESSAGES/mutt.mo
 
 %changelog
+* Thu May  6 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
+  [0.96.2-1]
+- updated .mo files list,
+- added %%{_target} macro to ./configure parameters.
+
 * Thu Mar 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
   [0.95.4-1i]
 - rewrited %install (now we use DESTDIR style install),
