@@ -139,7 +139,8 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
-#%patch13 -p0
+# disabled - changes default behaviour
+##%patch13 -p0
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
@@ -156,6 +157,7 @@ rm -f doc/{manual*.html,manual.txt}
 %build
 %{__aclocal} -I m4
 %{__autoconf}
+%{__autoheader}
 %{__automake}
 %configure \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
@@ -195,7 +197,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1,%{_d
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %PATCH16
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
@@ -214,7 +216,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp: Muttrc.esmtp}
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp:Muttrc.esmtp}
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
