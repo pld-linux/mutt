@@ -53,7 +53,7 @@ URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{!?_without_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-%{!?_without_home_etc:BuildRequires:	home-etc-devel >= 1.0.6}
+%{!?_without_home_etc:BuildRequires:	home-etc-devel >= 1.0.7}
 BuildRequires:	gettext-devel
 %{!?_with_slang:BuildRequires:		ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7c
@@ -63,7 +63,7 @@ BuildRequires:	sgml-tools-dtd
 %{?_with_esmtp:BuildRequires:       libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
-%{!?_without_home_etc:Requires:	home-etc >= 1.0.6}
+%{!?_without_home_etc:Requires:	home-etc >= 1.0.7}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	"-fomit-frame-pointer"
