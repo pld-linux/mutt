@@ -12,12 +12,12 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.4.1
+Version:	1.5.4
 Release:	1
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
-Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
+Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -111,22 +111,22 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%patch3 -p1
-%patch4 -p1
+#%patch3 -p1
+#%patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p1
+#%patch7 -p1
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
-%patch12 -p1
+#%patch12 -p1
 #%patch13 -p0
 %patch14 -p1
 #%patch15 -p1
 %patch16 -p1
-%patch18 -p1
+#%patch18 -p1
 %{!?_without_sasl:%patch19 -p1}
+#%patch20 -p1
 %{?_with_nntp:%patch20 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
@@ -190,12 +190,13 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt README.xface
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL doc/manual.txt
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
 %attr(755,root,root) %{_bindir}/pgp*
+%attr(755,root,root) %{_bindir}/smime_keys
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
 %{_applnkdir}/Network/Mail/mutt.desktop
