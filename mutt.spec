@@ -67,27 +67,26 @@ desteði, renk ve POP3 desteði içerir.
 #PGP=%{_bindir}/pgp PGPK=%{_bindir}/pgpk \
 CFLAGS="%{optflags} -I%{_includedir}/slang" \
 ./configure \
-	--with-curses \
-	--with-regex \
-	--with-homespool=Maildir \
-	--with-mailpath=/var/mail \
-	--enable-external-dotlock \
-	--with-sharedir=%{_datadir} \
-	--with-iconv \
-	--with-docdir=%{_defaultdocdir}/%{name}-%{version} \
 	--enable-pop \
 	--enable-imap \
-	--with-ssl \
-	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
+	--enable-mailtool \
+	--enable-external-dotlock \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--disable-warnings \
-	--enable-mailtool \
+	--with-curses \
+	--with-iconv \
+	--with-regex \
+	--with-ssl \
+	%{!?_without_sasl:--with-sasl} %{?_without_sasl:--without-sasl} \
 	--without-included-nls \
+	--with-homespool=Maildir \
+	--with-mailpath=/var/mail \
+	--with-sharedir=%{_datadir} \
+	--with-docdir=%{_docdir}/%{name}-%{version} \
 	--prefix=%{_prefix} \
 	--bindir=%{_bindir} \
-	--datadir=%{_datadir} \
-	--with-docdir=%{_docdir}/mutt-%{version} \
 	--sysconfdir=%{_sysconfdir} \
+	--datadir=%{_datadir} \
 	--mandir=%{_mandir} 
 
 make
