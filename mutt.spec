@@ -18,7 +18,7 @@ Summary(tr):	Mutt elektronik posta programý
 Summary(uk):	ðÏÛÔÏ×Á ËÌ¦¤ÎÔÓØËÁ ÐÒÏÇÒÁÍÁ Mutt
 Name:		mutt
 Version:	1.4.2.1
-Release:	5
+Release:	6
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -58,7 +58,7 @@ BuildRequires:	automake
 BuildRequires:	gettext-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7c
-BuildRequires:	sgml-tools
+BuildRequires:	sgml-tools >= 1.0.9-20
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_esmtp:BuildRequires:	libesmtp-devel}
