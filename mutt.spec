@@ -21,6 +21,7 @@ Epoch:		5
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
+# Source0-md5: fb5418135c5be2638964eef2f654f847
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
