@@ -1,7 +1,10 @@
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
+Summary(es):	Mutt, cliente de correo electrónico
 Summary(fr):	Agent courrier Mutt
 Summary(pl):	Program pocztowy Mutt
+Summary(pt_BR):	Mutt, cliente de correio eletrônico
+Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.23.2i
@@ -40,6 +43,11 @@ Mutt ist ein kleiner aber leistungsfähiger Vollbild-Mail-Client für
 Unix mit MIME-Unterstützung, Farbe, POP3-Unterstützung,
 Nachrichten-Threading, zuweisbaren Tasten und Sortieren nach Threads.
 
+%description -l es
+Mutt es un pequeño, pero muy potente cliente de correo en pantalla
+llena. Incluye soporte a tipos MINE, color, POP3; encadenamiento de
+mensajes, teclas configurables y clasificaciones por encadenamiento.
+
 %description -l fr
 mutt est un client courrier Unix plein écran, petit mais très
 puissant. Il dispose de la gestion MIME, des couleurs, de la gestion
@@ -51,6 +59,11 @@ Mutt jest niewielkim programem pocztowym dla terminali tekstowych
 posiadaj±cym du¿e mo¿liwo¶ci. Obs³uguje MIME, POP3, cztery formaty
 skrzynek pocztowych, kolory, w±tki, ocenê wa¿no¶ci listów (scoring)
 oraz skompresowane foldery.
+
+%description -l pt_BR
+O Mutt é um pequeno mas muito poderoso cliente de correio em tela
+cheia. Inclui suporte a tipos MIME, cor, POP3, encadeamento de
+mensagens, teclas configuráveis e classificação por encadeamento.
 
 %description -l tr
 Mutt, küçük ama çok güçlü bir tam-ekran Unix mektup istemcisidir. MIME
@@ -89,8 +102,8 @@ CFLAGS="%{optflags} -I%{_includedir}/slang" \
 	--datadir=%{_datadir} \
 	--mandir=%{_mandir} 
 
-make
-make manual.txt -C doc
+%{__make}
+%{__make} manual.txt -C doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
