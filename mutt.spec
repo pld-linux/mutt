@@ -87,8 +87,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not size md5 mtime) /etc/Muttrc
 %config(missingok) /etc/X11/wmconfig/mutt
 
-%attr(0755,root,root) /usr/bin/mutt
-%attr(2755,root,mail) /usr/bin/mutt_dotlock
+%attr(0755,root,root) %{_bindir}/mutt
+%attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
 %lang(en) %{_mandir}/man1/*
 %{_datadir}/charsets
