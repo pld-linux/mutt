@@ -5,7 +5,7 @@ Summary(pl):	Program pocztowy Mutt
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	0.95.4
-Release:	1
+Release:	1i
 Copyright:	GPL
 Group:		Applications/Mail
 Group(pl):	Aplikacje/Poczta
@@ -106,7 +106,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Thu Mar 25 1999 Tomasz K³oczko <kloczek@rudy.mif.pg.gda.pl>
-  [0.95.4i-1]
+  [0.95.4-1i]
 - rewrited %install (now we use DESTDIR style install),
 - added --sysconfdir=/etc adnd changed --with-sharedir to /usr/share,
 - added Requires: mailcap (mutt use /etc/mime.types).
