@@ -2,6 +2,7 @@
 # Conditional build:
 # _with_slang	- use slang library instead of ncurses
 # _with_nntp	- use VVV's NNTP patch
+# _without_sasl - don't use sasl
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
