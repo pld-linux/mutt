@@ -4,6 +4,7 @@ Comment=The Mutt Mail User Agent
 Comment[es]=Cliente de Correo Electrónico
 Comment[pl]=Mutt - program pocztowy
 Comment[pt_BR]=Cliente de Correio Eletrônico
+Comment[sv]=E-postläsare
 Icon=mutt.png
 Exec=mutt
 Terminal=1
