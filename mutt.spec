@@ -8,7 +8,7 @@ Summary(es):	Mutt, cliente de correo electrónico
 Summary(tr):	Mutt elektronik posta programý
 Name:		mutt
 Version:	1.3.27i
-Release:	4
+Release:	5
 Epoch:		5
 License:	GPL
 Group:		Applications/Mail
@@ -22,12 +22,17 @@ Source3:	%{name}.1.pl
 Patch0:		%{name}-home_etc.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
-Patch3:         %{name}-rr.compressed.patch
-Patch4:         %{name}-cd.edit_threads.patch
-Patch5:         %{name}-bj.status-time.patch
-Patch6:         %{name}-devl.narrow_tree.patch
-Patch7:         %{name}-vvv.quote.gz
+Patch3:		%{name}-rr.compressed.patch
+Patch4:		%{name}-cd.edit_threads.patch
+Patch5:		%{name}-bj.status-time.patch
+Patch6:		%{name}-devl.narrow_tree.patch
+Patch7:		%{name}-vvv.quote.gz
 Patch8:		%{name}-null_name.patch
+Patch9:		%{name}-cd.trash_folder.patch
+Patch10:	%{name}-cd.purge_message.patch
+Patch11:	%{name}-cd.signatures_menu.patch
+Patch12:	%{name}-folder_columns.patch
+Patch13:	%{name}-nr.tag_prefix_cond.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -87,6 +92,11 @@ desteði, renk ve POP3 desteði içerir.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
+%patch10 -p1
+%patch11 -p1
+%patch12 -p1
+%patch13 -p0
 
 %build
 autoconf
