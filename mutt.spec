@@ -167,7 +167,7 @@ rm -f doc/{manual*.html,manual.txt}
 %{__autoheader}
 %{__automake}
 %configure \
-	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
+	--%{?debug:en}%{!?debug:dis}able-debug \
 	%{!?with_slang:--with-curses} \
 	%{?with_slang:--with-slang} \
 	--enable-compressed \
@@ -179,8 +179,8 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-pop \
 	%{?with_nntp:--enable-nntp} \
 	--with-regex \
-	%{?with_sasl:--with-sasl} %{!?with_sasl:--without-sasl} \
-	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
+	--with%{!?with_sasl:out}-sasl \
+	--with%{!?with_home_etc:out}-home-etc \
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
 	--disable-warnings \
