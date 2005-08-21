@@ -28,6 +28,7 @@ Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
+Patch0:		%{name}-paths.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-muttbug-tmp.patch
 Patch3:		%{name}-rr.compressed.patch
@@ -59,7 +60,7 @@ BuildRequires:	automake
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 BuildRequires:	groff
-%{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
+%{!?with_slang:BuildRequires:	ncurses-devel >= 5.4-0.7}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools >= 1.0.9-20
 BuildRequires:	sgml-tools-dtd
@@ -131,6 +132,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 
 %prep
 %setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
