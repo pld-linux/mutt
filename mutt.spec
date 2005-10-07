@@ -18,36 +18,35 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.5.9
+Version:	1.5.10
 Release:	0.1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}i.tar.gz
-# Source0-md5:	c5318eba3404ebd78a15c680fa1b6056
+# Source0-md5:	59400d12c6b5b3d122531000e53d1914
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
 Patch0:		%{name}-pl.po-update.patch
 Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-rr.compressed.patch
-Patch3:		%{name}-cd.edit_threads.patch
-Patch4:		%{name}-bj.status-time.patch
-Patch5:		%{name}-vvv.quote.patch
-Patch6:		%{name}-null_name.patch
-Patch7:		%{name}-cd.trash_folder.patch
-Patch8:		%{name}-cd.purge_message.patch
-Patch9:		%{name}-cd.signatures_menu.patch
-Patch10:	%{name}-folder_columns.patch
-Patch11:	%{name}-nr.tag_prefix_cond.patch
-Patch12:	%{name}-manual.patch
-Patch13:	%{name}-send_charset.patch
-Patch14:	%{name}-xface.patch
-Patch15:	%{name}-Muttrc_mbox_path.patch
-Patch16:	%{name}-po.patch
-Patch17:	%{name}-vvv.nntp.patch
-Patch18:	%{name}-esmtp.patch
-#Patch19:	%{name}-home_etc.patch
+Patch3:		%{name}-bj.status-time.patch
+Patch4:		%{name}-vvv.quote.patch
+Patch5:		%{name}-null_name.patch
+Patch6:		%{name}-cd.trash_folder.patch
+Patch7:		%{name}-cd.purge_message.patch
+Patch8:		%{name}-cd.signatures_menu.patch
+Patch9:		%{name}-folder_columns.patch
+Patch10:	%{name}-nr.tag_prefix_cond.patch
+Patch11:	%{name}-manual.patch
+Patch12:	%{name}-send_charset.patch
+Patch13:	%{name}-xface.patch
+Patch14:	%{name}-Muttrc_mbox_path.patch
+Patch15:	%{name}-po.patch
+Patch16:	%{name}-vvv.nntp.patch
+Patch17:	%{name}-esmtp.patch
+#Patch18:	%{name}-home_etc.patch
 # if some fuctionality is still missing, patch must be rewritten
 #PatchXXX:	%{name}-pgp_hook.patch
 URL:		http://www.mutt.org/
@@ -139,19 +138,18 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch10 -p1}
+%{?with_folder_column:%patch9 -p1}
 # disabled - changes default behaviour
-#%patch11 -p0
+#%patch10 -p0
+%patch11 -p1
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
-%patch16 -p1
-%{?with_nntp:%patch17 -p1}
-%{?with_esmtp:%patch18 -p1}
-#%{?with_home_etc:%patch19 -p1}
+%{?with_nntp:%patch16 -p1}
+%{?with_esmtp:%patch17 -p1}
+#%{?with_home_etc:%patch18 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -171,6 +169,7 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-mailtool \
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
+	--enable-hcache \
 	%{!?with_slang:--with-curses} \
 	%{?with_slang:--with-slang} \
 	--with-docdir=%{_docdir}/%{name} \
