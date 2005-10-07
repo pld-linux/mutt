@@ -1,6 +1,6 @@
-diff -urN mutt-1.4.orig/Muttrc.head.in mutt-1.4/Muttrc.head.in
---- mutt-1.4.orig/Muttrc.head.in	Mon Mar 20 11:25:49 2000
-+++ mutt-1.4/Muttrc.head.in	Thu Aug  1 21:48:21 2002
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/Muttrc.head.in mutt-1.5.10/Muttrc.head.in
+--- mutt-1.5.10.orig/Muttrc.head.in	2002-01-24 13:10:47.000000000 +0100
++++ mutt-1.5.10/Muttrc.head.in	2005-10-07 09:34:11.000000000 +0200
 @@ -15,9 +15,9 @@
  macro pager \cb |urlview\n 'call urlview to extract URLs out of a message'
  
@@ -14,14 +14,24 @@ diff -urN mutt-1.4.orig/Muttrc.head.in mutt-1.4/Muttrc.head.in
  
  # If Mutt is unable to determine your site's domain name correctly, you can
  # set the default here.
---- mutt-1.5.9/doc/Makefile.in.orig	2005-02-15 20:28:24.000000000 +0100
-+++ mutt-1.5.9/doc/Makefile.in	2005-03-31 19:14:24.632303128 +0200
-@@ -103,7 +103,7 @@
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/doc/Makefile.in mutt-1.5.10/doc/Makefile.in
+--- mutt-1.5.10.orig/doc/Makefile.in	2005-08-11 21:37:02.000000000 +0200
++++ mutt-1.5.10/doc/Makefile.in	2005-10-07 09:35:04.000000000 +0200
+@@ -114,7 +114,7 @@
  
  check:
  manual.txt: manual.sgml
--	if linuxdoc -B txt --pass='-P -c' manual ; then \
+-	if linuxdoc -B txt -c latin --pass='-P -c' manual ; then \
 +	if sgml2txt -c latin manual ; then \
  		uniq < manual.txt | expand > _manual.txt ; \
  		rm manual.txt ; \
  		mv _manual.txt manual.txt ;\
+Only in mutt-1.5.10/doc: manual-1.html
+Only in mutt-1.5.10/doc: manual-2.html
+Only in mutt-1.5.10/doc: manual-3.html
+Only in mutt-1.5.10/doc: manual-4.html
+Only in mutt-1.5.10/doc: manual-5.html
+Only in mutt-1.5.10/doc: manual-6.html
+Only in mutt-1.5.10/doc: manual-7.html
+Only in mutt-1.5.10/doc: manual.html
+Only in mutt-1.5.10/doc: manual.txt

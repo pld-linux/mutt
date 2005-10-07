@@ -1,28 +1,35 @@
-diff -pruN2 mutt-1.3.27.orig/commands.c mutt-1.3.27/commands.c
---- mutt-1.3.27.orig/commands.c	Mon Dec  3 11:17:57 2001
-+++ mutt-1.3.27/commands.c	Wed Jan 23 22:33:11 2002
-@@ -616,9 +616,13 @@ void _mutt_save_message (HEADER *h, CONT
-     mutt_parse_mime_message (Context, h);
- 
--  if (mutt_append_message (ctx, Context, h, cmflags, chflags) == 0 && delete)
-+  if (mutt_append_message (ctx, Context, h, cmflags, chflags) == 0)
-   {
--    mutt_set_flag (Context, h, M_DELETE, 1);
--    if (option (OPTDELETEUNTAG))
--      mutt_set_flag (Context, h, M_TAG, 0);
-+    if (delete)
-+    {
-+      mutt_set_flag (Context, h, M_DELETE, 1);
-+      if (option (OPTDELETEUNTAG))
-+	mutt_set_flag (Context, h, M_TAG, 0);
-+    }
-+    mutt_set_flag (Context, h, M_APPENDED, 1);
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/PATCHES mutt-1.5.10/PATCHES
+--- mutt-1.5.10.orig/PATCHES	2005-10-07 09:29:54.000000000 +0200
++++ mutt-1.5.10/PATCHES	2005-10-07 09:30:06.000000000 +0200
+@@ -1,2 +1,3 @@
+ vvv.quote
++patch-1.3.27.cd.trash_folder.1
+ rr.compressed
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/commands.c mutt-1.5.10/commands.c
+--- mutt-1.5.10.orig/commands.c	2005-08-02 09:08:00.000000000 +0200
++++ mutt-1.5.10/commands.c	2005-10-07 09:32:06.000000000 +0200
+@@ -690,6 +690,7 @@
+     if (option (OPTDELETEUNTAG))
+       mutt_set_flag (Context, h, M_TAG, 0);
    }
++  mutt_set_flag (Context, h, M_APPENDED, 1);
+   
+   return 0;
  }
-diff -pruN2 mutt-1.3.27.orig/flags.c mutt-1.3.27/flags.c
---- mutt-1.3.27.orig/flags.c	Tue Jan 15 22:12:59 2002
-+++ mutt-1.3.27/flags.c	Wed Jan 23 22:33:11 2002
-@@ -76,4 +76,15 @@ void _mutt_set_flag (CONTEXT *ctx, HEADE
+Only in mutt-1.5.10/doc: manual-1.html
+Only in mutt-1.5.10/doc: manual-2.html
+Only in mutt-1.5.10/doc: manual-3.html
+Only in mutt-1.5.10/doc: manual-4.html
+Only in mutt-1.5.10/doc: manual-5.html
+Only in mutt-1.5.10/doc: manual-6.html
+Only in mutt-1.5.10/doc: manual-7.html
+Only in mutt-1.5.10/doc: manual.html
+Only in mutt-1.5.10/doc: manual.txt
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/flags.c mutt-1.5.10/flags.c
+--- mutt-1.5.10.orig/flags.c	2005-02-03 19:47:52.000000000 +0100
++++ mutt-1.5.10/flags.c	2005-10-07 09:30:06.000000000 +0200
+@@ -91,6 +91,17 @@
+       }
        break;
  
 +    case M_APPENDED:
@@ -37,20 +44,24 @@ diff -pruN2 mutt-1.3.27.orig/flags.c mutt-1.3.27/flags.c
 +      break;
 +
      case M_NEW:
-       if (bf)
-diff -pruN2 mutt-1.3.27.orig/globals.h mutt-1.3.27/globals.h
---- mutt-1.3.27.orig/globals.h	Thu Jan  3 21:56:46 2002
-+++ mutt-1.3.27/globals.h	Wed Jan 23 22:33:11 2002
-@@ -110,4 +110,5 @@ WHERE char *Status;
+ 
+ #ifdef USE_IMAP
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/globals.h mutt-1.5.10/globals.h
+--- mutt-1.5.10.orig/globals.h	2005-10-07 09:29:54.000000000 +0200
++++ mutt-1.5.10/globals.h	2005-10-07 09:30:06.000000000 +0200
+@@ -130,6 +130,7 @@
+ WHERE char *Status;
  WHERE char *Tempdir;
  WHERE char *Tochars;
 +WHERE char *TrashPath;
  WHERE char *Username;
  WHERE char *Visual;
-diff -pruN2 mutt-1.3.27.orig/init.h mutt-1.3.27/init.h
---- mutt-1.3.27.orig/init.h	Mon Dec 10 11:09:03 2001
-+++ mutt-1.3.27/init.h	Wed Jan 23 22:33:11 2002
-@@ -2236,4 +2236,11 @@ struct option_t MuttVars[] = {
+ 
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/init.h mutt-1.5.10/init.h
+--- mutt-1.5.10.orig/init.h	2005-10-07 09:29:54.000000000 +0200
++++ mutt-1.5.10/init.h	2005-10-07 09:30:06.000000000 +0200
+@@ -2774,6 +2774,13 @@
+   ** by \fIyou\fP.  The sixth character is used to indicate when a mail
    ** was sent to a mailing-list you subscribe to (default: L).
    */
 +  { "trash",		DT_PATH, R_NONE, UL &TrashPath, 0 },
@@ -62,31 +73,39 @@ diff -pruN2 mutt-1.3.27.orig/init.h mutt-1.3.27/init.h
 +  */
  #ifdef USE_SOCKET
    { "tunnel",            DT_STR, R_NONE, UL &Tunnel, UL 0 },
-diff -pruN2 mutt-1.3.27.orig/mutt.h mutt-1.3.27/mutt.h
---- mutt-1.3.27.orig/mutt.h	Tue Jan 15 22:00:32 2002
-+++ mutt-1.3.27/mutt.h	Wed Jan 23 22:33:11 2002
-@@ -185,4 +185,5 @@ enum
+   /*
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/mutt.h mutt-1.5.10/mutt.h
+--- mutt-1.5.10.orig/mutt.h	2005-10-07 09:29:54.000000000 +0200
++++ mutt-1.5.10/mutt.h	2005-10-07 09:30:06.000000000 +0200
+@@ -207,6 +207,7 @@
+   M_DELETE,
    M_UNDELETE,
    M_DELETED,
 +  M_APPENDED,
    M_FLAG,
    M_TAG,
-@@ -618,4 +619,5 @@ typedef struct header
+   M_UNTAG,
+@@ -702,6 +703,7 @@
+   unsigned int mime : 1;    		/* has a Mime-Version header? */
    unsigned int flagged : 1; 		/* marked important? */
    unsigned int tagged : 1;
 +  unsigned int appended : 1; /* has been saved */
    unsigned int deleted : 1;
    unsigned int changed : 1;
-@@ -740,4 +742,5 @@ typedef struct
+   unsigned int attach_del : 1; 		/* has an attachment marked for deletion */
+@@ -830,6 +832,7 @@
+   int new;			/* how many new messages? */
    int unread;			/* how many unread messages? */
    int deleted;			/* how many deleted messages */
 +  int appended;                 /* how many saved messages? */
    int flagged;			/* how many flagged messages */
    int msgnotreadyet;		/* which msg "new" in pager, -1 if none */
-diff -pruN2 mutt-1.3.27.orig/mx.c mutt-1.3.27/mx.c
---- mutt-1.3.27.orig/mx.c	Tue Jan 15 22:09:53 2002
-+++ mutt-1.3.27/mx.c	Wed Jan 23 22:33:11 2002
-@@ -816,4 +816,45 @@ static int sync_mailbox (CONTEXT *ctx, i
+ #if defined USE_POP || defined USE_IMAP
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/mx.c mutt-1.5.10/mx.c
+--- mutt-1.5.10.orig/mx.c	2005-10-07 09:29:54.000000000 +0200
++++ mutt-1.5.10/mx.c	2005-10-07 09:30:06.000000000 +0200
+@@ -850,6 +850,47 @@
+   return rc;
  }
  
 +/* move deleted mails to the trash folder */
@@ -132,7 +151,9 @@ diff -pruN2 mutt-1.3.27.orig/mx.c mutt-1.3.27/mx.c
 +
  /* save changes and close mailbox */
  int mx_close_mailbox (CONTEXT *ctx, int *index_hint)
-@@ -999,9 +1040,17 @@ int mx_close_mailbox (CONTEXT *ctx, int 
+ {
+@@ -1032,11 +1073,19 @@
+ 
      if (ctx->changed || ctx->deleted)
      {
 -      if ((check = sync_mailbox (ctx, index_hint)) != 0)
@@ -151,7 +172,9 @@ diff -pruN2 mutt-1.3.27.orig/mx.c mutt-1.3.27/mx.c
 +      }
      }
    }
-@@ -1174,6 +1223,10 @@ int mx_sync_mailbox (CONTEXT *ctx, int *
+ 
+@@ -1214,8 +1263,12 @@
+   if (ctx->magic == M_IMAP)
      rc = imap_sync_mailbox (ctx, purge, index_hint);
    else
 -#endif
@@ -163,10 +186,12 @@ diff -pruN2 mutt-1.3.27.orig/mx.c mutt-1.3.27/mx.c
 +  }
    if (rc == 0)
    {
-diff -pruN2 mutt-1.3.27.orig/postpone.c mutt-1.3.27/postpone.c
---- mutt-1.3.27.orig/postpone.c	Mon Dec  3 11:17:57 2001
-+++ mutt-1.3.27/postpone.c	Wed Jan 23 22:33:11 2002
-@@ -271,4 +271,7 @@ int mutt_get_postponed (CONTEXT *ctx, HE
+ #ifdef USE_IMAP
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/postpone.c mutt-1.5.10/postpone.c
+--- mutt-1.5.10.orig/postpone.c	2005-02-03 19:47:53.000000000 +0100
++++ mutt-1.5.10/postpone.c	2005-10-07 09:30:06.000000000 +0200
+@@ -279,6 +279,9 @@
+   /* finished with this message, so delete it. */
    mutt_set_flag (PostContext, h, M_DELETE, 1);
  
 +  /* and consider it saved, so that it won't be moved to the trash folder */
@@ -174,8 +199,4 @@ diff -pruN2 mutt-1.3.27.orig/postpone.c mutt-1.3.27/postpone.c
 +
    /* update the count for the status display */
    PostCount = PostContext->msgcount - PostContext->deleted;
-diff -pruN mutt-1.3.27.orig/PATCHES mutt-1.3.27/PATCHES
---- mutt-1.3.27.orig/PATCHES    Mon Nov 26 20:16:52 2001
-+++ mutt-1.3.27/PATCHES Thu Dec  6 16:27:55 2001
-@@ -1,0 +1 @@
-+patch-1.3.27.cd.trash_folder.1
+ 
