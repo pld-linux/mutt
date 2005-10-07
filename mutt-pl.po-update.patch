@@ -1,116 +1,643 @@
---- mutt-1.5.9/po/pl.po.orig	2005-03-13 17:38:28.000000000 +0100
-+++ mutt-1.5.9/po/pl.po	2005-03-31 15:35:05.788751416 +0200
-@@ -6,12 +6,12 @@
- # get your own copy of PePeSza from http://www.ids.pl/~pkollegu/pepesza.html
- msgid ""
- msgstr ""
--"Project-Id-Version: mutt-cvs-2004.08.16\n"
-+"Project-Id-Version: mutt 1.5.9\n"
- "Report-Msgid-Bugs-To: \n"
- "POT-Creation-Date: 2005-03-13 17:38+0100\n"
--"PO-Revision-Date: 2004-08-16\n"
-+"PO-Revision-Date: 2005-03-31 15:33+0200\n"
- "Last-Translator: Pawe³ Dziekoñski <dzieko@pwr.wroc.pl>\n"
--"Language-Team: POLISH <pl@li.org>\n"
-+"Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
+--- mutt-1.5.10.orig/po/pl.po	2005-08-11 23:50:37.000000000 +0200
++++ mutt-1.5.10/po/pl.po	2005-10-07 09:21:24.000000000 +0200
+@@ -14,7 +14,7 @@
+ "Language-Team: POLISH <pl@li.org>\n"
  "MIME-Version: 1.0\n"
  "Content-Type: text/plain; charset=iso-8859-2\n"
- "Content-Transfer-Encoding: 8-bit\n"
+-"Content-Transfer-Encoding: 8-bit\n"
++"Content-Transfer-Encoding: 8bit\n"
+ 
+ #: account.c:154
+ #, c-format
 @@ -208,9 +208,8 @@
  msgstr "Tworzenie skrzynek jest obs³ugiwane tylko dla skrzynek IMAP"
  
- #: browser.c:880
+ #: browser.c:881
 -#, fuzzy
  msgid "Rename is only supported for IMAP mailboxes"
 -msgstr "Tworzenie skrzynek jest obs³ugiwane tylko dla skrzynek IMAP"
-+msgstr "Zmiana nazwy jest obs³ugiwana tylko dla skrzynek IMAP"
++msgstr "Zmiana nazwy skrzynek jest obs³ugiwana tylko dla skrzynek IMAP"
  
- #: browser.c:901
+ #: browser.c:902
  msgid "Delete is only supported for IMAP mailboxes"
-@@ -1401,19 +1400,18 @@
+@@ -720,7 +719,7 @@
+ #: crypt-gpgme.c:335
+ #, fuzzy, c-format
+ msgid "error creating gpgme context: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:345
+ #, c-format
+@@ -728,29 +727,29 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:365
+-#, fuzzy, c-format
++#, c-format
+ msgid "error creating gpgme data object: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:431 crypt-gpgme.c:449 crypt-gpgme.c:1327
+-#, fuzzy, c-format
++#, c-format
+ msgid "error allocating data object: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:467
+-#, fuzzy, c-format
++#, c-format
+ msgid "error rewinding data object: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:489 crypt-gpgme.c:536
+-#, fuzzy, c-format
++#, c-format
+ msgid "error reading data object: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:597
+-#, fuzzy, c-format
++#, c-format
+ msgid "error adding recipient `%s': %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:635
+ #, c-format
+@@ -768,28 +767,26 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:701
+-#, fuzzy, c-format
++#, c-format
+ msgid "error encrypting data: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:798
+-#, fuzzy, c-format
++#, c-format
+ msgid "error signing data: %s\n"
+-msgstr "b³±d we wzorcu: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:993
+-#, fuzzy
+ msgid "Warning: One of the keys has been revoked\n"
+-msgstr "Ostrze¿enie: fragment tej wiadomo¶ci nie zosta³ podpisany."
++msgstr ""
+ 
+ #: crypt-gpgme.c:1002
+ msgid "Warning: The key used to create the signature expired at: "
+ msgstr ""
+ 
+ #: crypt-gpgme.c:1008
+-#, fuzzy
+ msgid "Warning: At least one certification key has expired\n"
+-msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
++msgstr ""
+ 
+ #: crypt-gpgme.c:1024
+ msgid "Warning: The signature expired at: "
+@@ -800,9 +797,8 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:1035
+-#, fuzzy
+ msgid "The CRL is not available\n"
+-msgstr "Protokó³ SSL nie jest dostêpny."
++msgstr ""
+ 
+ #: crypt-gpgme.c:1041
+ msgid "Available CRL is too old\n"
+@@ -817,9 +813,8 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:1092 crypt-gpgme.c:3036
+-#, fuzzy
+ msgid "Fingerprint: "
+-msgstr "Odcisk: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:1152
+ msgid ""
+@@ -862,9 +857,8 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:1291
+-#, fuzzy
+ msgid "Error checking signature"
+-msgstr "B³±d podczas wysy³ania listu."
++msgstr ""
+ 
+ #. Note: We don't need a current time output because GPGME avoids
+ #. such an attack by separating the meta information from the
+@@ -874,9 +868,9 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:1344
+-#, fuzzy, c-format
++#, c-format
+ msgid "Error: verification failed: %s\n"
+-msgstr "B³±d w poleceniu: %s\n"
++msgstr ""
+ 
+ #: crypt-gpgme.c:1386
+ #, c-format
+@@ -888,20 +882,19 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:1413 crypt-gpgme.c:1552 crypt-gpgme.c:2046
+-#, fuzzy
+ msgid ""
+ "[-- End signature information --]\n"
+ "\n"
+ msgstr ""
++"[-- Koniec informacji podpisu --]\n"
+ "\n"
+-"[-- Koniec podpisanych danych --]\n"
+ 
+ #: crypt-gpgme.c:1507
+-#, fuzzy, c-format
++#, c-format
+ msgid ""
+ "[-- Error: decryption failed: %s --]\n"
+ "\n"
+-msgstr "[-- B³±d: nie mo¿na utworzyæ pliku tymczasowego! --]\n"
++msgstr ""
+ 
+ #: crypt-gpgme.c:2006
+ #, c-format
+@@ -965,12 +958,11 @@
+ msgstr "[-- B³±d: nie mo¿na utworzyæ pliku tymczasowego! --]\n"
+ 
+ #: crypt-gpgme.c:2186
+-#, fuzzy
+ msgid ""
+ "[-- The following data is PGP/MIME signed and encrypted --]\n"
+ "\n"
+ msgstr ""
+-"[-- Nastêpuj±ce dane s± zaszyfrowane PGP/MIME --]\n"
++"[-- Nastêpuj±ce dane s± zaszyfrowane i podpisane PGP/MIME --]\n"
+ "\n"
+ 
+ #: crypt-gpgme.c:2187 pgp.c:922
+@@ -982,40 +974,35 @@
+ "\n"
+ 
+ #: crypt-gpgme.c:2209
+-#, fuzzy
+ msgid "[-- End of PGP/MIME signed and encrypted data --]\n"
+-msgstr "[-- Koniec danych zaszyfrowanych PGP/MIME --]\n"
++msgstr "[-- Koniec danych zaszyfrowanych i podpisanych PGP/MIME --]\n"
+ 
+ #: crypt-gpgme.c:2210 pgp.c:942
+ msgid "[-- End of PGP/MIME encrypted data --]\n"
+ msgstr "[-- Koniec danych zaszyfrowanych PGP/MIME --]\n"
+ 
+ #: crypt-gpgme.c:2252
+-#, fuzzy
+ msgid ""
+ "[-- The following data is S/MIME signed --]\n"
+ "\n"
+ msgstr "[-- Poni¿sze dane s± podpisane S/MIME --]\n"
++"\n"
+ 
+ #: crypt-gpgme.c:2253
+-#, fuzzy
+ msgid ""
+ "[-- The following data is S/MIME encrypted --]\n"
+ "\n"
+ msgstr "[-- Nastêpuj±ce dane s± zaszyfrowane S/MIME --]\n"
++"\n"
+ 
+ #: crypt-gpgme.c:2283
+-#, fuzzy
+ msgid "[-- End of S/MIME signed data --]\n"
+ msgstr ""
+-"\n"
+ "[-- Koniec danych podpisanych S/MIME. --]\n"
+ 
+ #: crypt-gpgme.c:2284
+-#, fuzzy
+ msgid "[-- End of S/MIME encrypted data --]\n"
+ msgstr ""
+-"\n"
+ "[-- Koniec danych zaszyfrowanych S/MIME. --]\n"
+ 
+ #: crypt-gpgme.c:2876
+@@ -1039,19 +1026,18 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:2965 crypt-gpgme.c:3104
+-#, fuzzy
+ msgid "[Invalid]"
+-msgstr "B³êdny   "
++msgstr "[B³êdny] "
+ 
+ #: crypt-gpgme.c:2985 crypt-gpgme.c:3128
+-#, fuzzy, c-format
++#, c-format
+ msgid "Valid From : %s\n"
+-msgstr "Niew³a¶ciwy miesi±c: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:2998 crypt-gpgme.c:3141
+-#, fuzzy, c-format
++#, c-format
+ msgid "Valid To ..: %s\n"
+-msgstr "Niew³a¶ciwy miesi±c: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:3011 crypt-gpgme.c:3154
+ #, c-format
+@@ -1064,23 +1050,21 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:3018 crypt-gpgme.c:3161
+-#, fuzzy
+ msgid "encryption"
+-msgstr "Zaszyfruj"
++msgstr ""
+ 
+ #: crypt-gpgme.c:3019 crypt-gpgme.c:3024 crypt-gpgme.c:3029 crypt-gpgme.c:3162
+ #: crypt-gpgme.c:3167 crypt-gpgme.c:3172
+ msgid ", "
+-msgstr ""
++msgstr ", "
+ 
+ #: crypt-gpgme.c:3023 crypt-gpgme.c:3166
+ msgid "signing"
+ msgstr ""
+ 
+ #: crypt-gpgme.c:3028 crypt-gpgme.c:3171
+-#, fuzzy
+ msgid "certification"
+-msgstr "Certyfikat zosta³ zapisany"
++msgstr ""
+ 
+ #: crypt-gpgme.c:3068
+ #, c-format
+@@ -1094,19 +1078,17 @@
+ 
+ #. display only the short keyID
+ #: crypt-gpgme.c:3095
+-#, fuzzy, c-format
++#, c-format
+ msgid "Subkey ....: 0x%s"
+-msgstr "Identyfikator klucza: 0x%s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:3099
+-#, fuzzy
+ msgid "[Revoked]"
+-msgstr "Wyprowadzony   "
++msgstr "[Wyprowadzony]"
+ 
+ #: crypt-gpgme.c:3109
+-#, fuzzy
+ msgid "[Expired]"
+-msgstr "Wygas³y   "
++msgstr "[Wygas³y] "
+ 
+ #: crypt-gpgme.c:3114
+ msgid "[Disabled]"
+@@ -1117,14 +1099,13 @@
+ msgstr "Nie mo¿na utworzyæ pliku tymczasowego"
+ 
+ #: crypt-gpgme.c:3201
+-#, fuzzy
+ msgid "Collecting data..."
+-msgstr "£±czenie z %s..."
++msgstr ""
+ 
+ #: crypt-gpgme.c:3227
+-#, fuzzy, c-format
++#, c-format
+ msgid "Error finding issuer key: %s\n"
+-msgstr "B³±d ³±czenia z serwerem: %s"
++msgstr ""
+ 
+ #: crypt-gpgme.c:3237
+ msgid "Error: certification chain to long - stopping here\n"
+@@ -1136,9 +1117,9 @@
+ msgstr "Identyfikator klucza: 0x%s"
+ 
+ #: crypt-gpgme.c:3331
+-#, fuzzy, c-format
++#, c-format
+ msgid "gpgme_new failed: %s"
+-msgstr "SSL nie powiod³o siê: %s"
++msgstr "gpgme_new nie powiod³o siê: %s"
+ 
+ #: crypt-gpgme.c:3370 crypt-gpgme.c:3433
+ #, c-format
+@@ -1151,7 +1132,6 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:3532
+-#, fuzzy
+ msgid "All matching keys are marked expired/revoked."
+ msgstr "Wszystkie pasuj±ce klucze wygas³y, zosta³y wy³±czone lub wyprowadzone."
+ 
+@@ -1171,24 +1151,20 @@
+ msgstr "Sprawd¼ klucz  "
+ 
+ #: crypt-gpgme.c:3583
+-#, fuzzy
+ msgid "PGP and S/MIME keys matching"
+-msgstr "Klucze PGP dla \"%s\"."
++msgstr "pasuj±ce klucze PGP i S/MIME"
+ 
+ #: crypt-gpgme.c:3585
+-#, fuzzy
+ msgid "PGP keys matching"
+-msgstr "Klucze PGP dla \"%s\"."
++msgstr "pasuj±ce klucze PGP"
+ 
+ #: crypt-gpgme.c:3587
+-#, fuzzy
+ msgid "S/MIME keys matching"
+-msgstr "Certyfikat S/MIME dla \"%s\"."
++msgstr "pasuj±ce klucze S/MIME"
+ 
+ #: crypt-gpgme.c:3589
+-#, fuzzy
+ msgid "keys matching"
+-msgstr "Klucze PGP dla \"%s\"."
++msgstr "pasuj±ce klucze"
+ 
+ #: crypt-gpgme.c:3592
+ #, c-format
+@@ -1247,24 +1223,20 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:4131
+-#, fuzzy
+ msgid "S/MIME (e)ncrypt, (s)ign, sign (a)s, (b)oth, (p)gp or (c)lear?"
+-msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
++msgstr "S/MIME: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, (p)gp, b(e)z S/MIME? "
+ 
+ #: crypt-gpgme.c:4132
+-#, fuzzy
+ msgid "esabpfc"
+-msgstr "zpmjoa"
++msgstr "zsabpfe"
+ 
+ #: crypt-gpgme.c:4135
+-#, fuzzy
+ msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, s/(m)ime or (c)lear?"
+-msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
++msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, s/(m)ime, b(e)z PGP? "
+ 
+ #: crypt-gpgme.c:4136
+-#, fuzzy
+ msgid "esabmfc"
+-msgstr "zpmjoa"
++msgstr "zsabmfe"
+ 
+ #. sign (a)s
+ #. unset_option(OPTCRYPTCHECKTRUST);
+@@ -1278,9 +1250,8 @@
+ msgstr ""
+ 
+ #: crypt-gpgme.c:4252
+-#, fuzzy
+ msgid "Failed to figure out sender"
+-msgstr "B³±d otwarcia pliku podczas interpretacji nag³ówków."
++msgstr ""
+ 
+ #: crypt.c:69
+ #, c-format
+@@ -1379,9 +1350,8 @@
+ msgstr ""
+ 
+ #: cryptglue.c:112
+-#, fuzzy
+ msgid "Invoking SMIME..."
+-msgstr "Wywo³ywanie PGP..."
++msgstr "Wywo³ywanie SMIME..."
+ 
+ #: curs_lib.c:188
+ msgid "yes"
+@@ -1561,9 +1531,8 @@
+ msgstr ""
+ 
+ #: curs_main.c:1230
+-#, fuzzy
+ msgid "First, please tag a message to be linked here"
+-msgstr "zapisz list aby wys³aæ go pó¼niej"
++msgstr ""
+ 
+ #: curs_main.c:1242
+ msgid "Threads linked"
+@@ -1996,19 +1965,18 @@
  msgstr "Skrzynka zosta³a utworzona."
  
- #: imap/browse.c:325
+ #: imap/browse.c:332
 -#, fuzzy, c-format
 +#, c-format
  msgid "Rename mailbox %s to: "
 -msgstr "Nazwa skrzynki: "
-+msgstr "Zmiana nazwy skrzynki %s na: "
++msgstr ""
  
- #: imap/browse.c:338
+ #: imap/browse.c:345
 -#, fuzzy, c-format
 +#, c-format
  msgid "Rename failed: %s"
 -msgstr "SSL nie powiod³o siê: %s"
-+msgstr "Zmiana nazwy nie powiod³a siê: %s"
++msgstr ""
  
- #: imap/browse.c:343
+ #: imap/browse.c:350
 -#, fuzzy
  msgid "Mailbox renamed."
 -msgstr "Skrzynka zosta³a utworzona."
-+msgstr "Nazwa skrzyni zosta³a zmieniona."
++msgstr "Nazwa skrzynki zosta³a zmieniona."
  
  #: imap/command.c:294
  msgid "Mailbox closed"
-@@ -1519,9 +1517,9 @@
- msgstr "Nie mo¿na utworzyæ pliku tymczasowego %s"
+@@ -2765,9 +2733,8 @@
+ msgstr "poka¿ tylko listy pasuj±ce do wzorca"
  
- #: imap/message.c:134
--#, fuzzy, c-format
-+#, c-format
- msgid "Evaluating cache... [%d/%d]"
--msgstr "Pobieranie nag³ówków listów... [%d/%d]"
-+msgstr "Szacowanie bufora... [%d/%d]"
+ #: keymap_alldefs.h:113
+-#, fuzzy
+ msgid "link tagged message to the current one"
+-msgstr "Wy¶lij kopie zaznaczonych listów do: "
++msgstr ""
  
- #: imap/message.c:202 pop.c:210
- #, c-format
-@@ -2325,9 +2323,8 @@
+ #: keymap_alldefs.h:114
+ msgid "jump to the next new message"
+@@ -2926,9 +2893,8 @@
  msgstr "{wewnêtrzne}"
  
- #: keymap_alldefs.h:151
+ #: keymap_alldefs.h:153
 -#, fuzzy
  msgid "rename the current mailbox (IMAP only)"
 -msgstr "usuñ bie¿±c± skrzynkê (tylko IMAP)"
-+msgstr "zmieñ nazwê bie¿±cej skrzynki (tylko IMAP)"
++msgstr "zmieñ nazwê usuñ bie¿±cej skrzynki (tylko IMAP)"
  
- #: keymap_alldefs.h:152
+ #: keymap_alldefs.h:154
  msgid "reply to a message"
-@@ -2605,7 +2602,6 @@
- "   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111, USA.\n"
+@@ -3153,7 +3119,6 @@
+ "vv'.\n"
  
- #: main.c:99
+ #: main.c:61
 -#, fuzzy
  msgid ""
- "usage: mutt [ -nRyzZ ] [ -e <cmd> ] [ -F <file> ] [ -m <type> ] [ -f "
- "<file> ]\n"
-@@ -2647,7 +2643,7 @@
- "<pytanie> ] [...]\n"
- "        mutt [ -nR ] [ -e <polec> ] [ -F <plik> ] -A <alias> [ -A <alias> ] "
- "[...]\n"
--"        mutt [ -nx ] [ -e <polec> ] [ -F <plik> ] [ -a <plik> ] [ -H "
-+"        mutt [ -nx ] [ -e <polec> ] [ -a <plik> ] [ -F <plik> ] [ -H "
- "<plik> ] [ -i <plik> ] [ -s <tytu³> ] [ -b <adres> ] [ -c <adres> ] <adres> "
- "[ ... ]\n"
- "        mutt [ -n ]  [ -e <polec> ] [ -F <plik> ] -p\n"
-@@ -2659,9 +2655,9 @@
- "  -b <adres>\tpodaj adres blind carbon-copy (BCC)\n"
- "  -c <adres>\tpodaj adres carbon-copy (CC)\n"
- "  -e <polec>\tpodaj polecenie do wykonania po inicjalizacji\n"
--"  -f <plik>\totwórz najpierw t± skrzynkê\n"
-+"  -f <plik>\totwórz najpierw tê skrzynkê\n"
- "  -F <plik>\tu¿yj alternatywnego pliku muttrc\n"
--"  -H <plik>\tczytaj nag³ówki z pliku\n"
-+"  -H <plik>\tczytaj nag³ówki i cia³o szablonu z pliku\n"
- "  -i <plik>\twstaw ten plik w odpowiedzi\n"
- "  -m <typ>\tpodaj typ skrzynki\n"
- "  -n\t\tnie czytaj systemowego Muttrc\n"
-@@ -4223,9 +4219,3 @@
+ "Copyright (C) 1996-2004 Michael R. Elkins <me@mutt.org>\n"
+ "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
+@@ -3180,11 +3145,11 @@
+ "    along with this program; if not, write to the Free Software\n"
+ "    Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.\n"
+ msgstr ""
+-"Copyright (C) 1996-2002 Michael R. Elkins <me@mutt.org>\n"
++"Copyright (C) 1996-2004 Michael R. Elkins <me@mutt.org>\n"
+ "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
+-"Copyright (C) 1997-2002 Thomas Roessler <roessler@does-not-exist.org>\n"
+-"Copyright (C) 1998-2002 Werner Koch <wk@isil.d.shuttle.de>\n"
+-"Copyright (C) 1999-2002 Brendan Cully <brendan@kublai.com>\n"
++"Copyright (C) 1997-2005 Thomas Roessler <roessler@does-not-exist.org>\n"
++"Copyright (C) 1998-2005 Werner Koch <wk@isil.d.shuttle.de>\n"
++"Copyright (C) 1999-2005 Brendan Cully <brendan@kublai.com>\n"
+ "Copyright (C) 1999-2002 Tommi Komulainen <Tommi.Komulainen@iki.fi>\n"
+ "Copyright (C) 2000-2002 Edmund Grimley Evans <edmundo@rano.org>\n"
+ "\n"
+@@ -3683,9 +3648,9 @@
+ msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:265
+-#, fuzzy, c-format
++#, c-format
+ msgid "SSL/TLS connection using %s (%s/%s/%s)"
+-msgstr "Po³±czenie SSL przy u¿yciu %s (%s)"
++msgstr "Po³±czenie SSL/TLS przy u¿yciu %s (%s/%s/%s)"
+ 
+ #: mutt_ssl_gnutls.c:508
+ #, c-format
+@@ -3693,43 +3658,38 @@
+ msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:516
+-#, fuzzy
+ msgid "Certificate is not X.509"
+-msgstr "Certyfikat zosta³ zapisany"
++msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:523
+-#, fuzzy
+ msgid "Error initialising gnutls certificate data"
+-msgstr "B³±d inicjalizacji terminala."
++msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:539
+ msgid "Error processing certificate data"
+ msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:724
+-#, fuzzy, c-format
++#, c-format
+ msgid "SHA1 Fingerprint: %s"
+-msgstr "Odcisk: %s"
++msgstr "Odcisk SHA1: %s"
+ 
+ #: mutt_ssl_gnutls.c:727
+-#, fuzzy, c-format
++#, c-format
+ msgid "MD5 Fingerprint: %s"
+-msgstr "Odcisk: %s"
++msgstr "Odciski MD5: %s"
+ 
+ #: mutt_ssl_gnutls.c:732
+-#, fuzzy
+ msgid "WARNING: Server certificate is not yet valid"
+-msgstr "Certyfikat serwera nie uzyska³ jeszcze wa¿no¶ci"
++msgstr "OSTRZE¯ENIE: Certyfikat serwera nie uzyska³ jeszcze wa¿no¶ci"
+ 
+ #: mutt_ssl_gnutls.c:737
+-#, fuzzy
+ msgid "WARNING: Server certificate has expired"
+-msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
++msgstr "OSTRZE¯ENIE: Certyfikat serwera utraci³ wa¿no¶æ"
+ 
+ #: mutt_ssl_gnutls.c:742
+-#, fuzzy
+ msgid "WARNING: Server certificate has been revoked"
+-msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
++msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:747
+ msgid "WARNING: Server hostname does not match certificate"
+@@ -3738,17 +3698,16 @@
+ #: mutt_ssl_gnutls.c:752
+ #, fuzzy
+ msgid "WARNING: Signer of server certificate is not a CA"
+-msgstr "Certyfikat serwera nie uzyska³ jeszcze wa¿no¶ci"
++msgstr ""
+ 
+ #: mutt_ssl_gnutls.c:755
+-#, fuzzy
+ msgid "TLS/SSL Certificate check"
+-msgstr "sprawdzanie certyfikatu SSL"
++msgstr "sprawdzanie certyfikatu TLS/SSL"
+ 
+ #: mutt_tunnel.c:70
+-#, fuzzy, c-format
++#, c-format
+ msgid "Connecting with \"%s\"..."
+-msgstr "£±czenie z %s..."
++msgstr "£±czenie z \"%s\"..."
+ 
+ #: mutt_tunnel.c:137
+ #, c-format
+@@ -3756,9 +3715,8 @@
+ msgstr ""
+ 
+ #: mutt_tunnel.c:155 mutt_tunnel.c:171
+-#, fuzzy, c-format
+ msgid "Tunnel error talking to %s: %s"
+-msgstr "B³±d komunikacji z %s (%s)"
++msgstr "B³±d tunelu przy komunikacji z %s: %s"
+ 
+ #: muttlib.c:910
+ msgid "File is a directory, save under it? [(y)es, (n)o, (a)ll]"
+@@ -4063,15 +4021,13 @@
+ "\n"
+ 
+ #: pgp.c:387 pgp.c:951
+-#, fuzzy
+ msgid "Could not decrypt PGP message"
+-msgstr "Nie mo¿na skopiowaæ listu"
++msgstr ""
+ 
+ #. clear 'Invoking...' message, since there's no error
+ #: pgp.c:436 pgp.c:947
+-#, fuzzy
+ msgid "PGP message successfully decrypted."
+-msgstr "Podpis PGP zosta³ pomy¶lnie zweryfikowany."
++msgstr "Podpis PGP zosta³ pomy¶lnie odszyfrowany."
+ 
+ #: pgp.c:723
+ msgid "Internal error. Inform <roessler@does-not-exist.org>."
+@@ -4086,7 +4042,6 @@
+ "\n"
+ 
+ #: pgp.c:828
+-#, fuzzy
+ msgid "Decryption failed"
+ msgstr "Odszyfrowanie nie powiod³o siê."
+ 
+@@ -4841,9 +4796,3 @@
  #: thread.c:1095
  msgid "Parent message is not available."
  msgstr "Pierwszy list tego w±tku nie jest dostêpny."
 -
--#~ msgid "unspecified protocol error"
--#~ msgstr "nieznany b³±d protoko³u"
+-#~ msgid "Unexpected response received from server: %s"
+-#~ msgstr "Otrzymano nieoczekiwan± odpowied¼ od serwera: %s"
 -
--#~ msgid "Closing connection to IMAP server..."
--#~ msgstr "Zamykanie po³±czenia z serwerem IMAP..."
+-#~ msgid "Unable to append to IMAP mailboxes at this server"
+-#~ msgstr "Nie mo¿na dopisaæ do skrzynek IMAP na tym serwerze"
