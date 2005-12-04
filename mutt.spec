@@ -54,21 +54,21 @@ Patch22:	%{name}-kill_warnings.patch
 Patch23:	%{name}-Muttrc_mbox_path.patch
 Patch24:	%{name}-po.patch
 URL:		http://www.mutt.org/
+%{!?with_slang:BuildRequires:	ncurses-devel >= 5.4-0.7}
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 BuildRequires:	groff
-%{!?with_slang:BuildRequires:	ncurses-devel >= 5.4-0.7}
+%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
+%{?with_esmtp:BuildRequires:	libesmtp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
 BuildRequires:	sgml-tools >= 1.0.9-20
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
-%{?with_esmtp:BuildRequires:	libesmtp-devel}
+%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 Requires:	iconv
 Requires:	mailcap
-%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	-fomit-frame-pointer
@@ -219,7 +219,7 @@ gzip -9nf $RPM_BUILD_ROOT%{_docdir}/%{name}/manual.txt
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 
-rm -f $RPM_BUILD_ROOT/etc/mime.types
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 
 %find_lang %{name}
 
@@ -229,7 +229,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp:Muttrc.esmtp}
-%config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
