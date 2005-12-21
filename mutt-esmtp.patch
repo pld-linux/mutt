@@ -182,13 +182,12 @@ diff -urN mutt-1.4.1.org/Makefile.am mutt-1.4.1/Makefile.am
  
  EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP TODO configure acconfig.h account.h \
  	attach.h buffy.h charset.h compress.h copy.h dotlock.h functions.h \
-@@ -80,7 +81,8 @@
- 	_regex.h OPS.MIX README.SECURITY remailer.c remailer.h browser.h \
+@@ -80,7 +81,7 @@
  	mbyte.h	lib.h extlib.c pgpewrap.c pgplib.h Muttrc.head Muttrc \
  	makedoc.c stamp-doc-rc README.SSL \
--	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh
-+	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
-+	mutt_libesmtp.h
+	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
+-	snprintf.c regex.c
++	snprintf.c regex.c mutt_libesmtp.h
  
  mutt_dotlock_SOURCES = mutt_dotlock.c
  mutt_dotlock_LDADD = @LIBOBJS@
