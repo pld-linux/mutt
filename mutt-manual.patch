@@ -1,6 +1,6 @@
-diff -urN mutt-1.4.orig/Muttrc.head.in mutt-1.4/Muttrc.head.in
---- mutt-1.4.orig/Muttrc.head.in	Mon Mar 20 11:25:49 2000
-+++ mutt-1.4/Muttrc.head.in	Thu Aug  1 21:48:21 2002
+diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/Muttrc.head.in mutt-1.5.10/Muttrc.head.in
+--- mutt-1.5.10.orig/Muttrc.head.in	2002-01-24 13:10:47.000000000 +0100
++++ mutt-1.5.10/Muttrc.head.in	2005-10-07 09:34:11.000000000 +0200
 @@ -15,9 +15,9 @@
  macro pager \cb |urlview\n 'call urlview to extract URLs out of a message'
  
@@ -14,14 +14,3 @@ diff -urN mutt-1.4.orig/Muttrc.head.in mutt-1.4/Muttrc.head.in
  
  # If Mutt is unable to determine your site's domain name correctly, you can
  # set the default here.
---- mutt-1.4.2.1/doc/mutt.man.orig	Mon Feb 16 14:46:34 2004
-+++ mutt-1.4.2.1/doc/mutt.man	Mon Feb 16 14:58:25 2004
-@@ -138,7 +138,7 @@
- System mapping between MIME types and file extensions.
- .IP "/usr/local/bin/mutt_dotlock"
- The privileged dotlocking program.
--.IP "/usr/local/doc/mutt/manual.txt"
-+.IP "/usr/local/doc/mutt/manual.txt.gz"
- The Mutt manual.
- .SH BUGS
- .PP

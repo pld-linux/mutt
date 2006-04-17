@@ -3,8 +3,9 @@
 %bcond_with	slang		# use slang library instead of ncurses
 %bcond_with	nntp		# use VVV's NNTP patch
 %bcond_with	esmtp		# use esmtp patch
+%bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
-%bcond_without	home_etc	# don't use home_etc
+#%%bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -17,54 +18,54 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.4.2.1
-Release:	7
+Version:	1.5.11
+Release:	0.1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
-Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
-# Source0-md5:	710bd56d3c4c4bcd1403bc4e053f7476
+Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
+# Source0-md5:	00e6f8f7c37d4840e5e30583ebee21ce
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
+Patch0:		%{name}-pl.po-update.patch
 Patch1:		%{name}-forcedotlock.patch
-Patch2:		%{name}-muttbug-tmp.patch
-Patch3:		%{name}-rr.compressed.patch
-Patch4:		%{name}-cd.edit_threads.patch
-Patch5:		%{name}-bj.status-time.patch
-Patch6:		%{name}-devl.narrow_tree.patch
-Patch7:		%{name}-vvv.quote.gz
-Patch8:		%{name}-null_name.patch
-Patch9:		%{name}-cd.trash_folder.patch
-Patch10:	%{name}-cd.purge_message.patch
-Patch11:	%{name}-cd.signatures_menu.patch
-Patch12:	%{name}-folder_columns.patch
-Patch13:	%{name}-nr.tag_prefix_cond.patch
-Patch14:	%{name}-pgp_hook.patch
-Patch15:	%{name}-manual.patch
-Patch16:	%{name}-send_charset.patch
-Patch17:	%{name}-xface.patch
-Patch18:	%{name}-sasl2.patch
-Patch19:	%{name}-nntp.patch
-Patch20:	%{name}-esmtp.patch
-Patch21:	%{name}-home_etc.patch
-Patch22:	%{name}-kill_warnings.patch
-Patch23:	%{name}-Muttrc_mbox_path.patch
+Patch2:		%{name}-rr.compressed.patch
+Patch3:		%{name}-bj.status-time.patch
+Patch4:		%{name}-vvv.quote.patch
+Patch5:		%{name}-null_name.patch
+Patch6:		%{name}-cd.trash_folder.patch
+Patch7:		%{name}-cd.purge_message.patch
+Patch8:		%{name}-cd.signatures_menu.patch
+Patch9:		%{name}-folder_columns.patch
+Patch10:	%{name}-nr.tag_prefix_cond.patch
+Patch11:	%{name}-manual.patch
+Patch12:	%{name}-send_charset.patch
+Patch13:	%{name}-xface.patch
+Patch14:	%{name}-Muttrc_mbox_path.patch
+Patch15:	%{name}-po.patch
+Patch16:	%{name}-vvv.nntp.patch
+Patch17:	%{name}-esmtp.patch
+#Patch18:	%{name}-home_etc.patch
+# if some fuctionality is still missing, patch must be rewritten
+#PatchXXX:	%{name}-pgp_hook.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
+BuildRequires:	gpgme-devel >= 1:1.0.0
+BuildRequires:	libidn-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	sgml-tools >= 1.0.9-20
+BuildRequires:	sgml-tools
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_esmtp:BuildRequires:	libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
-%{?with_home_etc:Requires:	home-etc >= 1.0.8}
+#%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	 -fomit-frame-pointer 
@@ -127,7 +128,8 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 експериментальну) п╕дтримку NNTP.
 
 %prep
-%setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
+%setup -q
+###%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -136,22 +138,18 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
+# breaks display if arrow_cursor is set
+%{?with_folder_column:%patch9 -p1}
+# disabled - changes default behaviour
+#%patch10 -p0
 %patch11 -p1
 %patch12 -p1
-# disabled - changes default behaviour
-##%patch13 -p0
+%patch13 -p1
 %patch14 -p1
 %patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%{?with_sasl:%patch18 -p1}
-%{?with_nntp:%patch19 -p1}
-%{?with_esmtp:%patch20 -p1}
-%{?with_home_etc:%patch21 -p1}
-%patch22 -p1
-%patch23 -p1
+%{?with_nntp:%patch16 -p1}
+%{?with_esmtp:%patch17 -p1}
+#%{?with_home_etc:%patch18 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -163,31 +161,27 @@ rm -f doc/{manual*.html,manual.txt}
 %{__automake}
 %configure \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
-	%{!?with_slang:--with-curses} \
-	%{?with_slang:--with-slang} \
+	--disable-warnings \
 	--enable-compressed \
 	--enable-external-dotlock \
+	--enable-gpgme \
 	--enable-imap \
-	--without-included-gettext \
 	--enable-mailtool \
-	--with-mixmaster \
-	--enable-pop \
 	%{?with_nntp:--enable-nntp} \
-	--with-regex \
-	%{?with_sasl:--with-sasl} %{!?with_sasl:--without-sasl} \
-	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
-	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
-	--with-ssl \
-	--disable-warnings \
+	--enable-pop \
+	--enable-hcache \
+	%{!?with_slang:--with-curses} \
+	%{?with_slang:--with-slang} \
 	--with-docdir=%{_docdir}/%{name} \
+	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
 	--with-homespool=Maildir \
+	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-mailpath=/var/mail \
-	--with-sharedir=%{_datadir} \
-	--prefix=%{_prefix} \
-	--bindir=%{_bindir} \
-	--datadir=%{_datadir} \
-	--mandir=%{_mandir} \
-	--sysconfdir=%{_sysconfdir}
+	--with-regex \
+	--with-mixmaster \
+	%{?with_sasl:--with-sasl2} \
+	--with-ssl \
+	--without-included-gettext
 
 %{__make}
 %{__make} manual.txt -C doc
@@ -199,7 +193,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH12}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
@@ -227,6 +221,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
 %attr(755,root,root) %{_bindir}/pgp*
+%attr(755,root,root) %{_bindir}/smime_keys
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
 %{_docdir}/%{name}
