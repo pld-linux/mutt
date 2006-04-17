@@ -56,8 +56,8 @@ diff -pruN2 mutt-1.3.27.orig/compose.c mutt-1.3.27/compose.c
        case OP_PIPE:
        case OP_FILTER:
 diff -pruN2 mutt-1.3.27.orig/doc/manual.sgml.head mutt-1.3.27/doc/manual.sgml.head
---- mutt-1.3.27.orig/doc/manual.sgml.head	Sat Jan 12 12:35:43 2002
-+++ mutt-1.3.27/doc/manual.sgml.head	Wed Jan 23 22:35:32 2002
+--- mutt-1.3.27.orig/doc/manual.xml.head	Sat Jan 12 12:35:43 2002
++++ mutt-1.3.27/doc/manual.xml.head	Wed Jan 23 22:35:32 2002
 @@ -526,4 +526,5 @@ c       edit-cc                 edit the
  b       edit-bcc                edit the Bcc field
  y       send-message            send the message
