@@ -1,16 +1,223 @@
-diff -urN mutt-1.3.18/init.c mutt-1.3.18.my/init.c
---- mutt-1.3.18/init.c	Thu Apr 26 14:59:07 2001
-+++ mutt-1.3.18.my/init.c	Sat Jun 30 08:39:00 2001
-@@ -1852,7 +1852,11 @@
+diff -Nur mutt-1.5.11.orig/configure.in mutt-1.5.11/configure.in
+--- mutt-1.5.11.orig/configure.in	2006-05-11 23:23:13.000000000 +0200
++++ mutt-1.5.11/configure.in	2006-05-12 00:58:13.000000000 +0200
+@@ -816,6 +816,32 @@
+ fi])
+ dnl -- end cache --
+ 
++dnl -- home-etc --
++AC_ARG_WITH(home-etc, [  --with-home-etc[=PFX]          Use HOME-ETC library to allow user keeping it's configuration files in a non-standard place ],
++        [
++        if test "$with_home_etc" != "no"
++        then
++          if test "$with_home_etc" != "yes"
++          then
++            LDFLAGS="$LDFLAGS -L$with_home_etc/lib"
++          fi
++
++          saved_LIBS="$LIBS"
++
++          AC_CHECK_LIB(home_etc, get_home_etc_static,,
++            AC_MSG_ERROR([could not find libhome_etc]),)
++	    
++	  AC_CHECK_HEADERS(home_etc.h)
++
++          MUTTLIBS="$MUTTLIBS -lhome_etc"
++          LIBS="$saved_LIBS"
++          AC_DEFINE(USE_HOME_ETC,1,
++                  [ Define if want to use the HOME-ETC library. ])
++          need_home_etc=yes
++        fi
++        ])
++AM_CONDITIONAL(USE_HOME_ETC, test x$need_home_etc = xyes)
++
+ if test "$need_md5" = "yes"
+ then
+         MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS md5c.o"
+diff -Nur mutt-1.5.11.orig/doc/mutt.man mutt-1.5.11/doc/mutt.man
+--- mutt-1.5.11.orig/doc/mutt.man	2005-08-18 21:38:54.000000000 +0200
++++ mutt-1.5.11/doc/mutt.man	2006-05-12 00:58:13.000000000 +0200
+@@ -122,6 +122,8 @@
+ .IP "MAILDIR"
+ Full path of the user's spool mailbox.  Commonly used when the spool
+ mailbox is a 
++.IP "HOME_ETC"
++Path to alternative configuration directory.
+ .B maildir (5)
+ folder.
+ .IP "MAILCAPS"
+@@ -138,17 +140,17 @@
+ Specifies the editor to use when composing messages.
+ .SH FILES
+ .PP
+-.IP "~/.muttrc or ~/.mutt/muttrc"
++.IP "$HOME_ETC/.muttrc" or "$HOME_ETC/.mutt/muttrc" or "~/.muttrc" or "~/.mutt/muttrc"
+ User configuration file.
+ .IP "@sysconfdir@/Muttrc"
+ System-wide configuration file.
+ .IP "/tmp/muttXXXXXX"
+ Temporary files created by Mutt.
+-.IP "~/.mailcap"
++.IP "~/.mailcap or $HOME_ETC/.mailcap"
+ User definition for handling non-text MIME types.
+ .IP "@sysconfdir@/mailcap"
+ System definition for handling non-text MIME types.
+-.IP "~/.mime.types"
++.IP "~/.mime.types or $HOME_ETC/.mime.types"
+ User's personal mapping between MIME types and file extensions.
+ .IP "@sysconfdir@/mime.types"
+ System mapping between MIME types and file extensions.
+diff -Nur mutt-1.5.11.orig/init.c mutt-1.5.11/init.c
+--- mutt-1.5.11.orig/init.c	2006-05-11 23:23:13.000000000 +0200
++++ mutt-1.5.11/init.c	2006-05-12 00:58:40.000000000 +0200
+@@ -35,7 +35,12 @@
+ #include "mutt_ssl.h"
+ #endif
+ 
+-
++#ifdef HAVE_HOME_ETC_H
++# include <home_etc.h>
++# define H_CFDIR _HEdir
++#else
++# define H_CFDIR Homedir
++#endif
+ 
+ #include "mx.h"
+ #include "init.h"
+@@ -2334,7 +2339,21 @@
+   else
+   {
+     /* Default search path from RFC1524 */
+-    MailcapPath = safe_strdup ("~/.mailcap:" PKGDATADIR "/mailcap:" SYSCONFDIR "/mailcap:/etc/mailcap:/usr/etc/mailcap:/usr/local/etc/mailcap");
++
++#define MAILCAPPATHS "~/.mailcap:" PKGDATADIR "/mailcap:" SYSCONFDIR "/mailcap:/etc/mailcap:/usr/etc/mailcap:/usr/local/etc/mailcap"
++#ifdef HAVE_HOME_ETC_H
++
++    MailcapPath = safe_malloc (mutt_strlen (MAILCAPPATHS) + mutt_strlen (_HEdir) + 2);
++    if (_HEdir != NULL && (mutt_strlen (_HEdir)) > 0)
++      sprintf (MailcapPath, "%s:%s", _HEdir, MAILCAPPATHS);	/* __SPRINTF_CHECKED__ */
++    else
++      strcpy (MailcapPath, MAILCAPPATHS);			/* __SPRCPY_CHECKED__ */
++
++#else
++
++    MailcapPath = safe_strdup (MAILCAPPATHS);
++
++#endif
+   }
+ 
+   Tempdir = safe_strdup ((p = getenv ("TMPDIR")) ? p : "/tmp");
+@@ -2415,13 +2434,13 @@
    
    if (!Muttrc)
    {
 -    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
-+    snprintf (buffer, sizeof(buffer), "%s/%s/muttrc-%s", NONULL(Homedir), getenv ("CONFIG_DIR"), MUTT_VERSION);
-+    if (access(buffer, F_OK) == -1)
-+      snprintf (buffer, sizeof(buffer), "%s/%s/muttrc", NONULL(Homedir), getenv ("CONFIG_DIR"));
-+    if (access(buffer, F_OK) == -1)
-+      snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(Homedir), MUTT_VERSION);
++    snprintf (buffer, sizeof(buffer), "%s/.muttrc-%s", NONULL(H_CFDIR), MUTT_VERSION);
      if (access(buffer, F_OK) == -1)
-       snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
+-      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
++      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(H_CFDIR));
      if (access(buffer, F_OK) == -1)
+-      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(Homedir), MUTT_VERSION);
++      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc-%s", NONULL(H_CFDIR), MUTT_VERSION);
+     if (access(buffer, F_OK) == -1)
+-      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(Homedir));
++      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(H_CFDIR));
+     
+     default_rc = 1;
+     Muttrc = safe_strdup (buffer);
+@@ -2526,10 +2545,10 @@
+   }
+ 
+   uname (&u);
+-  pathlen = strlen (Homedir) + sizeof("/.slrnfaces/")
++  pathlen = strlen (H_CFDIR) + sizeof("/.slrnfaces/")
+             + strlen (u.nodename) + 30;
+   fifo = safe_malloc (pathlen);
+-  sprintf (fifo, "%s/.slrnfaces", Homedir);
++  sprintf (fifo, "%s/.slrnfaces", H_CFDIR);
+   if (mkdir (fifo, 0700))
+   {
+     if (errno != EEXIST)
+@@ -2544,7 +2563,7 @@
+     FILE *fp;
+ 
+     /* We'll abuse fifo filename memory here. It's long enough. */
+-    sprintf (fifo, "%s/.slrnfaces/README", Homedir);
++    sprintf (fifo, "%s/.slrnfaces/README", H_CFDIR);
+     if ((fp = fopen (fifo, "w")) != NULL)
+     {
+       fputs (_(
+@@ -2560,7 +2579,7 @@
+     }
+   }
+ 
+-  status = snprintf (fifo, pathlen, "%s/.slrnfaces/%s.%ld", Homedir,
++  status = snprintf (fifo, pathlen, "%s/.slrnfaces/%s.%ld", H_CFDIR,
+ 	  	     u.nodename, (long)getpid());
+   if (status < 0)
+     goto clean_face;
+diff -Nur mutt-1.5.11.orig/mutt_ssl.c mutt-1.5.11/mutt_ssl.c
+--- mutt-1.5.11.orig/mutt_ssl.c	2005-08-03 11:17:46.000000000 +0200
++++ mutt-1.5.11/mutt_ssl.c	2006-05-12 00:58:13.000000000 +0200
+@@ -58,6 +58,13 @@
+ #define HAVE_ENTROPY()	(!access(DEVRANDOM, R_OK) || entropy_byte_count >= 16)
+ #endif
+ 
++#ifdef HAVE_HOME_ETC_H
++# include <home_etc.h>
++# define H_CFDIR _HEdir
++#else
++# define H_CFDIR Homedir
++#endif
++
+ typedef struct _sslsockdata
+ {
+   SSL_CTX *ctx;
+@@ -162,7 +169,7 @@
+     /* load entropy from egd sockets */
+ #ifdef HAVE_RAND_EGD
+     add_entropy (getenv ("EGDSOCKET"));
+-    snprintf (path, sizeof(path), "%s/.entropy", NONULL(Homedir));
++    snprintf (path, sizeof(path), "%s/.entropy", NONULL(H_CFDIR));
+     add_entropy (path);
+     add_entropy ("/tmp/entropy");
+ #endif
+diff -Nur mutt-1.5.11.orig/sendlib.c mutt-1.5.11/sendlib.c
+--- mutt-1.5.11.orig/sendlib.c	2006-05-11 23:23:13.000000000 +0200
++++ mutt-1.5.11/sendlib.c	2006-05-12 00:58:13.000000000 +0200
+@@ -45,6 +45,13 @@
+ #include <sys/wait.h>
+ #include <fcntl.h>
+ 
++#ifdef HAVE_HOME_ETC_H
++# include <home_etc.h>
++# define H_CFDIR _HEdir
++#else
++# define H_CFDIR Homedir
++#endif
++
+ #ifdef HAVE_SYSEXITS_H
+ #include <sysexits.h>
+ #else /* Make sure EX_OK is defined <philiph@pobox.com> */
+@@ -908,9 +915,9 @@
+ 
+ /* Given a file with path ``s'', see if there is a registered MIME type.
+  * returns the major MIME type, and copies the subtype to ``d''.  First look
+- * for ~/.mime.types, then look in a system mime.types if we can find one.
+- * The longest match is used so that we can match `ps.gz' when `gz' also
+- * exists.
++ * for either $HOME_ETC/.mime.types or ~/.mime.types, then look in a system
++ * mime.types if we can find one. The longest match is used so that we can
++ * match `ps.gz' when `gz' also exists.
+  */
+ 
+ int mutt_lookup_mime_type (BODY *att, const char *path)
+@@ -939,7 +946,7 @@
+     switch (count)
+     {
+       case 0:
+-	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(Homedir));
++	snprintf (buf, sizeof (buf), "%s/.mime.types", NONULL(H_CFDIR));
+ 	break;
+       case 1:
+ 	strfcpy (buf, SYSCONFDIR"/mime.types", sizeof(buf));
