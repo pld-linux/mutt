@@ -5,7 +5,7 @@
 %bcond_with	esmtp		# use esmtp patch
 %bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
-#%%bcond_without	home_etc	# don't use home_etc
+%bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de):	Der Mutt Mail-User-Agent
@@ -46,8 +46,7 @@ Patch14:	%{name}-Muttrc_mbox_path.patch
 Patch15:	%{name}-po.patch
 Patch16:	%{name}-vvv.nntp.patch
 Patch17:	%{name}-esmtp.patch
-#Patch18:	%{name}-home_etc.patch
-# if some fuctionality is still missing, patch must be rewritten
+Patch18:	%{name}-home_etc.patch
 #PatchXXX:	%{name}-pgp_hook.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
@@ -65,7 +64,7 @@ BuildRequires:	sgml-tools-dtd
 %{?with_esmtp:BuildRequires:	libesmtp-devel}
 Requires:	iconv
 Requires:	mailcap
-#%{?with_home_etc:Requires:	home-etc >= 1.0.8}
+%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	 -fomit-frame-pointer 
@@ -149,7 +148,7 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch15 -p1
 %{?with_nntp:%patch16 -p1}
 %{?with_esmtp:%patch17 -p1}
-#%{?with_home_etc:%patch18 -p1}
+%{?with_home_etc:%patch18 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
