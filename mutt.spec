@@ -18,56 +18,61 @@ Summary(ru):	Почтовая клиентская программа Mutt
 Summary(tr):	Mutt elektronik posta programЩ
 Summary(uk):	Поштова кл╕╓нтська програма Mutt
 Name:		mutt
-Version:	1.5.11
-Release:	0.1
+Version:	1.4.2.1
+Release:	10
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
-Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
-# Source0-md5:	00e6f8f7c37d4840e5e30583ebee21ce
+Source0:	ftp://ftp.mutt.org/mutt/%{name}-%{version}i.tar.gz
+# Source0-md5:	710bd56d3c4c4bcd1403bc4e053f7476
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Patch0:		%{name}-pl.po-update.patch
+Patch0:		%{name}-paths.patch
 Patch1:		%{name}-forcedotlock.patch
-Patch2:		%{name}-rr.compressed.patch
-Patch3:		%{name}-bj.status-time.patch
-Patch4:		%{name}-vvv.quote.patch
-Patch5:		%{name}-null_name.patch
-Patch6:		%{name}-cd.trash_folder.patch
-Patch7:		%{name}-cd.purge_message.patch
-Patch8:		%{name}-cd.signatures_menu.patch
-Patch9:		%{name}-folder_columns.patch
-Patch10:	%{name}-nr.tag_prefix_cond.patch
-Patch11:	%{name}-manual.patch
-Patch12:	%{name}-send_charset.patch
-Patch13:	%{name}-xface.patch
-Patch14:	%{name}-Muttrc_mbox_path.patch
-Patch15:	%{name}-po.patch
-Patch16:	%{name}-vvv.nntp.patch
-Patch17:	%{name}-esmtp.patch
-Patch18:	%{name}-home_etc.patch
-#PatchXXX:	%{name}-pgp_hook.patch
+Patch2:		%{name}-muttbug-tmp.patch
+Patch3:		%{name}-rr.compressed.patch
+Patch4:		%{name}-cd.edit_threads.patch
+Patch5:		%{name}-bj.status-time.patch
+Patch6:		%{name}-devl.narrow_tree.patch
+Patch7:		%{name}-vvv.quote.gz
+Patch8:		%{name}-null_name.patch
+Patch9:		%{name}-cd.trash_folder.patch
+Patch10:	%{name}-cd.purge_message.patch
+Patch11:	%{name}-cd.signatures_menu.patch
+Patch12:	%{name}-folder_columns.patch
+Patch13:	%{name}-nr.tag_prefix_cond.patch
+Patch14:	%{name}-pgp_hook.patch
+Patch15:	%{name}-manual.patch
+Patch16:	%{name}-send_charset.patch
+Patch17:	%{name}-xface.patch
+Patch18:	%{name}-sasl2.patch
+Patch19:	%{name}-nntp.patch
+Patch20:	%{name}-esmtp.patch
+Patch21:	%{name}-home_etc.patch
+Patch22:	%{name}-kill_warnings.patch
+Patch23:	%{name}-Muttrc_mbox_path.patch
+Patch24:	%{name}-po.patch
+Patch25:	%{name}-missing_includes.patch
 URL:		http://www.mutt.org/
+%{!?with_slang:BuildRequires:	ncurses-devel >= 5.4-0.7}
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
-BuildRequires:	gpgme-devel >= 1:1.0.0
-BuildRequires:	libidn-devel
-%{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
+BuildRequires:	groff
+%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
+%{?with_esmtp:BuildRequires:	libesmtp-devel}
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	sgml-tools
+BuildRequires:	sgml-tools >= 1.0.9-20
 BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
-%{?with_esmtp:BuildRequires:	libesmtp-devel}
+%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 Requires:	iconv
 Requires:	mailcap
-%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		specflags_ia32	 -fomit-frame-pointer 
+%define		specflags_ia32	-fomit-frame-pointer
 
 %description
 Mutt is a small but very poweful full-screen Unix mail client.
@@ -127,8 +132,8 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 експериментальну) п╕дтримку NNTP.
 
 %prep
-%setup -q
-###%patch0 -p1
+%setup -q -n %{name}-%(echo %{version} | sed 's/i$//')
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -137,18 +142,25 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-# breaks display if arrow_cursor is set
-%{?with_folder_column:%patch9 -p1}
-# disabled - changes default behaviour
-#%patch10 -p0
+%patch9 -p1
+%patch10 -p1
 %patch11 -p1
-%patch12 -p1
-%patch13 -p1
+# breaks display if arrow_cursor is set
+%{?with_folder_column:%patch12 -p1}
+# disabled - changes default behaviour
+##%patch13 -p0
 %patch14 -p1
 %patch15 -p1
-%{?with_nntp:%patch16 -p1}
-%{?with_esmtp:%patch17 -p1}
-%{?with_home_etc:%patch18 -p1}
+%patch16 -p1
+%patch17 -p1
+%{?with_sasl:%patch18 -p1}
+%{?with_nntp:%patch19 -p1}
+%{?with_esmtp:%patch20 -p1}
+%{?with_home_etc:%patch21 -p1}
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -159,28 +171,32 @@ rm -f doc/{manual*.html,manual.txt}
 %{__autoheader}
 %{__automake}
 %configure \
-	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
-	--disable-warnings \
-	--enable-compressed \
-	--enable-external-dotlock \
-	--enable-gpgme \
-	--enable-imap \
-	--enable-mailtool \
-	%{?with_nntp:--enable-nntp} \
-	--enable-pop \
-	--enable-hcache \
+	--%{?debug:en}%{!?debug:dis}able-debug \
 	%{!?with_slang:--with-curses} \
 	%{?with_slang:--with-slang} \
-	--with-docdir=%{_docdir}/%{name} \
-	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
-	--with-homespool=Maildir \
-	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
-	--with-mailpath=/var/mail \
-	--with-regex \
+	--enable-compressed \
+	--enable-external-dotlock \
+	--enable-imap \
+	--without-included-gettext \
+	--enable-mailtool \
 	--with-mixmaster \
-	%{?with_sasl:--with-sasl2} \
+	--enable-pop \
+	%{?with_nntp:--enable-nntp} \
+	--with-regex \
+	--with%{!?with_sasl:out}-sasl \
+	--with%{!?with_home_etc:out}-home-etc \
+	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-ssl \
-	--without-included-gettext
+	--disable-warnings \
+	--with-docdir=%{_docdir}/%{name} \
+	--with-homespool=Maildir \
+	--with-mailpath=/var/mail \
+	--with-sharedir=%{_datadir} \
+	--prefix=%{_prefix} \
+	--bindir=%{_bindir} \
+	--datadir=%{_datadir} \
+	--mandir=%{_mandir} \
+	--sysconfdir=%{_sysconfdir}
 
 %{__make}
 %{__make} manual.txt -C doc
@@ -192,7 +208,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH12}
+%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
@@ -205,7 +221,7 @@ gzip -9nf $RPM_BUILD_ROOT%{_docdir}/%{name}/manual.txt
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 
-rm -f $RPM_BUILD_ROOT/etc/mime.types
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 
 %find_lang %{name}
 
@@ -215,12 +231,11 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp:Muttrc.esmtp}
-%config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
 %attr(755,root,root) %{_bindir}/pgp*
-%attr(755,root,root) %{_bindir}/smime_keys
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
 %{_docdir}/%{name}
