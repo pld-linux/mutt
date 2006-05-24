@@ -52,6 +52,7 @@ URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
+BuildRequires:	db-devel
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 BuildRequires:	gpgme-devel >= 1:1.0.0
