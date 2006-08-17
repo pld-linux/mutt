@@ -59,10 +59,12 @@ BuildRequires:	gpgme-devel >= 1:1.0.0
 BuildRequires:	libidn-devel
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	sgml-tools
-BuildRequires:	sgml-tools-dtd
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_esmtp:BuildRequires:	libesmtp-devel}
+BuildRequires:	docbook-style-xsl
+BuildRequires:	libxslt-progs
+BuildRequires:	sgml-tools
+BuildRequires:	sgml-tools-dtd
 Requires:	iconv
 Requires:	mailcap
 %{?with_home_etc:Requires:	home-etc >= 1.0.8}
