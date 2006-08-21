@@ -53,7 +53,6 @@ Patch21:	%{name}-home_etc.patch
 Patch22:	%{name}-kill_warnings.patch
 Patch23:	%{name}-Muttrc_mbox_path.patch
 Patch24:	%{name}-po.patch
-Patch25:	%{name}-missing_includes.patch
 URL:		http://www.mutt.org/
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.4-0.7}
 BuildRequires:	autoconf
@@ -160,7 +159,6 @@ Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
-%patch25 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
