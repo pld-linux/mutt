@@ -1,12 +1,11 @@
-diff -Nur mutt-1.5.12.orig/Muttrc.head.in mutt-1.5.12/Muttrc.head.in
---- mutt-1.5.12.orig/Muttrc.head.in	2005-10-04 16:05:34.000000000 +0100
-+++ mutt-1.5.12/Muttrc.head.in	2006-08-04 15:05:46.000000000 +0100
-@@ -14,7 +14,7 @@
- macro index,pager \cb "<pipe-message>urlview<Enter>" "call urlview to extract URLs out of a message"
+--- mutt-1.5.13/Muttrc.head.in.orig	2006-08-23 22:29:05.494260250 +0200
++++ mutt-1.5.13/Muttrc.head.in	2006-08-23 22:29:30.383815750 +0200
+@@ -15,7 +15,7 @@
+ macro attach,compose \cb "<pipe-entry> urlview<Enter>" "call urlview to extract URLs out of a message"
  
  # Show documentation when pressing F1
--macro generic,pager <F1> "<shell-escape>less @docdir@/manual.txt<Enter>" "show Mutt documentation"
-+macro generic,pager <F1> "<shell-escape>less @docdir@/manual.txt.gz<Enter>" "show Mutt documentation"
+-macro generic,pager <F1> "<shell-escape> less @docdir@/manual.txt<Enter>" "show Mutt documentation"
++macro generic,pager <F1> "<shell-escape> less @docdir@/manual.txt.gz<Enter>" "show Mutt documentation"
  
  # show the incoming mailboxes list (just like "mutt -y") and back when pressing "y"
  macro index,pager y "<change-folder>?<toggle-mailboxes>" "show incoming mailboxes list"
