@@ -8,15 +8,15 @@
 %bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
-Summary(de):	Der Mutt Mail-User-Agent
-Summary(es):	Mutt, cliente de correo electrСnico
-Summary(fr):	Agent courrier Mutt
-Summary(ko):	еь╫╨ф╝ ╠Б╧щюг MUA
-Summary(pl):	Program pocztowy Mutt
-Summary(pt_BR):	Mutt, cliente de correio eletrТnico
-Summary(ru):	Почтовая клиентская программа Mutt
-Summary(tr):	Mutt elektronik posta programЩ
-Summary(uk):	Поштова кл╕╓нтська програма Mutt
+Summary(de.UTF-8):   Der Mutt Mail-User-Agent
+Summary(es.UTF-8):   Mutt, cliente de correo electrцЁnico
+Summary(fr.UTF-8):   Agent courrier Mutt
+Summary(ko.UTF-8):   М┘█Л┼╓М┼╦ Й╦╟К╟≤Л²≤ MUA
+Summary(pl.UTF-8):   Program pocztowy Mutt
+Summary(pt_BR.UTF-8):   Mutt, cliente de correio eletrц╢nico
+Summary(ru.UTF-8):   п÷п╬я┤я┌п╬п╡п╟я▐ п╨п╩п╦п╣п╫я┌я│п╨п╟я▐ п©я─п╬пЁя─п╟п╪п╪п╟ Mutt
+Summary(tr.UTF-8):   Mutt elektronik posta programд╠
+Summary(uk.UTF-8):   п÷п╬я┬я┌п╬п╡п╟ п╨п╩я√я■п╫я┌я│я▄п╨п╟ п©я─п╬пЁя─п╟п╪п╟ Mutt
 Name:		mutt
 Version:	1.5.13
 Release:	1
@@ -77,57 +77,57 @@ Mutt is a small but very poweful full-screen Unix mail client.
 Features include MIME support, color, POP3 support, message threading,
 bindable keys, and threaded sorting mode.
 
-%description -l de
-Mutt ist ein kleiner aber leistungsfДhiger Vollbild-Mail-Client fЭr
-Unix mit MIME-UnterstЭtzung, Farbe, POP3-UnterstЭtzung,
+%description -l de.UTF-8
+Mutt ist ein kleiner aber leistungsfц╓higer Vollbild-Mail-Client fц╪r
+Unix mit MIME-Unterstц╪tzung, Farbe, POP3-Unterstц╪tzung,
 Nachrichten-Threading, zuweisbaren Tasten und Sortieren nach Threads.
 
-%description -l es
-Mutt es un pequeЯo, pero muy potente cliente de correo en pantalla
+%description -l es.UTF-8
+Mutt es un pequeц╠o, pero muy potente cliente de correo en pantalla
 llena. Incluye soporte a tipos MINE, color, POP3; encadenamiento de
 mensajes, teclas configurables y clasificaciones por encadenamiento.
 
-%description -l fr
-mutt est un client courrier Unix plein Иcran, petit mais trХs
+%description -l fr.UTF-8
+mutt est un client courrier Unix plein ц╘cran, petit mais trц╗s
 puissant. Il dispose de la gestion MIME, des couleurs, de la gestion
-POP, des fils de discussion, des touches liИes et d'un mode de tri sur
+POP, des fils de discussion, des touches liц╘es et d'un mode de tri sur
 les fils.
 
-%description -l ko
-Mutt╢б юшаЖ╦╦ ╦е©Л ╟╜╥бгя еь╫╨ф╝ ╠Б╧щюг ╦чюо е╛╤Сюл╬Пф╝юл╢ы. Mutt╢б
-╦╧ю╨ ╪Ёа╓юл ╟║╢иго╢ы. ╠в╦╝╟М, е╟╧ыюн╣Ы, е╟╨╦╣Е ╦че╘╥н, ╦чюо ╫╨╥╧╣Ы╟З
-╟╟ю╨ аЬ╨╦╣х гЭеб©м а╓╠тг╔гЖ╫д ╟к╩Ж, ╦чюо©║╪╜ ╪╠ец╣х ╠в╥Люг Ё╩©К©║╪╜
-╟╜╥бго╟т юоа╓гя фпеою╩ цё╬фЁ╩╢б ╟мю╩ аЖ©Ьгтю╦╥н╫А ╦чюоюг фд©Ж ю╞юЗ©║╟т
-╟║юЕ юШгуго╢ы.
+%description -l ko.UTF-8
+MuttК┼■ Л·▒Л╖─К╖▄ К╖╓Л ╟ Й╟∙К═╔М∙° М┘█Л┼╓М┼╦ Й╦╟К╟≤Л²≤ К╘■Л²╪ М│╢К²╪Л²╢Л√╦М┼╦Л²╢К▀╓. MuttК┼■
+К╖▌Л²─ Л└╓Л═∙Л²╢ Й╟─К┼╔М∙≤К▀╓. Й╥╦К╕╛ЙЁ═, М┌╓К╟■Л²╦К■╘, М┌╓КЁ╢К⌠° К╘■М│╛К║°, К╘■Л²╪ Л┼╓К═┬К■╘ЙЁ╪
+Й╟≥Л²─ Л╖└КЁ╢К░° М≤∙М┐°Л≥─ Л═∙Й╥°М▒°М≤└Л▀² Й╡─Л┐┴, К╘■Л²╪Л≈░Л└° Л└═М┐²К░° Й╥╦Кё╧Л²≤ К┌╢Л ╘Л≈░Л└°
+Й╟∙К═╔М∙≤Й╡▄ Л²╪Л═∙М∙° М▄╗М└╢Л²└ Л╟╬Л∙└К┌╢К┼■ Й╡┐Л²└ Л╖─Л⌡░М∙╗Л°╪К║°Л█╗ К╘■Л²╪Л²≤ М▄▄Л⌡▄ Л°═Л═─Л≈░Й╡▄
+Й╟─Л·╔ Л═│М∙╘М∙≤К▀╓.
 
-%description -l pl
+%description -l pl.UTF-8
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych,
-posiadaj╠cym du©e mo©liwo╤ci. ObsЁuguje MIME, POP3, cztery formaty
-skrzynek pocztowych, kolory, w╠tki, ocenЙ wa©no╤ci listСw (scoring)
+posiadajд┘cym duе╪e moе╪liwoе⌡ci. Obsе┌uguje MIME, POP3, cztery formaty
+skrzynek pocztowych, kolory, wд┘tki, ocenд≥ waе╪noе⌡ci listцЁw (scoring)
 oraz skompresowane foldery.
 
-%description -l pt_BR
-O Mutt И um pequeno mas muito poderoso cliente de correio em tela
+%description -l pt_BR.UTF-8
+O Mutt ц╘ um pequeno mas muito poderoso cliente de correio em tela
 cheia. Inclui suporte a tipos MIME, cor, POP3, encadeamento de
-mensagens, teclas configurАveis e classificaГЦo por encadeamento.
+mensagens, teclas configurц║veis e classificaц╖цёo por encadeamento.
 
-%description -l ru
-Mutt - это небольшой, но мощный полноэкранный почтовый клиент.
-Включает поддержку MIME, цвет, поддержку POP3 и IMAP, группировку
-сообщений по цепочкам, переопределяемые клавиши, поддержку pgp/gpg и
-сортировку сообщений в цепочках. Включает также (пока что
-экспериментальную) поддержку NNTP.
+%description -l ru.UTF-8
+Mutt - я█я┌п╬ п╫п╣п╠п╬п╩я▄я┬п╬п╧, п╫п╬ п╪п╬я┴п╫я▀п╧ п©п╬п╩п╫п╬я█п╨я─п╟п╫п╫я▀п╧ п©п╬я┤я┌п╬п╡я▀п╧ п╨п╩п╦п╣п╫я┌.
+п▓п╨п╩я▌я┤п╟п╣я┌ п©п╬п╢п╢п╣я─п╤п╨я┐ MIME, я├п╡п╣я┌, п©п╬п╢п╢п╣я─п╤п╨я┐ POP3 п╦ IMAP, пЁя─я┐п©п©п╦я─п╬п╡п╨я┐
+я│п╬п╬п╠я┴п╣п╫п╦п╧ п©п╬ я├п╣п©п╬я┤п╨п╟п╪, п©п╣я─п╣п╬п©я─п╣п╢п╣п╩я▐п╣п╪я▀п╣ п╨п╩п╟п╡п╦я┬п╦, п©п╬п╢п╢п╣я─п╤п╨я┐ pgp/gpg п╦
+я│п╬я─я┌п╦я─п╬п╡п╨я┐ я│п╬п╬п╠я┴п╣п╫п╦п╧ п╡ я├п╣п©п╬я┤п╨п╟я┘. п▓п╨п╩я▌я┤п╟п╣я┌ я┌п╟п╨п╤п╣ (п©п╬п╨п╟ я┤я┌п╬
+я█п╨я│п©п╣я─п╦п╪п╣п╫я┌п╟п╩я▄п╫я┐я▌) п©п╬п╢п╢п╣я─п╤п╨я┐ NNTP.
 
-%description -l tr
-Mutt, kЭГЭk ama Гok gЭГlЭ bir tam-ekran Unix mektup istemcisidir. MIME
-desteПi, renk ve POP3 desteПi iГerir.
+%description -l tr.UTF-8
+Mutt, kц╪ц╖ц╪k ama ц╖ok gц╪ц╖lц╪ bir tam-ekran Unix mektup istemcisidir. MIME
+desteд÷i, renk ve POP3 desteд÷i iц╖erir.
 
-%description -l uk
-Mutt - це невеликий, але потужний повноекранний поштовий кл╕╓нт.
-М╕стить п╕дтримку MIME, кол╕р, п╕дтримку POP3 та IMAP, групування
-пов╕домлень по ланцюжкам, перевизначення клав╕ш, п╕дтримку pgp/gpg та
-сортування пов╕домлень у ланцюжках. М╕стить також (поки що
-експериментальну) п╕дтримку NNTP.
+%description -l uk.UTF-8
+Mutt - я├п╣ п╫п╣п╡п╣п╩п╦п╨п╦п╧, п╟п╩п╣ п©п╬я┌я┐п╤п╫п╦п╧ п©п╬п╡п╫п╬п╣п╨я─п╟п╫п╫п╦п╧ п©п╬я┬я┌п╬п╡п╦п╧ п╨п╩я√я■п╫я┌.
+п°я√я│я┌п╦я┌я▄ п©я√п╢я┌я─п╦п╪п╨я┐ MIME, п╨п╬п╩я√я─, п©я√п╢я┌я─п╦п╪п╨я┐ POP3 я┌п╟ IMAP, пЁя─я┐п©я┐п╡п╟п╫п╫я▐
+п©п╬п╡я√п╢п╬п╪п╩п╣п╫я▄ п©п╬ п╩п╟п╫я├я▌п╤п╨п╟п╪, п©п╣я─п╣п╡п╦п╥п╫п╟я┤п╣п╫п╫я▐ п╨п╩п╟п╡я√я┬, п©я√п╢я┌я─п╦п╪п╨я┐ pgp/gpg я┌п╟
+я│п╬я─я┌я┐п╡п╟п╫п╫я▐ п©п╬п╡я√п╢п╬п╪п╩п╣п╫я▄ я┐ п╩п╟п╫я├я▌п╤п╨п╟я┘. п°я√я│я┌п╦я┌я▄ я┌п╟п╨п╬п╤ (п©п╬п╨п╦ я┴п╬
+п╣п╨я│п©п╣я─п╦п╪п╣п╫я┌п╟п╩я▄п╫я┐) п©я√п╢я┌я─п╦п╪п╨я┐ NNTP.
 
 %prep
 %setup -q
