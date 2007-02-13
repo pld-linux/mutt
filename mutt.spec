@@ -8,15 +8,15 @@
 %bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
-Summary(de.UTF-8):   Der Mutt Mail-User-Agent
-Summary(es.UTF-8):   Mutt, cliente de correo electrónico
-Summary(fr.UTF-8):   Agent courrier Mutt
-Summary(ko.UTF-8):   텍스트 기반의 MUA
-Summary(pl.UTF-8):   Program pocztowy Mutt
-Summary(pt_BR.UTF-8):   Mutt, cliente de correio eletrônico
-Summary(ru.UTF-8):   Почтовая клиентская программа Mutt
-Summary(tr.UTF-8):   Mutt elektronik posta programı
-Summary(uk.UTF-8):   Поштова клієнтська програма Mutt
+Summary(de.UTF-8):	Der Mutt Mail-User-Agent
+Summary(es.UTF-8):	Mutt, cliente de correo electrónico
+Summary(fr.UTF-8):	Agent courrier Mutt
+Summary(ko.UTF-8):	텍스트 기반의 MUA
+Summary(pl.UTF-8):	Program pocztowy Mutt
+Summary(pt_BR.UTF-8):	Mutt, cliente de correio eletrônico
+Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
+Summary(tr.UTF-8):	Mutt elektronik posta programı
+Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.4.2.2
 Release:	1
