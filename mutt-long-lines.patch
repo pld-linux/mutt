@@ -1,0 +1,13 @@
+--- mutt-1.4.2.2/handler.c~	2007-02-19 23:35:33.000000000 +0100
++++ mutt-1.4.2.2/handler.c	2007-02-19 23:36:28.000000000 +0100
+@@ -235,8 +235,8 @@
+ 
+ void mutt_decode_quoted (STATE *s, long len, int istext, iconv_t cd)
+ {
+-  char line[STRING];
+-  char decline[2*STRING];
++  char line[LONG_STRING];
++  char decline[2*LONG_STRING];
+   size_t l = 0;
+   size_t l2;
+   size_t l3;
