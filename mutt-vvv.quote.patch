@@ -1,0 +1,127 @@
+diff -udprP mutt-1.5.9.orig/PATCHES mutt-1.5.9/PATCHES
+--- mutt-1.5.9.orig/PATCHES	2005-03-13 18:33:06.000000000 +0200
++++ mutt-1.5.9/PATCHES	2005-03-13 19:42:58.018681272 +0200
+@@ -0,0 +1 @@
++vvv.quote
+diff -udprP mutt-1.5.9.orig/globals.h mutt-1.5.9/globals.h
+--- mutt-1.5.9.orig/globals.h	2005-02-12 22:01:02.000000000 +0200
++++ mutt-1.5.9/globals.h	2005-03-13 19:42:58.019681120 +0200
+@@ -24,6 +24,8 @@ WHERE CONTEXT *Context;
+ WHERE char Errorbuf[STRING];
+ WHERE char AttachmentMarker[STRING];
+ 
++WHERE char Quotebuf[SHORT_STRING];
++
+ #if defined(DL_STANDALONE) && defined(USE_DOTLOCK)
+ WHERE char *MuttDotlock;
+ #endif
+diff -udprP mutt-1.5.9.orig/handler.c mutt-1.5.9/handler.c
+--- mutt-1.5.9.orig/handler.c	2005-02-03 20:47:52.000000000 +0200
++++ mutt-1.5.9/handler.c	2005-03-13 19:42:58.020680968 +0200
+@@ -91,6 +91,8 @@ void mutt_convert_to_state(iconv_t cd, c
+       if (ob != bufo)
+ 	state_prefix_put (bufo, ob - bufo, s);
+     }
++    if (Quotebuf[0] != '\0')
++      state_prefix_putc ('\n', s);
+     return;
+   }
+ 
+@@ -1725,6 +1727,8 @@ void mutt_decode_attachment (BODY *b, ST
+   int istext = mutt_is_text_part (b);
+   iconv_t cd = (iconv_t)(-1);
+ 
++  Quotebuf[0] = '\0';
++
+   if (istext && s->flags & M_CHARCONV)
+   {
+     char *charset = mutt_get_parameter ("charset", b->parameter);
+diff -udprP mutt-1.5.9.orig/init.h mutt-1.5.9/init.h
+--- mutt-1.5.9.orig/init.h	2005-03-01 17:56:02.000000000 +0200
++++ mutt-1.5.9/init.h	2005-03-13 19:42:58.023680512 +0200
+@@ -2124,6 +2124,19 @@ struct option_t MuttVars[] = {
+   ** have no effect, and if it is set to ask-yes or ask-no, you are
+   ** prompted for confirmation when you try to quit.
+   */
++  { "quote_empty",	DT_BOOL, R_NONE, OPTQUOTEEMPTY, 1 },
++  /*
++  ** .pp
++  ** Controls whether or not empty lines will be quoted using
++  ** ``$indent_string''.
++  */
++  { "quote_quoted",	DT_BOOL, R_NONE, OPTQUOTEQUOTED, 0 },
++  /*
++  ** .pp
++  ** Controls how quoted lines will be quoted. If set, one quote
++  ** character will be added to the end of existing prefix.  Otherwise,
++  ** quoted lines will be prepended by ``$indent_string''.
++  */
+   { "quote_regexp",	DT_RX,	 R_PAGER, UL &QuoteRegexp, UL "^([ \t]*[|>:}#])+" },
+   /*
+   ** .pp
+diff -udprP mutt-1.5.9.orig/mutt.h mutt-1.5.9/mutt.h
+--- mutt-1.5.9.orig/mutt.h	2005-02-28 17:13:57.000000000 +0200
++++ mutt-1.5.9/mutt.h	2005-03-13 19:42:58.024680360 +0200
+@@ -404,6 +404,8 @@ enum
+   OPTPRINTDECODE,
+   OPTPRINTSPLIT,
+   OPTPROMPTAFTER,
++  OPTQUOTEEMPTY,
++  OPTQUOTEQUOTED,
+   OPTREADONLY,
+   OPTREPLYSELF,
+   OPTRESOLVE,
+diff -udprP mutt-1.5.9.orig/muttlib.c mutt-1.5.9/muttlib.c
+--- mutt-1.5.9.orig/muttlib.c	2005-02-12 21:30:16.000000000 +0200
++++ mutt-1.5.9/muttlib.c	2005-03-13 19:42:58.026680056 +0200
+@@ -1254,15 +1254,45 @@ void state_prefix_putc (char c, STATE *s
+ {
+   if (s->flags & M_PENDINGPREFIX)
+   {
+-    state_reset_prefix (s);
+-    if (s->prefix)
+-      state_puts (s->prefix, s);
+-  }
++    int i;
+ 
+-  state_putc (c, s);
++    i = strlen (Quotebuf);
++    Quotebuf[i++] = c;
++    Quotebuf[i] = '\0';
++    if (i == sizeof (Quotebuf) - 1 || c == '\n')
++    {
++      char buf[2 * SHORT_STRING];
++      int j = 0, offset = 0;
++      regmatch_t pmatch[1];
++
++      state_reset_prefix (s);
++      while (regexec ((regex_t *) QuoteRegexp.rx, &Quotebuf[offset], 1, pmatch, 0) == 0)
++	offset += pmatch->rm_eo;
++
++      if (!option (OPTQUOTEEMPTY) && Quotebuf[0] == '\n')
++	strcpy (buf, Quotebuf);
++      else if (option (OPTQUOTEQUOTED) && offset)
++      {
++	for (i = 0; i < offset; i++)
++	  if (Quotebuf[i] != ' ')
++	    j = i;
++	strncpy (buf, Quotebuf, j + 1);
++	strcpy (buf + j + 1, Quotebuf + j);
++      }
++      else
++	snprintf (buf, sizeof (buf), "%s%s", NONULL(s->prefix), Quotebuf);
++
++      state_puts (buf, s);
++    }
++  }
++  else
++    state_putc (c, s);
+ 
+   if (c == '\n')
++  {
+     state_set_prefix (s);
++    Quotebuf[0] = '\0';
++  }
+ }
+ 
+ int state_printf (STATE *s, const char *fmt, ...)
