@@ -1,7 +1,25 @@
-diff -urN mutt-1.4.1.org/configure.in mutt-1.4.1/configure.in
---- mutt-1.4.1.org/configure.in	2003-08-21 15:30:19.000000000 +0200
-+++ mutt-1.4.1/configure.in	2003-08-21 15:31:08.962016232 +0200
-@@ -869,6 +869,19 @@
+--- mutt-1.5.9/Makefile.am.orig	2005-03-31 20:44:06.543128320 +0200
++++ mutt-1.5.9/Makefile.am	2005-03-31 20:48:44.552864416 +0200
+@@ -62,6 +62,7 @@
+ 	mutt_tunnel.c pop.c pop_auth.c pop_lib.c smime.c pgp.c pgpinvoke.c pgpkey.c \
+ 	pgplib.c sha1.c pgpmicalg.c gnupgparse.c resize.c dotlock.c remailer.c \
+ 	browser.h mbyte.h remailer.h url.h mutt_ssl_nss.c \
++	mutt_libesmtp.c \
+ 	crypt-mod-pgp-classic.c crypt-mod-smime-classic.c \
+ 	pgppacket.c mutt_idna.h hcache.c mutt_ssl_gnutls.c \
+ 	nntp.c newsrc.c \
+@@ -82,6 +83,7 @@
+ 	makedoc.c stamp-doc-rc README.SSL smime.h\
+ 	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh	\
+ 	ChangeLog.old mkchangelog.sh cvslog2changelog.pl mutt_idna.h \
++	mutt_libesmtp.h \
+ 	snprintf.c regex.c crypt-gpgme.h
+ 
+ EXTRA_SCRIPTS = smime_keys
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/configure.in mutt-1.5.3/configure.in
+--- mutt-1.5.3/configure.in	Tue Dec 17 04:35:21 2002
++++ mutt-1.5.3/configure.in	Wed Mar  5 11:50:47 2003
+@@ -916,6 +916,19 @@
    AC_DEFINE(HAVE_LANGINFO_YESEXPR,1,[ Define if you have <langinfo.h> and nl_langinfo(YESEXPR). ])
  fi
  
@@ -10,23 +28,23 @@ diff -urN mutt-1.4.1.org/configure.in mutt-1.4.1/configure.in
 +if test x$use_libesmtp = xyes; then
 +    CFLAGS="$CFLAGS $mutt_libesmtp_cflags"
 +    MUTTLIBS="$MUTTLIBS $mutt_libesmtp_libs"
-+    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS mutt_libesmtp.o -lpthread"
++    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS mutt_libesmtp.o"
 +
 +    AC_DEFINE(USE_LIBESMTP,
 +              1,
-+	      [Define to enable the use of libesmtp])
++              [Define to enable the use of libesmtp])
 +fi
 +dnl -- end libesmtp --
 +
  AC_OUTPUT(Makefile intl/Makefile m4/Makefile
          po/Makefile.in doc/Makefile contrib/Makefile
          muttbug.sh
-diff -urN mutt-1.4.1.org/globals.h mutt-1.4.1/globals.h
---- mutt-1.4.1.org/globals.h	2003-08-21 15:30:19.000000000 +0200
-+++ mutt-1.4.1/globals.h	2003-08-21 15:31:08.964015928 +0200
-@@ -103,6 +103,12 @@
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/globals.h mutt-1.5.3/globals.h
+--- mutt-1.5.3/globals.h	Mon Sep  9 15:05:44 2002
++++ mutt-1.5.3/globals.h	Wed Mar  5 11:50:48 2003
+@@ -101,6 +101,12 @@
+ WHERE char *Shell;
  WHERE char *Signature;
- WHERE char *SigDirectory;
  WHERE char *SimpleSearch;
 +#if defined(USE_LIBESMTP)
 +WHERE char *SmtpAuthUser;
@@ -37,10 +55,9 @@ diff -urN mutt-1.4.1.org/globals.h mutt-1.4.1/globals.h
  WHERE char *Spoolfile;
  #if defined(USE_SSL) || defined(USE_NSS)
  WHERE char *SslCertFile INITVAL (NULL);
-diff -urN mutt-1.4.1.org/init.h mutt-1.4.1/init.h
---- mutt-1.4.1.org/init.h	2003-08-21 15:30:19.000000000 +0200
-+++ mutt-1.4.1/init.h	2003-08-21 15:31:08.976014104 +0200
-@@ -99,6 +99,9 @@
+--- mutt-1.5.9/init.h.orig	2005-03-31 20:44:06.454141848 +0200
++++ mutt-1.5.9/init.h	2005-03-31 20:49:49.479993992 +0200
+@@ -98,6 +98,9 @@
  # ifndef USE_SOCKET
  #  define USE_SOCKET
  # endif
@@ -50,49 +67,50 @@ diff -urN mutt-1.4.1.org/init.h mutt-1.4.1/init.h
  #endif
  
  struct option_t MuttVars[] = {
-@@ -1468,6 +1471,38 @@
-   /*
+@@ -1987,6 +1990,39 @@
+   ** (S/MIME only)
    */
- #endif /* HAVE_PGP */
-+ 
+   
++
 +#if defined(USE_LIBESMTP)
 +  { "smtp_auth_username", DT_STR, R_NONE, UL &SmtpAuthUser, 0 },
 +  /*
-+   ** .pp
-+   ** Defines the username to use with SMTP AUTH.  Setting this variable will
-+   ** cause mutt to attempt to use SMTP AUTH when sending.
-+   */
-+   { "smtp_auth_password", DT_STR, R_NONE, UL &SmtpAuthPass, 0 },
-+   /*
-+   ** .pp
-+   ** Defines the password to use with SMTP AUTH.  If ``$$smtp_auth_username''
-+   ** is set, but this variable is not, you will be prompted for a password
-+   ** when sending.
-+   */
-+   { "smtp_host", DT_STR, R_NONE, UL &SmtpHost, 0 },
-+   /*
-+   ** .pp
-+   ** Defines the SMTP host which will be used to deliver mail, as opposed
-+   ** to invoking the sendmail binary.  Setting this variable overrides the
-+   ** value of ``$$sendmail'', and any associated variables.
-+   */
-+   { "smtp_port", DT_NUM, R_NONE, UL &SmtpPort, 25 },
-+   /*
-+   ** .pp
-+   ** Defines the port that the SMTP host is listening on for mail delivery.
-+   ** Must be specified as a number.
-+   ** .pp
-+   ** Defaults to 25, the standard SMTP port, but RFC 2476-compliant SMTP
-+   ** servers will probably desire 587, the mail submission port.
-+   */
++  ** .pp
++  ** Defines the username to use with SMTP AUTH.  Setting this variable will
++  ** cause mutt to attempt to use SMTP AUTH when sending.
++  */
++  { "smtp_auth_password", DT_STR, R_NONE, UL &SmtpAuthPass, 0 },
++  /*
++  ** .pp
++  ** Defines the password to use with SMTP AUTH.  If ``$$smtp_auth_username''
++  ** is set, but this variable is not, you will be prompted for a password
++  ** when sending.
++  */
++  { "smtp_host", DT_STR, R_NONE, UL &SmtpHost, 0 },
++  /*
++  ** .pp
++  ** Defines the SMTP host which will be used to deliver mail, as opposed
++  ** to invoking the sendmail binary.  Setting this variable overrides the
++  ** value of ``$$sendmail'', and any associated variables.
++  */
++  { "smtp_port", DT_NUM, R_NONE, UL &SmtpPort, 25 },
++  /*
++  ** .pp
++  ** Defines the port that the SMTP host is listening on for mail delivery.
++  ** Must be specified as a number.
++  ** .pp
++  ** Defaults to 25, the standard SMTP port, but RFC 2476-compliant SMTP
++  ** servers will probably desire 587, the mail submission port.
++  */
 +#endif
-   
- #if defined(USE_SSL)||defined(USE_NSS)
- # ifndef USE_NSS  
-diff -urN mutt-1.4.1.org/m4/libesmtp.m4 mutt-1.4.1/m4/libesmtp.m4
---- mutt-1.4.1.org/m4/libesmtp.m4	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.4.1/m4/libesmtp.m4	2003-08-21 15:31:08.978013800 +0200
-@@ -0,0 +1,60 @@
++
+ #if defined(USE_SSL)||defined(USE_NSS)||defined(USE_GNUTLS)
+ #ifdef USE_SSL
+   { "ssl_client_cert", DT_PATH, R_NONE, UL &SslClientCert, 0 },
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/m4/libesmtp.m4 mutt-1.5.3/m4/libesmtp.m4
+--- mutt-1.5.3/m4/libesmtp.m4	Wed Dec 31 18:00:00 1969
++++ mutt-1.5.3/m4/libesmtp.m4	Wed Mar  5 11:52:36 2003
+@@ -0,0 +1,63 @@
 +dnl vim:ft=config:
 +
 +dnl Search for libesmtp, by Steven Engelhardt <sengelha@yahoo.com>
@@ -115,7 +133,10 @@ diff -urN mutt-1.4.1.org/m4/libesmtp.m4 mutt-1.4.1/m4/libesmtp.m4
 +        fi
 +
 +        dnl 1. Find libesmtp-config
-+        mutt_libesmtp_config_path=`which libesmtp-config || echo no`
++        AC_PATH_PROG([mutt_libesmtp_config_path],
++                     [libesmtp-config],
++                     [no],
++                     [$mutt_libesmtp_check_path])
 +
 +        if test "$mutt_libesmtp_config_path" = "no"
 +        then
@@ -153,12 +174,12 @@ diff -urN mutt-1.4.1.org/m4/libesmtp.m4 mutt-1.4.1/m4/libesmtp.m4
 +    ]
 +  )
 +])
-diff -urN mutt-1.4.1.org/main.c mutt-1.4.1/main.c
---- mutt-1.4.1.org/main.c	2003-08-21 15:30:19.000000000 +0200
-+++ mutt-1.4.1/main.c	2003-08-21 15:31:08.982013192 +0200
-@@ -226,6 +226,12 @@
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/main.c mutt-1.5.3/main.c
+--- mutt-1.5.3/main.c	Wed Dec 11 05:20:05 2002
++++ mutt-1.5.3/main.c	Wed Mar  5 11:50:48 2003
+@@ -240,6 +240,12 @@
  #else
- 	"-USE_SASL  "
+ 	"-USE_SASL2  "
  #endif
 +
 +#ifdef USE_LIBESMTP
@@ -169,36 +190,17 @@ diff -urN mutt-1.4.1.org/main.c mutt-1.4.1/main.c
  	"\n"
  	
  #ifdef HAVE_REGCOMP
-diff -urN mutt-1.4.1.org/Makefile.am mutt-1.4.1/Makefile.am
---- mutt-1.4.1.org/Makefile.am	2003-08-21 15:30:18.000000000 +0200
-+++ mutt-1.4.1/Makefile.am	2003-08-21 15:31:08.984012888 +0200
-@@ -68,7 +68,8 @@
- EXTRA_mutt_SOURCES = account.c md5c.c mutt_sasl.c mutt_socket.c mutt_ssl.c \
- 	mutt_tunnel.c pop.c pop_auth.c pop_lib.c pgp.c pgpinvoke.c pgpkey.c \
- 	pgplib.c sha1.c pgpmicalg.c gnupgparse.c resize.c dotlock.c remailer.c \
--	browser.h mbyte.h remailer.h url.h mutt_ssl_nss.c pgppacket.c 
-+	browser.h mbyte.h remailer.h url.h mutt_ssl_nss.c pgppacket.c \
-+	mutt_libesmtp.c
- 
- EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP TODO configure acconfig.h account.h \
- 	attach.h buffy.h charset.h compress.h copy.h dotlock.h functions.h \
-@@ -80,7 +81,7 @@
- 	mbyte.h	lib.h extlib.c pgpewrap.c pgplib.h Muttrc.head Muttrc \
- 	makedoc.c stamp-doc-rc README.SSL \
-	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
--	snprintf.c regex.c
-+	snprintf.c regex.c mutt_libesmtp.h
- 
- mutt_dotlock_SOURCES = mutt_dotlock.c
- mutt_dotlock_LDADD = @LIBOBJS@
-diff -urN mutt-1.4.1.org/mutt_libesmtp.c mutt-1.4.1/mutt_libesmtp.c
---- mutt-1.4.1.org/mutt_libesmtp.c	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.4.1/mutt_libesmtp.c	2003-08-21 15:31:08.987012432 +0200
-@@ -0,0 +1,224 @@
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/mutt_libesmtp.c mutt-1.5.3/mutt_libesmtp.c
+--- mutt-1.5.3/mutt_libesmtp.c	Wed Dec 31 18:00:00 1969
++++ mutt-1.5.3/mutt_libesmtp.c	Wed Mar  5 11:53:42 2003
+@@ -0,0 +1,231 @@
++#if HAVE_CONFIG_H
++# include "config.h"
++#endif
 +#include "mutt.h"
++#include <errno.h>
 +#include <auth-client.h>
 +#include <libesmtp.h>
-+#include <errno.h>
 +
 +static char authpass[STRING] = "";
 +
@@ -362,8 +364,6 @@ diff -urN mutt-1.4.1.org/mutt_libesmtp.c mutt-1.4.1/mutt_libesmtp.c
 +
 +  if ((session = smtp_create_session()) == NULL)
 +    SMTPFAIL("smtp_create_session");
-+  if ((message = smtp_add_message(session)) == NULL)
-+    SMTPFAIL("smtp_add_message");
 +
 +  /* Create hostname:port string and tell libesmtp */
 +  /* len = SmtpHost len + colon + max port (65536 => 5 chars) + terminator */
@@ -383,6 +383,12 @@ diff -urN mutt-1.4.1.org/mutt_libesmtp.c mutt-1.4.1/mutt_libesmtp.c
 +      SMTPFAIL("smtp_auth_set_context");
 +  }
 +  
++  if ((message = smtp_add_message(session)) == NULL)
++    SMTPFAIL("smtp_add_message");
++  /*  Initialize envelope sender */
++  if (!smtp_set_reverse_path(message, from->mailbox))
++    SMTPFAIL("smtp_set_reverse_path");
++
 +  if ((fp = fopen(msg, "r")) == NULL)
 +    LIBCFAIL("fopen");
 +  if (!smtp_set_messagecb(message, _mutt_libesmtp_messagefp_cb, fp))
@@ -419,9 +425,9 @@ diff -urN mutt-1.4.1.org/mutt_libesmtp.c mutt-1.4.1/mutt_libesmtp.c
 +
 +  return ret;
 +}
-diff -urN mutt-1.4.1.org/mutt_libesmtp.h mutt-1.4.1/mutt_libesmtp.h
---- mutt-1.4.1.org/mutt_libesmtp.h	1970-01-01 01:00:00.000000000 +0100
-+++ mutt-1.4.1/mutt_libesmtp.h	2003-08-21 15:31:08.988012280 +0200
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/mutt_libesmtp.h mutt-1.5.3/mutt_libesmtp.h
+--- mutt-1.5.3/mutt_libesmtp.h	Wed Dec 31 18:00:00 1969
++++ mutt-1.5.3/mutt_libesmtp.h	Wed Mar  5 11:50:48 2003
 @@ -0,0 +1,10 @@
 +#if !defined(LIBESMTP_H)
 +#define LIBESMTP_H
@@ -433,7 +439,82 @@ diff -urN mutt-1.4.1.org/mutt_libesmtp.h mutt-1.4.1/mutt_libesmtp.h
 +		 int eightbit); /* message contains 8bit chars */
 +
 +#endif /* !defined(LIBESMTP_H) */
-diff -urN mutt-1.4.1.org/Muttrc.esmtp mutt-1.4.1/Muttrc.esmtp
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/protos.h mutt-1.5.3/protos.h
+--- mutt-1.5.3/protos.h	Wed Dec 11 16:31:25 2002
++++ mutt-1.5.3/protos.h	Wed Mar  5 11:50:48 2003
+@@ -279,7 +279,7 @@
+ int mutt_get_postponed (CONTEXT *, HEADER *, HEADER **, char *, size_t);
+ int mutt_get_tmp_attachment (BODY *);
+ int mutt_index_menu (void);
+-int mutt_invoke_sendmail (ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *, const char *, int);
++int mutt_invoke_mta (ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *, const char *, int);
+ int mutt_is_autoview (BODY *, const char *);
+ int mutt_is_mail_list (ADDRESS *);
+ int mutt_is_message_type(int, const char *);
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/send.c mutt-1.5.3/send.c
+--- mutt-1.5.3/send.c	Wed Dec 11 16:45:38 2002
++++ mutt-1.5.3/send.c	Wed Mar  5 11:50:48 2003
+@@ -979,7 +979,7 @@
+     return mix_send_message (msg->chain, tempfile);
+ #endif
+ 
+-  i = mutt_invoke_sendmail (msg->env->from, msg->env->to, msg->env->cc, 
++  i = mutt_invoke_mta (msg->env->from, msg->env->to, msg->env->cc, 
+ 			    msg->env->bcc, tempfile, (msg->content->encoding == ENC8BIT));
+   return (i);
+ }
+diff -urN --exclude-from=bin/diff.excludes mutt-1.5.3/sendlib.c mutt-1.5.3/sendlib.c
+--- mutt-1.5.3/sendlib.c	Tue Dec 10 14:57:11 2002
++++ mutt-1.5.3/sendlib.c	Wed Mar  5 11:50:48 2003
+@@ -123,6 +123,9 @@
+ #include "smime.h"
+ #endif /* HAVE_SMIME */
+ 
++#ifdef USE_LIBESMTP
++# include "mutt_libesmtp.h"
++#endif /* USE_LIBESMTP */
+ 
+ 
+ #define DISPOSITION(X) X==DISPATTACH?"attachment":"inline"
+@@ -2009,7 +2012,7 @@
+ }
+ 
+ 
+-int
++static int
+ mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
+ 		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
+ 		 const char *msg, /* file containing message */
+@@ -2105,6 +2108,20 @@
+   return (i);
+ }
+ 
++int
++mutt_invoke_mta (ADDRESS *from,	/* the sender */
++		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
++		 const char *msg, /* file containing message */
++		 int eightbit) /* message contains 8bit chars */
++{
++#ifdef USE_LIBESMTP
++  if (SmtpHost)
++    return mutt_invoke_libesmtp(from, to, cc, bcc, msg, eightbit);
++#endif
++  
++  return mutt_invoke_sendmail(from, to, cc, bcc, msg, eightbit);
++}
++
+ /* appends string 'b' to string 'a', and returns the pointer to the new
+    string. */
+ char *mutt_append_string (char *a, const char *b)
+@@ -2261,7 +2278,7 @@
+     mutt_copy_bytes (fp, f, h->content->length);
+     fclose (f);
+ 
+-    ret = mutt_invoke_sendmail (env_from, to, NULL, NULL, tempfile,
++    ret = mutt_invoke_mta (env_from, to, NULL, NULL, tempfile,
+ 			  	h->content->encoding == ENC8BIT);
+   }
+ 
 --- mutt-1.4.1.org/Muttrc.esmtp	1970-01-01 01:00:00.000000000 +0100
 +++ mutt-1.4.1/Muttrc.esmtp	2003-08-21 14:57:35.000000000 +0200
 @@ -0,0 +1,20 @@
@@ -457,81 +538,3 @@ diff -urN mutt-1.4.1.org/Muttrc.esmtp mutt-1.4.1/Muttrc.esmtp
 +# listening on.
 +set smtp_port = 25              
 +
-diff -urN mutt-1.4.1.org/protos.h mutt-1.4.1/protos.h
---- mutt-1.4.1.org/protos.h	2003-08-21 15:30:19.000000000 +0200
-+++ mutt-1.4.1/protos.h	2003-08-21 15:31:08.991011824 +0200
-@@ -276,7 +276,7 @@
- int mutt_get_postponed (CONTEXT *, HEADER *, HEADER **, char *, size_t);
- int mutt_get_tmp_attachment (BODY *);
- int mutt_index_menu (void);
--int mutt_invoke_sendmail (ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *, const char *, int);
-+int mutt_invoke_mta (ADDRESS *, ADDRESS *, ADDRESS *, ADDRESS *, const char *, int);
- int mutt_is_autoview (BODY *, const char *);
- int mutt_is_mail_list (ADDRESS *);
- int mutt_is_message_type(int, const char *);
-diff -urN mutt-1.4.1.org/send.c mutt-1.4.1/send.c
---- mutt-1.4.1.org/send.c	2002-01-30 23:50:59.000000000 +0100
-+++ mutt-1.4.1/send.c	2003-08-21 15:31:08.996011064 +0200
-@@ -974,7 +974,7 @@
-     return mix_send_message (msg->chain, tempfile);
- #endif
- 
--  i = mutt_invoke_sendmail (msg->env->from, msg->env->to, msg->env->cc, 
-+  i = mutt_invoke_mta (msg->env->from, msg->env->to, msg->env->cc, 
- 			    msg->env->bcc, tempfile, (msg->content->encoding == ENC8BIT));
-   return (i);
- }
-diff -urN mutt-1.4.1.org/sendlib.c mutt-1.4.1/sendlib.c
---- mutt-1.4.1.org/sendlib.c	2003-08-21 15:30:19.000000000 +0200
-+++ mutt-1.4.1/sendlib.c	2003-08-21 15:31:09.003010000 +0200
-@@ -119,6 +119,9 @@
- #endif /* HAVE_PGP */
- 
- 
-+#ifdef USE_LIBESMTP
-+# include "mutt_libesmtp.h"
-+#endif /* USE_LIBESMTP */
- 
- #define DISPOSITION(X) X==DISPATTACH?"attachment":"inline"
- 
-@@ -1970,7 +1973,7 @@
- }
- 
- 
--int
-+static int
- mutt_invoke_sendmail (ADDRESS *from,	/* the sender */
- 		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
- 		 const char *msg, /* file containing message */
-@@ -2066,6 +2069,20 @@
-   return (i);
- }
- 
-+int
-+mutt_invoke_mta (ADDRESS *from,	/* the sender */
-+		 ADDRESS *to, ADDRESS *cc, ADDRESS *bcc, /* recips */
-+		 const char *msg, /* file containing message */
-+		 int eightbit) /* message contains 8bit chars */
-+{
-+#ifdef USE_LIBESMTP
-+  if (SmtpHost)
-+    return mutt_invoke_libesmtp(from, to, cc, bcc, msg, eightbit);
-+#endif
-+  
-+  return mutt_invoke_sendmail(from, to, cc, bcc, msg, eightbit);
-+}
-+
- /* appends string 'b' to string 'a', and returns the pointer to the new
-    string. */
- char *mutt_append_string (char *a, const char *b)
-@@ -2219,8 +2236,8 @@
-     mutt_copy_bytes (fp, f, h->content->length);
-     fclose (f);
- 
--    mutt_invoke_sendmail (env_from, to, NULL, NULL, tempfile,
--			  h->content->encoding == ENC8BIT);
-+    mutt_invoke_mta (env_from, to, NULL, NULL, tempfile,
-+          h->content->encoding == ENC8BIT);
-   }
- 
-   if (msg)
