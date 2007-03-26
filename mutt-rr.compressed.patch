@@ -544,8 +544,8 @@ diff -urN mutt-1.5.12/configure mutt-1.5.12-ro/configure
  
  Optional Packages:
    --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
-@@ -14882,6 +14883,18 @@
- fi;
+@@ -17290,6 +17291,17 @@
+ fi
  
  
 +# Check whether --enable-compressed or --disable-compressed was given.
@@ -559,10 +559,9 @@ diff -urN mutt-1.5.12/configure mutt-1.5.12-ro/configure
 +        fi
 +fi
 +
-+
- # Check whether --with-exec-shell or --without-exec-shell was given.
+ 
+ # Check whether --with-exec-shell was given.
  if test "${with_exec_shell+set}" = set; then
-   withval="$with_exec_shell"
 diff -urN mutt-1.5.12/configure.in mutt-1.5.12-ro/configure.in
 --- mutt-1.5.12/configure.in	2006-07-14 20:15:32.000000000 +0200
 +++ mutt-1.5.12-ro/configure.in	2006-07-15 20:13:19.000000000 +0200
@@ -1197,15 +1196,15 @@ diff -urN mutt-1.5.12/po/de.po mutt-1.5.12-ro/po/de.po
  msgid "Mailbox is corrupt!"
  msgstr "Mailbox fehlerhaft!"
  
--#: mbox.c:662
+-#: mbox.c:670
 -msgid "Mailbox was corrupted!"
 -msgstr "Mailbox wurde zerstört!"
 -
- #: mbox.c:701 mbox.c:952
+ #: mbox.c:711 mbox.c:964
  msgid "Fatal error!  Could not reopen mailbox!"
  msgstr "Fataler Fehler, konnte Mailbox nicht erneut öffnen!"
  
--#: mbox.c:710
+-#: mbox.c:720
 -msgid "Unable to lock mailbox!"
 -msgstr "Kann Mailbox nicht für exklusiven Zugriff sperren!"
 -
