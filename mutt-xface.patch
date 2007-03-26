@@ -96,17 +96,17 @@ diff -urp ../MUTT/mutt/PATCHES mutt/PATCHES
 @@ -0,0 +1 @@
 +patch-1.5.6.cb.xface.1
 diff -urp ../MUTT/mutt/globals.h mutt/globals.h
---- ../MUTT/mutt/globals.h	2004-07-21 13:33:02.000000000 +0200
-+++ mutt/globals.h	2004-07-21 13:33:47.000000000 +0200
-@@ -217,6 +217,8 @@ WHERE char *SmimeGetCertEmailCommand;
- 
- 
+--- ../MUTT/mutt/globals.h.orig	2007-03-26 14:49:03.226880430 +0200
++++ mutt/globals.h	2007-03-26 14:51:13.227945753 +0200
+@@ -218,6 +218,8 @@
+ WHERE ALIAS *Aliases INITVAL (0);
+ WHERE LIST *UserHeader INITVAL (0);
  
 +WHERE int slrnface_fd INITVAL (-1);
 +
- #ifdef DEBUG
- WHERE FILE *debugfile INITVAL (0);
- WHERE int debuglevel INITVAL (0);
+ /*-- formerly in pgp.h --*/
+ WHERE REGEXP PgpGoodSign;
+ WHERE char *PgpSignAs;
 diff -urp ../MUTT/mutt/init.c mutt/init.c
 --- ../MUTT/mutt/init.c	2004-07-18 01:25:28.000000000 +0200
 +++ mutt/init.c	2004-07-21 13:33:47.000000000 +0200
