@@ -1,0 +1,54 @@
+diff -urN mutt-1.5.14.org/Muttrc mutt-1.5.14/Muttrc
+--- mutt-1.5.14.org/Muttrc	2007-04-25 08:29:15.220571000 +0200
++++ mutt-1.5.14/Muttrc	2007-04-25 08:31:58.895287410 +0200
+@@ -3692,6 +3692,7 @@
+ # a value of zero for this option suppresses the pause.
+ # 
+ # 
++set sort=threads
+ # set sort=date
+ #
+ # Name: sort
+@@ -3732,6 +3733,7 @@
+ #    unsorted (leave in order specified in .muttrc)
+ # 
+ # 
++set sort_aux=reverse-date
+ # set sort_aux=date
+ #
+ # Name: sort_aux
+@@ -3754,6 +3756,7 @@
+ # but kept to not break any existing configuration setting).
+ # 
+ # 
++set sort_browser=alpha
+ # set sort_browser=alpha
+ #
+ # Name: sort_browser
+@@ -4242,4 +4245,25 @@
+ # Controls whether mutt writes out the Bcc header when preparing
+ # messages to be sent.  Exim users may wish to unset this.
+ # 
+-# 
++#
++
++color hdrdefault red default
++color quoted brightblue default
++color signature red default
++color indicator brightyellow red
++color error brightred default
++color status yellow blue
++color tree magenta default      # the thread tree in the index menu
++color tilde magenta default
++color message brightcyan default
++color markers brightcyan default
++color attachment brightmagenta default
++color search default green      # how to hilite search patterns in the pager
++
++color header brightred default ^(From|Subject):
++color body magenta default "(ftp|http)://[^ ]+" # point out URLs
++color body magenta default [-a-z_0-9.]+@[-a-z_0-9.]+    # e-mail addresses
++color underline brightgreen default
++
++mono quoted bold
++ 
