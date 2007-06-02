@@ -5,7 +5,7 @@
 %bcond_with	esmtp		# use esmtp patch
 %bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
-%bcond_with	home_etc	# use home_etc (patch needs update)
+%bcond_without	home_etc	# don't use home_etc
 #
 Summary:	The Mutt Mail User Agent
 Summary(de.UTF-8):	Der Mutt Mail-User-Agent
@@ -19,7 +19,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.15
-Release:	0.1
+Release:	1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
