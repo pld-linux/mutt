@@ -5,7 +5,7 @@
 %bcond_with	esmtp		# use esmtp patch
 %bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
-%bcond_without	home_etc	# don't use home_etc
+%bcond_with	home_etc	# use home_etc (patch needs update)
 #
 Summary:	The Mutt Mail User Agent
 Summary(de.UTF-8):	Der Mutt Mail-User-Agent
@@ -18,18 +18,18 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	1.5.14
-Release:	2
+Version:	1.5.15
+Release:	0.1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
-# Source0-md5:	6d33b4f0074e39772021d947c49b30c6
+# Source0-md5:	b2c1eb45fd958f6589ee52a98f2a3ce1
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
 #Patch0:		%{name}-pl.po-update.patch
-Patch1:		%{name}-forcedotlock.patch
+#Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-rr.compressed.patch
 Patch3:		%{name}-bj.status-time.patch
 Patch4:		%{name}-vvv.quote.patch
@@ -134,7 +134,7 @@ Mutt - це невеликий, але потужний повноекранни
 %prep
 %setup -q
 #%patch0 -p1
-%patch1 -p1
+#%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
