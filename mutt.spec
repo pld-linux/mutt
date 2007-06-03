@@ -46,8 +46,9 @@ Patch15:	%{name}-po.patch
 Patch16:	%{name}-vvv.nntp.patch
 Patch17:	%{name}-home_etc.patch
 Patch18:	%{name}-Muttrc.patch
-Patch19:	%{name}-folder_columns.patch
-Patch20:	%{name}-nr.tag_prefix_cond.patch
+Patch19:	%{name}-muttbug-tmp.patch
+Patch20:	%{name}-folder_columns.patch
+Patch21:	%{name}-nr.tag_prefix_cond.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -149,10 +150,11 @@ Mutt - це невеликий, але потужний повноекранни
 %{?with_nntp:%patch16 -p1}
 %{?with_home_etc:%patch17 -p1}
 %patch18 -p1
+%patch19 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch19 -p1}
+%{?with_folder_column:%patch20 -p1}
 # disabled - changes default behaviour
-#%patch20 -p0
+#%patch21 -p0
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
