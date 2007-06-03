@@ -1,17 +1,15 @@
-diff -urN mutt-1.3.27.org/configure.in mutt-1.3.27/configure.in
---- mutt-1.3.27.org/configure.in	Wed May  9 17:47:59 2001
-+++ mutt-1.3.27/configure.in	Wed May  9 17:48:59 2001
-@@ -350,12 +350,10 @@
-         exit (1);
- }], mutt_cv_groupwrite=yes, mutt_cv_groupwrite=no, mutt_cv_groupwrite=no)])
+--- mutt-1.5.15/Makefile.am.orig	2007-06-03 12:32:52.028633000 +0200
++++ mutt-1.5.15/Makefile.am	2007-06-03 13:05:48.801283592 +0200
+@@ -138,9 +138,9 @@
+ 		rm -f $(DESTDIR)$(bindir)/mutt.dotlock ;		\
+ 		ln -sf $(DESTDIR)$(bindir)/mutt_dotlock $(DESTDIR)$(bindir)/mutt.dotlock ; \
+ 	fi
+-	if test -f $(DESTDIR)$(bindir)/mutt_dotlock && test x@DOTLOCK_GROUP@ != x ; then \
+-		chgrp @DOTLOCK_GROUP@ $(DESTDIR)$(bindir)/mutt_dotlock && \
+-		chmod @DOTLOCK_PERMISSION@ $(DESTDIR)$(bindir)/mutt_dotlock || \
++	if test -f $(DESTDIR)$(bindir)/mutt_dotlock && test x$(DOTLOCK_GROUP) != x ; then \
++		chgrp $(DOTLOCK_GROUP) $(DESTDIR)$(bindir)/mutt_dotlock && \
++		chmod $(DOTLOCK_PERMISSION) $(DESTDIR)$(bindir)/mutt_dotlock || \
+ 		{ echo "Can't fix mutt_dotlock's permissions!" >&2 ; exit 1 ; } \
+ 	fi
  
--                if test $mutt_cv_groupwrite = yes; then
-+	fi
-                         AC_DEFINE(USE_DOTLOCK,1,[ Define to use dotlocking for mailboxes. ])
-                         AC_DEFINE(USE_SETGID,1,[ Define if mutt should run setgid "mail". ])
-                         mutt_cv_setgid=yes
--                fi
--        fi
- fi
- 
- AC_ARG_ENABLE(external_dotlock, [  --enable-external-dotlock  Force use of an external dotlock program],
