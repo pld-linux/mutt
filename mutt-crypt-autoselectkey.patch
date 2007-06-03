@@ -1,0 +1,71 @@
+--- crypt-autoselectkey/PATCHES Dec 2002 17:44:54 -0000	3.6
++++ crypt-autoselectkey/PATCHES Feb 2004 13:19:46 -0000
+@@ -0,0 +1 @@
++patch-1.5.6.dw.crypt-autoselectkey.1
+--- crypt-autoselectkey/init.h Feb 2004 17:10:43 -0000	3.43
++++ crypt-autoselectkey/init.h Feb 2004 13:19:46 -0000
+@@ -1205,2 +1205,12 @@ struct option_t MuttVars[] = {
+   */
++  
++
++  { "pgp_autoselectkey",	DT_SYN,  R_NONE, UL "crypt_autoselectkey", 0 },
++  { "crypt_autoselectkey",	DT_BOOL, R_NONE, OPTCRYPTAUTOSELECT, 0 },
++  /*
++  ** .pp
++  ** If set, then a list of keys is not presented for selection when only
++  ** one matching key is available.  This may be useful in conjunction with
++  ** the \fIcrypt-hook\fP command.
++  */
+   { "pgp_autosign", 	DT_SYN,  R_NONE, UL "crypt_autosign", 0 },
+--- crypt-autoselectkey/mutt.h Feb 2004 17:10:43 -0000	3.23
++++ crypt-autoselectkey/mutt.h Feb 2004 13:19:46 -0000
+@@ -431,2 +431,3 @@ enum
+   
++  OPTCRYPTAUTOSELECT,
+   OPTCRYPTAUTOSIGN,
+--- crypt-autoselectkey/pgpkey.c Oct 2003 19:55:39 -0000	3.8
++++ crypt-autoselectkey/pgpkey.c Feb 2004 13:19:46 -0000
+@@ -437,4 +437,9 @@ static int pgp_id_matches_addr (ADDRESS 
+ 
++
++#define pgp_trusted_id(uid) (!option(OPTPGPCHECKTRUST) \
++			     || (pgp_id_is_valid((uid)) \
++				 && pgp_id_is_strong((uid))))
++
+ static pgp_key_t pgp_select_key (pgp_key_t keys,
+-                                 ADDRESS * p, const char *s)
++				  ADDRESS * p, const char *s)
+ {
+@@ -452,2 +457,3 @@ static pgp_key_t pgp_select_key (pgp_key
+ 
++  int keymatch = 0;		/* count matching keys */
+   int unusable = 0;
+@@ -481,2 +487,3 @@ static pgp_key_t pgp_select_key (pgp_key
+     }
++    keymatch++;
+   }
+@@ -489,2 +496,17 @@ static pgp_key_t pgp_select_key (pgp_key
+   }
++  else if (keymatch == 1 && option(OPTCRYPTAUTOSELECT))
++  {
++    /*
++     * Only one matching key...see if there's an id with enough trust to auto-select
++     */
++    kp = KeyTable[0]->parent;
++    for (a = kp->address; a; a = a->next)
++    {
++      if (pgp_trusted_id(a))
++      {
++	safe_free ((void **) &KeyTable);
++	return (kp);
++      }
++    }
++  }
+ 
+@@ -599,5 +621,3 @@ static pgp_key_t pgp_select_key (pgp_key
+       
+-      if (option (OPTPGPCHECKTRUST) &&
+-	  (!pgp_id_is_valid (KeyTable[menu->current])
+-	   || !pgp_id_is_strong (KeyTable[menu->current])))
++      if (!pgp_trusted_id(KeyTable[menu->current]))
+       {
