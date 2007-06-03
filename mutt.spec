@@ -37,8 +37,8 @@ Patch5:		%{name}-null_name.patch
 Patch6:		%{name}-cd.trash_folder.patch
 Patch7:		%{name}-cd.purge_message.patch
 Patch8:		%{name}-cd.signatures_menu.patch
-Patch9:		%{name}-folder_columns.patch
-Patch10:	%{name}-nr.tag_prefix_cond.patch
+Patch9:		%{name}-crypt-autoselectkey.patch
+Patch10:	%{name}-pgp_hook.patch
 Patch11:	%{name}-manual.patch
 Patch12:	%{name}-send_charset.patch
 Patch13:	%{name}-xface.patch
@@ -48,7 +48,8 @@ Patch16:	%{name}-vvv.nntp.patch
 Patch17:	%{name}-esmtp.patch
 Patch18:	%{name}-home_etc.patch
 Patch19:	%{name}-Muttrc.patch
-#PatchXXX:	%{name}-pgp_hook.patch
+Patch20:	%{name}-folder_columns.patch
+Patch21:	%{name}-nr.tag_prefix_cond.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -142,10 +143,8 @@ Mutt - це невеликий, але потужний повноекранни
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-# breaks display if arrow_cursor is set
-%{?with_folder_column:%patch9 -p1}
-# disabled - changes default behaviour
-#%patch10 -p0
+%patch9 -p1
+%patch10 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
@@ -155,6 +154,10 @@ Mutt - це невеликий, але потужний повноекранни
 %{?with_esmtp:%patch17 -p1}
 %{?with_home_etc:%patch18 -p1}
 %patch19 -p1
+# breaks display if arrow_cursor is set
+%{?with_folder_column:%patch20 -p1}
+# disabled - changes default behaviour
+#%patch21 -p0
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
