@@ -52,7 +52,7 @@ URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-BuildRequires:	db-devel
+BuildRequires:	db-devel >= 4.0
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
@@ -175,6 +175,7 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-mailtool \
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
+	--with-bdb=/usr --without-gdbm \
 	%{!?with_slang:--with-curses} \
 	--with-docdir=%{_docdir}/%{name} \
 	%{?with_home_etc:--with-home-etc} \
