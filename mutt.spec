@@ -2,7 +2,6 @@
 # Conditional build:
 %bcond_with	slang		# use slang library instead of ncurses
 %bcond_with	nntp		# use VVV's NNTP patch
-%bcond_with	esmtp		# use esmtp patch
 %bcond_with	folder_column	# build with folder_column patch
 %bcond_without	sasl		# don't use sasl
 %bcond_without	home_etc	# don't use home_etc
@@ -45,11 +44,10 @@ Patch13:	%{name}-xface.patch
 Patch14:	%{name}-Muttrc_mbox_path.patch
 Patch15:	%{name}-po.patch
 Patch16:	%{name}-vvv.nntp.patch
-Patch17:	%{name}-esmtp.patch
-Patch18:	%{name}-home_etc.patch
-Patch19:	%{name}-Muttrc.patch
-Patch20:	%{name}-folder_columns.patch
-Patch21:	%{name}-nr.tag_prefix_cond.patch
+Patch17:	%{name}-home_etc.patch
+Patch18:	%{name}-Muttrc.patch
+Patch19:	%{name}-folder_columns.patch
+Patch20:	%{name}-nr.tag_prefix_cond.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -65,7 +63,6 @@ BuildRequires:	lynx
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_slang:BuildRequires:	slang-devel}
-%{?with_esmtp:BuildRequires:	libesmtp-devel}
 BuildRequires:	libxslt-progs
 Requires:	iconv
 Requires:	mailcap
@@ -150,13 +147,12 @@ Mutt - це невеликий, але потужний повноекранни
 %patch14 -p1
 %patch15 -p1
 %{?with_nntp:%patch16 -p1}
-%{?with_esmtp:%patch17 -p1}
-%{?with_home_etc:%patch18 -p1}
-%patch19 -p1
+%{?with_home_etc:%patch17 -p1}
+%patch18 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch20 -p1}
+%{?with_folder_column:%patch19 -p1}
 # disabled - changes default behaviour
-#%patch21 -p0
+#%patch20 -p0
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -180,14 +176,13 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
 	%{!?with_slang:--with-curses} \
-	%{?with_slang:--with-slang} \
 	--with-docdir=%{_docdir}/%{name} \
 	%{?with_home_etc:--with-home-etc} \
-	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-mailpath=/var/mail \
 	--with-mixmaster \
 	--with-regex \
 	%{?with_sasl:--with-sasl2} \
+	%{?with_slang:--with-slang} \
 	--with-ssl
 
 %{__make}
@@ -223,7 +218,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface %{?with_esmtp:Muttrc.esmtp}
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/flea
