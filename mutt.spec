@@ -177,6 +177,7 @@ rm -f doc/{manual*.html,manual.txt}
 	--enable-mailtool \
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
+	--enablt-smtp \
 	--with-bdb=/usr --without-gdbm \
 	%{!?with_slang:--with-curses} \
 	--with-docdir=%{_docdir}/%{name} \
