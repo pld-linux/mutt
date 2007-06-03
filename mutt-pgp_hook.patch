@@ -3,17 +3,23 @@
 @@ -0,0 +1,2 @@
 +patch-1.5.6.dw.confirm-crypt-hook.1
 +patch-1.5.6.dw.multiple-crypt-hook.2
---- crypt-hook-both/hook.c Jan 2004 09:52:55 -0000	3.8
-+++ crypt-hook-both/hook.c Feb 2004 13:19:43 -0000
-@@ -119,3 +119,7 @@ int mutt_parse_hook (BUFFER *buf, BUFFER
+--- mutt-1.5.15/hook.c.orig	2007-06-03 14:10:28.090351677 +0200
++++ mutt-1.5.15/hook.c	2007-06-03 14:12:17.468584787 +0200
+@@ -139,7 +139,11 @@ int mutt_parse_hook (BUFFER *buf, BUFFER
+ 	ptr->rx.not == not &&
+ 	!mutt_strcmp (pattern.data, ptr->rx.pattern))
      {
 +#ifdef M_CRYPTHOOK
-+      if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK | M_REPLYHOOK | M_CRYPTHOOK))
++      if (data & (M_FOLDERHOOK | M_SENDHOOK | M_SEND2HOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK | M_REPLYHOOK | M_CRYPTHOOK))
 +#else
-       if (data & (M_FOLDERHOOK | M_SENDHOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK | M_REPLYHOOK))
+       if (data & (M_FOLDERHOOK | M_SENDHOOK | M_SEND2HOOK | M_MESSAGEHOOK | M_ACCOUNTHOOK | M_REPLYHOOK))
 +#endif
        {
-@@ -445,5 +449,21 @@ char *mutt_iconv_hook (const char *chs)
+ 	/* these hooks allow multiple commands with the same
+ 	 * pattern, so if we've already seen this pattern/command pair, just
+@@ -466,9 +470,25 @@ char *mutt_iconv_hook (const char *chs)
+   return _mutt_string_hook (chs, M_ICONVHOOK);
+ }
  
 -char *mutt_crypt_hook (ADDRESS *adr)
 +LIST *mutt_crypt_hook (ADDRESS *adr)
@@ -37,6 +43,8 @@
 +  }
 +  return (key_list);
  }
+ 
+ #ifdef USE_SOCKET
 --- crypt-hook-both/init.h Feb 2004 17:10:43 -0000	3.43
 +++ crypt-hook-both/init.h Feb 2004 13:19:43 -0000
 @@ -1230,2 +1230,11 @@ struct option_t MuttVars[] = {
@@ -212,8 +220,8 @@
 -char *mutt_crypt_hook (ADDRESS *);
 +LIST *mutt_crypt_hook (ADDRESS *);
  char *mutt_make_date (char *, size_t);
---- crypt-hook-both/doc/manual.sgml.head Feb 2004 17:45:33 -0000	3.26
-+++ crypt-hook-both/doc/manual.sgml.head Feb 2004 13:19:44 -0000
+--- crypt-hook-both/doc/manual.xml.head Feb 2004 17:45:33 -0000	3.26
++++ crypt-hook-both/doc/manual.xml.head Feb 2004 13:19:44 -0000
 @@ -1450,3 +1450,5 @@ normally use.  The crypt-hook command pr
  specify the ID of the public key to be used when encrypting messages to
 -a certain recipient.
