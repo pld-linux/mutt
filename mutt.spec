@@ -28,8 +28,8 @@ Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-#Patch0:		%{name}-pl.po-update.patch
-#Patch1:		%{name}-forcedotlock.patch
+Patch0:		%{name}-pl.po-update.patch
+Patch1:		%{name}-forcedotlock.patch
 Patch2:		%{name}-rr.compressed.patch
 Patch3:		%{name}-bj.status-time.patch
 Patch4:		%{name}-vvv.quote.patch
@@ -133,8 +133,8 @@ Mutt - це невеликий, але потужний повноекранни
 
 %prep
 %setup -q
-#%patch0 -p1
-#%patch1 -p1
+%patch0 -p1
+%patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
@@ -165,28 +165,28 @@ rm -f doc/{manual*.html,manual.txt}
 %{__autoheader}
 %{__automake}
 %configure \
+	mutt_cv_groupwrite=yes \
+	mutt_cv_worldwrite=no \
 	%{!?debug:--disable-debug} %{?debug:--enable-debug} \
 	--disable-warnings \
 	--enable-compressed \
 	--enable-external-dotlock \
 	--enable-gpgme \
+	--enable-hcache \
 	--enable-imap \
 	--enable-mailtool \
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
-	--enable-hcache \
 	%{!?with_slang:--with-curses} \
 	%{?with_slang:--with-slang} \
 	--with-docdir=%{_docdir}/%{name} \
-	%{?with_home_etc:--with-home-etc} %{!?with_home_etc:--without-home-etc} \
-	--with-homespool=Maildir \
+	%{?with_home_etc:--with-home-etc} \
 	%{?with_esmtp:--enable-libesmtp --with-libesmtp=/usr} \
 	--with-mailpath=/var/mail \
-	--with-regex \
 	--with-mixmaster \
+	--with-regex \
 	%{?with_sasl:--with-sasl2} \
-	--with-ssl \
-	--without-included-gettext
+	--with-ssl
 
 %{__make}
 %{__make} manual.txt -C doc
@@ -196,7 +196,8 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	DOTLOCK_GROUP=
 
 %{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH12}
 
