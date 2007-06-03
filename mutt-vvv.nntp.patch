@@ -2132,26 +2132,24 @@ diff -udprP mutt-1.5.15.orig/functions.h mutt-1.5.15/functions.h
    { "change-folder",		OP_MAIN_CHANGE_FOLDER,		"c" },
    { "change-folder-readonly",	OP_MAIN_CHANGE_FOLDER_READONLY,	"\033c" },
 +#ifdef USE_NNTP
-+  { "change-newsgroup",		OP_MAIN_CHANGE_GROUP,		"i" },
++  { "change-newsgroup",		OP_MAIN_CHANGE_GROUP,		"I" },
 +  { "change-newsgroup-readonly",OP_MAIN_CHANGE_GROUP_READONLY,	"\033i" },
 +#endif
    { "collapse-thread",		OP_MAIN_COLLAPSE_THREAD,	"\033v" },
    { "collapse-all",		OP_MAIN_COLLAPSE_ALL,		"\033V" },
    { "copy-message",		OP_COPY_MESSAGE,		"C" },
-@@ -100,7 +104,15 @@ struct binding_t OpMain[] = { /* map: in
-   { "edit",			OP_EDIT_MESSAGE,		"e" },
+@@ -101,6 +105,14 @@ struct binding_t OpMain[] = { /* map: in
    { "edit-type",		OP_EDIT_TYPE,			"\005" },
    { "forward-message",		OP_FORWARD_MESSAGE,		"f" },
--  { "flag-message",		OP_FLAG_MESSAGE,		"F" },
+   { "flag-message",		OP_FLAG_MESSAGE,		"F" },
 +#ifdef USE_NNTP
 +  { "forward-to-group",		OP_FORWARD_TO_GROUP,		"\033F" },
-+  { "followup-message",		OP_FOLLOWUP,			"F" },
++  { "followup-message",		OP_FOLLOWUP,			"\033f" },
 +  { "get-children",		OP_GET_CHILDREN,		NULL },
 +  { "get-message",		OP_GET_MESSAGE,			"\007" },
 +  { "get-parent",		OP_GET_PARENT,			"\033G" },
 +  { "reconstruct-thread",	OP_RECONSTRUCT_THREAD,		NULL },
 +#endif
-+  { "flag-message",		OP_FLAG_MESSAGE,		"\033f" },
    { "group-reply",		OP_GROUP_REPLY,			"g" },
  #ifdef USE_POP
    { "fetch-mail",		OP_MAIN_FETCH_MAIL,		"G" },
@@ -2160,7 +2158,7 @@ diff -udprP mutt-1.5.15.orig/functions.h mutt-1.5.15/functions.h
    { "sort-reverse",		OP_SORT_REVERSE,		"O" },
    { "print-message",		OP_PRINT,			"p" },
 +#ifdef USE_NNTP
-+  { "post-message",		OP_POST,			"P" },
++  { "post-message",		OP_POST,			"\033m" },
 +#endif
    { "previous-thread",		OP_MAIN_PREV_THREAD,		"\020" },
    { "previous-subthread",	OP_MAIN_PREV_SUBTHREAD,		"\033p" },
@@ -2176,15 +2174,6 @@ diff -udprP mutt-1.5.15.orig/functions.h mutt-1.5.15/functions.h
    { "display-message",		OP_DISPLAY_MESSAGE,		M_ENTER_S },
    { "buffy-list",		OP_BUFFY_LIST,			"." },
    { "sync-mailbox",		OP_MAIN_SYNC_FOLDER,		"$" },
-@@ -156,7 +175,7 @@ struct binding_t OpMain[] = { /* map: in
-   { "previous-new-then-unread",	OP_MAIN_PREV_NEW_THEN_UNREAD,	"\033\t" },
-   { "next-unread",		OP_MAIN_NEXT_UNREAD,		NULL },
-   { "previous-unread",		OP_MAIN_PREV_UNREAD,		NULL },
--  { "parent-message",		OP_MAIN_PARENT_MESSAGE,		"P" },
-+  { "parent-message",		OP_MAIN_PARENT_MESSAGE,		NULL },
- 
- 
-   { "extract-keys",		OP_EXTRACT_KEYS,		"\013" },
 @@ -176,6 +195,10 @@ struct binding_t OpPager[] = { /* map: p
    { "bounce-message",	OP_BOUNCE_MESSAGE,		"b" },
    { "change-folder",	OP_MAIN_CHANGE_FOLDER,		"c" },
@@ -2196,39 +2185,27 @@ diff -udprP mutt-1.5.15.orig/functions.h mutt-1.5.15/functions.h
    { "copy-message",	OP_COPY_MESSAGE,		"C" },
    { "decode-copy",	OP_DECODE_COPY,			"\033C" },
    { "delete-message",	OP_DELETE,			"d" },
-@@ -183,8 +206,12 @@ struct binding_t OpPager[] = { /* map: p
+@@ -183,6 +206,10 @@ struct binding_t OpPager[] = { /* map: p
    { "delete-subthread",	OP_DELETE_SUBTHREAD,		"\033d" },
    { "edit",		OP_EDIT_MESSAGE,		"e" },
    { "edit-type",	OP_EDIT_TYPE,			"\005" },
 +#ifdef USE_NNTP
-+  { "followup-message",	OP_FOLLOWUP,			"F" },
++  { "followup-message",	OP_FOLLOWUP,			"\033f" },
 +  { "forward-to-group",	OP_FORWARD_TO_GROUP,		"\033F" },
 +#endif
    { "forward-message",	OP_FORWARD_MESSAGE,		"f" },
--  { "flag-message",	OP_FLAG_MESSAGE,		"F" },
-+  { "flag-message",	OP_FLAG_MESSAGE,		"\033f" },
+   { "flag-message",	OP_FLAG_MESSAGE,		"F" },
    { "group-reply",	OP_GROUP_REPLY,			"g" },
- #ifdef USE_IMAP
-   { "imap-fetch-mail",  OP_MAIN_IMAP_FETCH,		NULL },
 @@ -203,6 +230,9 @@ struct binding_t OpPager[] = { /* map: p
    { "next-thread",	OP_MAIN_NEXT_THREAD,		"\016" },
    { "next-subthread",	OP_MAIN_NEXT_SUBTHREAD,		"\033n" },
    { "print-message",	OP_PRINT,			"p" },
 +#ifdef USE_NNTP
-+  { "post-message",	OP_POST,			"P" },
++  { "post-message",	OP_POST,			"\033m" },
 +#endif
    { "previous-thread",	OP_MAIN_PREV_THREAD,		"\020" },
    { "previous-subthread",OP_MAIN_PREV_SUBTHREAD,	"\033p" },
    { "quit",		OP_QUIT,			"Q" },
-@@ -250,7 +280,7 @@ struct binding_t OpPager[] = { /* map: p
-   { "half-down",	OP_HALF_DOWN,			NULL },
-   { "previous-line",	OP_PREV_LINE,			NULL },
-   { "bottom",		OP_PAGER_BOTTOM,		NULL },
--  { "parent-message",	OP_MAIN_PARENT_MESSAGE,		"P" },
-+  { "parent-message",	OP_MAIN_PARENT_MESSAGE,		NULL },
- 
- 
- 
 @@ -270,6 +300,10 @@ struct binding_t OpAttach[] = { /* map: 
    { "bounce-message",	OP_BOUNCE_MESSAGE,		"b" },
    { "display-toggle-weed",	OP_DISPLAY_HEADERS,	"h" },
@@ -2799,17 +2776,6 @@ diff -udprP mutt-1.5.15.orig/init.h mutt-1.5.15/init.h
    /*--*/
    { NULL }
  };
-diff -udprP mutt-1.5.15.orig/keymap.c mutt-1.5.15/keymap.c
---- mutt-1.5.15.orig/keymap.c	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.15/keymap.c	2007-04-11 17:25:15.000000000 +0300
-@@ -629,7 +629,6 @@ void km_init (void)
-   km_bindkey ("<enter>", MENU_MAIN, OP_DISPLAY_MESSAGE);
- 
-   km_bindkey ("x", MENU_PAGER, OP_EXIT);
--  km_bindkey ("i", MENU_PAGER, OP_EXIT);
-   km_bindkey ("<backspace>", MENU_PAGER, OP_PREV_LINE);
-   km_bindkey ("<pagedown>", MENU_PAGER, OP_NEXT_PAGE);
-   km_bindkey ("<pageup>", MENU_PAGER, OP_PREV_PAGE);
 diff -udprP mutt-1.5.15.orig/mailbox.h mutt-1.5.15/mailbox.h
 --- mutt-1.5.15.orig/mailbox.h	2007-04-02 00:58:56.000000000 +0300
 +++ mutt-1.5.15/mailbox.h	2007-04-11 17:25:15.000000000 +0300
