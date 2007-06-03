@@ -55,6 +55,8 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 BuildRequires:	db-devel
+BuildRequires:	docbook-dtd42-xml
+BuildRequires:	docbook-style-xsl
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 BuildRequires:	gpgme-devel >= 1:1.0.0
@@ -64,10 +66,7 @@ BuildRequires:	lynx
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_esmtp:BuildRequires:	libesmtp-devel}
-BuildRequires:	docbook-style-xsl
 BuildRequires:	libxslt-progs
-BuildRequires:	sgml-tools
-BuildRequires:	sgml-tools-dtd
 Requires:	iconv
 Requires:	mailcap
 %{?with_home_etc:Requires:	home-etc >= 1.0.8}
