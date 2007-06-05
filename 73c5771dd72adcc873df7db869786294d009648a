@@ -1,0 +1,4 @@
+- version 1.5.15, updated -{rr.compressed,manual}.patch,
+  removed -forcedotlock.patch (not needed, /var/mail has g+w)
+- release 0.1: home_etc bcond off (patch not updated)
+[fixes CVE-2007-1558 CVE-2007-2683]
