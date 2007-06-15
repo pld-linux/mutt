@@ -29,20 +29,25 @@ Source2:	%{name}.png
 Source3:	%{name}.1.pl
 Patch0:		%{name}-pl.po-update.patch
 Patch1:		%{name}-forcedotlock.patch
+# http://mutt.org.ua/download/
 Patch2:		%{name}-rr.compressed.patch
 Patch3:		%{name}-bj.status-time.patch
+# http://mutt.org.ua/download/
 Patch4:		%{name}-vvv.quote.patch
 Patch5:		%{name}-null_name.patch
 Patch6:		%{name}-cd.trash_folder.patch
 Patch7:		%{name}-cd.purge_message.patch
 Patch8:		%{name}-cd.signatures_menu.patch
+# http://www.mutt.ca/patches/ (dw.crypt-autoselectkey)
 Patch9:		%{name}-crypt-autoselectkey.patch
+# http://www.mutt.ca/patches/ (dw.crypt-hook-both)
 Patch10:	%{name}-pgp_hook.patch
 Patch11:	%{name}-manual.patch
 Patch12:	%{name}-send_charset.patch
 Patch13:	%{name}-xface.patch
 Patch14:	%{name}-Muttrc_mbox_path.patch
 Patch15:	%{name}-po.patch
+# http://mutt.org.ua/download/
 Patch16:	%{name}-vvv.nntp.patch
 Patch17:	%{name}-home_etc.patch
 Patch18:	%{name}-Muttrc.patch
