@@ -63,7 +63,7 @@ BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
-BuildRequires:	gpgme-devel >= 1:1.0.0
+BuildRequires:	gpgme-devel >= 1:1.1.0
 BuildRequires:	libidn-devel
 BuildRequires:	lynx
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
