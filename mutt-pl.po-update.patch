@@ -1,10 +1,25 @@
---- mutt-1.5.16/po/pl.po.orig	2007-06-10 05:30:57.000000000 +0200
-+++ mutt-1.5.16/po/pl.po	2007-06-15 19:11:08.982308330 +0200
-@@ -12,10 +12,10 @@
- "POT-Creation-Date: 2007-06-09 20:30-0700\n"
- "PO-Revision-Date: 2007-03-03 19:14+0100\n"
- "Last-Translator: Pawe³ Dziekoñski <dzieko@gmail.com>\n"
+Only in mutt-1.5.17/po: messages.mo
+diff -bur mutt-1.5.17.orig/po/pl.po mutt-1.5.17/po/pl.po
+--- mutt-1.5.17.orig/po/pl.po	2007-11-02 14:28:48.370169225 +0100
++++ mutt-1.5.17/po/pl.po	2007-11-02 14:39:34.134969687 +0100
+@@ -2,6 +2,8 @@
+ # Polskie teksty dla Mutta 1.x
+ # 1998-2006 Pawe³ Dziekoñski
+ # 1998-2002 Sergiusz Paw³owicz
++# 2005-2007 Jakub Bogusz
++# 2007 Adam Go³êbiowski
+ # Pre-translation has bean done using PePeSza,
+ # get it from http://home.elka.pw.edu.pl/~pkolodz2/pepesza.html
+ #
+@@ -10,12 +12,12 @@
+ "Project-Id-Version: mutt-cvs-2007.06.10\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2007-11-01 14:06-0700\n"
+-"PO-Revision-Date: 2007-06-10 22:37+0200\n"
+-"Last-Translator: Pawe³ Dziekoñski <dzieko@gmail.com>\n"
 -"Language-Team: POLISH <pl@li.org>\n"
++"PO-Revision-Date: 2007-11-02 14:37+0100\n"
++"Last-Translator: Adam Go³êbiowski <adamg@pld-linux.org>\n"
 +"Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
  "MIME-Version: 1.0\n"
  "Content-Type: text/plain; charset=iso-8859-2\n"
@@ -13,115 +28,34 @@
  
  #: account.c:164
  #, c-format
-@@ -1555,9 +1555,8 @@
- msgstr "Otwórz skrzynkê"
- 
- #: curs_main.c:1077
--#, fuzzy
- msgid "No mailboxes have new mail"
--msgstr "Brak skrzynki z now± poczt±."
-+msgstr "Brak skrzynek z now± poczt±"
- 
- #: curs_main.c:1105 mx.c:508 mx.c:657
+@@ -2208,7 +2210,7 @@
+ #: init.c:522
  #, c-format
-@@ -2857,9 +2856,8 @@
- msgstr "podlinkuj zaznaczony list do bie¿±cego"
- 
- #: keymap_alldefs.h:114
--#, fuzzy
- msgid "open next mailbox with new mail"
--msgstr "Brak skrzynki z now± poczt±."
-+msgstr "otwórz nastêpn± skrzynkê z now± poczt±"
- 
- #: keymap_alldefs.h:115
- msgid "jump to the next new message"
-@@ -3313,6 +3311,13 @@
- "       mutt [<options>] -D\n"
- "       mutt -v[v]\n"
- msgstr ""
-+"Sk³adnia: mutt [<opcje>] [-z] [-f <plik> | -yZ]\n"
-+"          mutt [<opche>] [-x] [-Hi <plik>] [-s <tytu³>] [-bc <adres>] [-a <plik> [...]] [--] <adres> [...]\n"
-+"          mutt [<opcje>] -p\n"
-+"          mutt [<opcje>] -A <alias> [...]\n"
-+"          mutt [<opcje>] -Q <zapytanie> [...]\n"
-+"          mutt [<opcje>] -D\n"
-+"          mutt -v[v]\n"
- 
- #: main.c:116
- msgid ""
-@@ -3381,6 +3386,8 @@
- "  --\t\ttreat remaining arguments as addr even if starting with a dash\n"
- "\t\twhen using -a with multiple filenames using -- is mandatory"
- msgstr ""
-+"  --\t\ttraktuj pozosta³e argumenty jako adresy nawet je¶li zaczynaj± siê my¶lnikiem\n"
-+"\t\tprzy -a z wieloma plikami u¿ycie -- jest konieczne"
- 
- #: main.c:187
- msgid ""
-@@ -3560,9 +3567,9 @@
- msgstr "Zaznaczanie nie jest obs³ugiwane."
- 
- #: mh.c:1076
--#, fuzzy, c-format
-+#, c-format
- msgid "Scanning %s..."
--msgstr "Wybieranie %s..."
-+msgstr "Przegl±danie %s..."
- 
- #: mh.c:1323
- msgid "maildir_commit_message(): unable to set time on file"
-@@ -4294,7 +4301,7 @@
- 
- #: pop_auth.c:188
- msgid "POP timestamp is invalid!"
+ msgid "Not enough subexpressions for spam template"
 -msgstr ""
-+msgstr "Znacznik czasu POP jest b³êdny!"
++msgstr "Brak wystarczaj±cej liczby podwyra¿eñ dla szablonu spamu"
  
- #: pop_auth.c:193
- msgid "Authenticating (APOP)..."
-@@ -4932,9 +4939,9 @@
- msgstr "Sesja SMTP nie powiod³a siê: %s"
+ #: init.c:748
+ msgid "spam: no matching pattern"
+@@ -2284,7 +2286,7 @@
+ #: init.c:1783 init.c:1795
+ #, c-format
+ msgid "Usage: set variable=yes|no"
+-msgstr ""
++msgstr "Sposób u¿ycia: set variable=yes|no"
  
- #: smtp.c:153
+ #: init.c:1803
+ #, c-format
+@@ -4086,9 +4088,9 @@
+ msgstr "niesparowane nawiasy: %s"
+ 
+ #: pattern.c:898
 -#, fuzzy, c-format
 +#, c-format
- msgid "SMTP session failed: unable to open %s"
--msgstr "Sesja SMTP nie powiod³a siê: %s"
-+msgstr "Sesja SMTP nie powiod³a siê: nie mo¿na otworzyæ %s"
+ msgid "%c: invalid pattern modifier"
+-msgstr "%c: b³êdne polecenie"
++msgstr "%c: b³êdny wzorzec"
  
- #: smtp.c:269
- msgid "SMTP session failed: read error"
-@@ -4981,33 +4988,3 @@
- #: thread.c:1099
- msgid "Parent message is not available."
- msgstr "Pierwszy list tego w±tku nie jest dostêpny."
--
--#~ msgid "Getting namespaces..."
--#~ msgstr "Pobieranie przestrzeni nazw..."
--
--#~ msgid ""
--#~ "usage: mutt [ -nRyzZ ] [ -e <cmd> ] [ -F <file> ] [ -m <type> ] [ -f "
--#~ "<file> ]\n"
--#~ "       mutt [ -nR ] [ -e <cmd> ] [ -F <file> ] -Q <query> [ -Q <query> ] "
--#~ "[...]\n"
--#~ "       mutt [ -nR ] [ -e <cmd> ] [ -F <file> ] -A <alias> [ -A <alias> ] "
--#~ "[...]\n"
--#~ "       mutt [ -nR ] [ -e <cmd> ] [ -F <file> ] -D\n"
--#~ "       mutt [ -nx ] [ -e <cmd> ] [ -a <file> ] [ -F <file> ] [ -H "
--#~ "<file> ] [ -i <file> ] [ -s <subj> ] [ -b <addr> ] [ -c <addr> ] <addr> "
--#~ "[ ... ]\n"
--#~ "       mutt [ -n ] [ -e <cmd> ] [ -F <file> ] -p\n"
--#~ "       mutt -v[v]\n"
--#~ msgstr ""
--#~ "u¿ycie: mutt [ -nRyzZ ] [ -e <polec> ] [ -F <plik> ] [ -m <typ> ] [ -f "
--#~ "<plik> ]\n"
--#~ "       mutt [ -nR ] [ -e <polec> ] [ -F <plik> ] -Q <zmienna> [ -Q "
--#~ "<zmienna> ] [...]\n"
--#~ "       mutt [ -nR ] [ -e <polec> ] [ -F <plik> ] -A <alias> [ -A "
--#~ "<alias> ] [...]\n"
--#~ "       mutt [ -nR ] [ -e <polec> ] [ -F <plik> ] -D\n"
--#~ "       mutt [ -nx ] [ -e <polec> ] [ -a <plik> ] [ -F <plik> ] [ -H "
--#~ "<plik> ] [ -i <plik> ] [ -s <temat> ] [ -b <adres> ] [ -c <adres> ] "
--#~ "<adres> [ ... ]\n"
--#~ "       mutt [ -n ] [ -e <polec> ] [ -F <plik> ] -p\n"
--#~ "       mutt -v[v]\n"
+ #: pattern.c:904
+ #, c-format
+Only in mutt-1.5.17/po: pl.po~
