@@ -3,6 +3,7 @@
 %bcond_with	slang		# use slang library instead of ncurses
 %bcond_with	nntp		# use VVV's NNTP patch
 %bcond_with	folder_column	# build with folder_column patch
+%bcond_with	imap_recent	# show IMAP RECENT messages as new (instead of UNSEEN)
 %bcond_without	sasl		# don't use sasl
 %bcond_without	home_etc	# don't use home_etc
 #
@@ -18,7 +19,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.17
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
@@ -54,6 +55,8 @@ Patch18:	%{name}-Muttrc.patch
 Patch19:	%{name}-muttbug-tmp.patch
 Patch20:	%{name}-folder_columns.patch
 Patch21:	%{name}-nr.tag_prefix_cond.patch
+Patch22:	%{name}-imap_mxcmp.patch
+Patch23:	%{name}-imap_recent.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -160,6 +163,8 @@ Mutt - це невеликий, але потужний повноекранни
 %{?with_folder_column:%patch20 -p1}
 # disabled - changes default behaviour
 #%patch21 -p0
+%patch22 -p1
+%{?with_imap_recent:%patch23 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
