@@ -1,0 +1,50 @@
+--- mutt-1.5.17/imap/util.c.orig	2007-04-12 22:44:40.000000000 +0200
++++ mutt-1.5.17/imap/util.c	2007-11-13 15:57:52.000000000 +0100
+@@ -262,13 +262,44 @@
+   return 0;
+ }
+ 
+-/* silly helper for mailbox name string comparisons, because of INBOX */
++/* Silly helper for mailbox name string comparisons, because of INBOX 
++ * and different folder delimiters. Warning: unlike strcmp this funtion
++ * won't tell which mailbox is 'greater'. */
+ int imap_mxcmp (const char* mx1, const char* mx2)
+ {
++  int result;
++  int i,j;
++  char c1,c2;
++
+   if (!ascii_strcasecmp (mx1, "INBOX") && !ascii_strcasecmp (mx2, "INBOX"))
+     return 0;
+-  
+-  return mutt_strcmp (mx1, mx2);
++
++  result = mutt_strcmp (mx1, mx2);
++
++  if (result == 0 || !ImapDelimChars || !ImapDelimChars[0]) {
++    /* exactly equal or no ImapDelimChars -- we are done */
++    return 0;
++  }
++
++  if (!mx1 || !mx2) return 1;
++
++  /* compare with normalized delimiters 
++   * (so "INBOX.something" equals "INBOX./something") */
++  for(i=0,j=0; mx1[i] && mx2[j]; i++, j++) {
++    c1 = mx1[i];
++    c2 = mx2[j];
++    if (strchr(ImapDelimChars, c1)) {
++      c1 = ImapDelimChars[0];
++      while(mx1[i+1] && strchr(ImapDelimChars, mx1[i+1])) i+=1;
++    }
++    if (strchr(ImapDelimChars, c2)) {
++      c2 = ImapDelimChars[0];
++      while(mx2[j+1] && strchr(ImapDelimChars, mx2[j+1])) j+=1;
++    }
++    if (c1 != c2) return 1;
++  }
++  if (mx1[i] || mx2[j]) return 1;
++  return 0;
+ }
+ 
+ /* imap_pretty_mailbox: called by mutt_pretty_mailbox to make IMAP paths
