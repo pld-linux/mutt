@@ -74,8 +74,8 @@ BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_slang:BuildRequires:	slang-devel}
 BuildRequires:	libxslt-progs
 Requires:	iconv
-Requires:	mailcap
 %{?with_home_etc:Requires:	home-etc >= 1.0.8}
+Suggests:	mailcap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	 -fomit-frame-pointer 
