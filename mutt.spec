@@ -18,13 +18,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	1.5.17
-Release:	2
+Version:	1.5.18
+Release:	1
 Epoch:		6
 License:	GPL
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
-# Source0-md5:	49387458be0cb52b85ae0d73af699aae
+# Source0-md5:	27c30037120189b9f9c0d3e76361b8f8
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -210,7 +210,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-%{__patch} -p0 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH12}
+%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH12}
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
