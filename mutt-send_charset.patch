@@ -1,5 +1,5 @@
---- mutt-1.4/Muttrc	Wed May 29 11:29:44 2002
-+++ Muttrc	Sat Aug 31 12:02:41 2002
+--- mutt-1.5.18.orig/doc/Muttrc	Wed May 29 11:29:44 2002
++++ mutt-1.5.18/doc/Muttrc	Sat Aug 31 12:02:41 2002
 @@ -2733,7 +2733,7 @@
  # of this variable will never mark a message read.
  # 

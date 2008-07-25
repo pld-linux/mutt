@@ -410,9 +410,8 @@ diff -udprP mutt-1.5.16.orig/Makefile.in mutt-1.5.16/Makefile.in
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pager.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse.Po@am__quote@
  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/patchlist.Po@am__quote@
-diff -udprP mutt-1.5.16.orig/Muttrc mutt-1.5.16/Muttrc
---- mutt-1.5.16.orig/Muttrc	2007-06-10 06:29:25.000000000 +0300
-+++ mutt-1.5.16/Muttrc	2007-06-15 17:12:26.000000000 +0300
+--- mutt-1.5.18.orig/doc/Muttrc	2007-06-10 06:29:25.000000000 +0300
++++ mutt-1.5.18/doc/Muttrc	2007-06-15 17:12:26.000000000 +0300
 @@ -266,6 +266,28 @@ attachments   -I message/external-body
  # if included.
  # 
@@ -1553,9 +1552,8 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
      }
    }
    
-diff -udprP mutt-1.5.16.orig/browser.h mutt-1.5.16/browser.h
---- mutt-1.5.16.orig/browser.h	2007-04-03 07:57:21.000000000 +0300
-+++ mutt-1.5.16/browser.h	2007-06-15 17:12:26.000000000 +0300
+--- mutt-1.5.18/browser.h.orig	2008-01-30 05:26:49.000000000 +0100
++++ mutt-1.5.18/browser.h	2008-07-25 17:49:27.844750139 +0200
 @@ -20,6 +20,10 @@
  #ifndef _BROWSER_H
  #define _BROWSER_H 1
@@ -1567,7 +1565,7 @@ diff -udprP mutt-1.5.16.orig/browser.h mutt-1.5.16/browser.h
  struct folder_file
  {
    mode_t mode;
-@@ -38,14 +42,17 @@ struct folder_file
+@@ -38,6 +42,9 @@
    unsigned selectable : 1;
    unsigned inferiors : 1;
  #endif
@@ -1577,16 +1575,6 @@ diff -udprP mutt-1.5.16.orig/browser.h mutt-1.5.16/browser.h
    unsigned tagged : 1;
  };
  
- struct browser_state
- {
-   struct folder_file *entry;
--  short entrylen; /* number of real entries */
--  short entrymax;  /* max entry */
-+  unsigned int entrylen; /* number of real entries */
-+  unsigned int entrymax; /* max entry */
- #ifdef USE_IMAP
-   short imap_browse;
-   char *folder;
 diff -udprP mutt-1.5.16.orig/buffy.c mutt-1.5.16/buffy.c
 --- mutt-1.5.16.orig/buffy.c	2007-04-02 00:58:55.000000000 +0300
 +++ mutt-1.5.16/buffy.c	2007-06-15 17:12:26.000000000 +0300

@@ -1,6 +1,5 @@
-diff -urN mutt-1.5.14.org/Muttrc mutt-1.5.14/Muttrc
---- mutt-1.5.14.org/Muttrc	2007-04-25 08:29:15.220571000 +0200
-+++ mutt-1.5.14/Muttrc	2007-04-25 08:31:58.895287410 +0200
+--- mutt-1.5.18.org/doc/Muttrc	2007-04-25 08:29:15.220571000 +0200
++++ mutt-1.5.18/doc/Muttrc	2007-04-25 08:31:58.895287410 +0200
 @@ -3692,6 +3692,7 @@
  # a value of zero for this option suppresses the pause.
  # 

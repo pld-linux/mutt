@@ -1,5 +1,5 @@
---- mutt-1.5.13/Muttrc.head.in.orig	2006-08-23 22:29:05.494260250 +0200
-+++ mutt-1.5.13/Muttrc.head	2006-08-23 22:29:30.383815750 +0200
+--- mutt-1.5.18/doc/Muttrc.head.in.orig	2006-08-23 22:29:05.494260250 +0200
++++ mutt-1.5.18/doc/Muttrc.head	2006-08-23 22:29:30.383815750 +0200
 @@ -15,7 +15,7 @@
  macro attach,compose \cb "<pipe-entry> urlview<Enter>" "call urlview to extract URLs out of a message"
  
