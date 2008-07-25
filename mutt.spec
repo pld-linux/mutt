@@ -21,7 +21,7 @@ Name:		mutt
 Version:	1.5.18
 Release:	1
 Epoch:		6
-License:	GPL
+License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
 # Source0-md5:	27c30037120189b9f9c0d3e76361b8f8
