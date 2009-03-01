@@ -1,4 +1,8 @@
 #
+# TODO:
+# - rework -cd.signatures_menu.patch 
+# - finish -folder_columns.patch
+#
 # Conditional build:
 %bcond_with	slang		# use slang library instead of ncurses
 %bcond_with	nntp		# use VVV's NNTP patch
@@ -18,13 +22,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	1.5.18
-Release:	2
+Version:	1.5.19
+Release:	0.1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
-# Source0-md5:	27c30037120189b9f9c0d3e76361b8f8
+# Source0-md5:	73b3747bc7f7c805921e8d24ebac693f
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -147,7 +151,8 @@ Mutt - це невеликий, але потужний повноекранни
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
+# XXX: needs update (searchBuf was removed from MUTTMENU struct in 1.5.19)
+#%%patch8 -p1
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
@@ -195,7 +200,7 @@ rm -f doc/{manual*.html,manual.txt}
 	--with-mailpath=/var/mail \
 	--with-mixmaster \
 	--with-regex \
-	%{?with_sasl:--with-sasl2} \
+	%{?with_sasl:--with-sasl} \
 	%{?with_slang:--with-slang} \
 	--with-ssl
 
