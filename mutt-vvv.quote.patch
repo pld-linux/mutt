@@ -1,11 +1,6 @@
-diff -udprP mutt-1.5.9.orig/PATCHES mutt-1.5.9/PATCHES
---- mutt-1.5.9.orig/PATCHES	2005-03-13 18:33:06.000000000 +0200
-+++ mutt-1.5.9/PATCHES	2005-03-13 19:42:58.018681272 +0200
-@@ -0,0 +1 @@
-+vvv.quote
-diff -udprP mutt-1.5.9.orig/globals.h mutt-1.5.9/globals.h
---- mutt-1.5.9.orig/globals.h	2005-02-12 22:01:02.000000000 +0200
-+++ mutt-1.5.9/globals.h	2005-03-13 19:42:58.019681120 +0200
+diff -udprP mutt-1.5.19.orig/globals.h mutt-1.5.19/globals.h
+--- mutt-1.5.19.orig/globals.h	2009-01-04 01:27:10.000000000 +0200
++++ mutt-1.5.19/globals.h	2009-01-06 19:40:35.000000000 +0200
 @@ -24,6 +24,8 @@ WHERE CONTEXT *Context;
  WHERE char Errorbuf[STRING];
  WHERE char AttachmentMarker[STRING];
@@ -15,10 +10,10 @@ diff -udprP mutt-1.5.9.orig/globals.h mutt-1.5.9/globals.h
  #if defined(DL_STANDALONE) && defined(USE_DOTLOCK)
  WHERE char *MuttDotlock;
  #endif
-diff -udprP mutt-1.5.9.orig/handler.c mutt-1.5.9/handler.c
---- mutt-1.5.9.orig/handler.c	2005-02-03 20:47:52.000000000 +0200
-+++ mutt-1.5.9/handler.c	2005-03-13 19:42:58.020680968 +0200
-@@ -91,6 +91,8 @@ void mutt_convert_to_state(iconv_t cd, c
+diff -udprP mutt-1.5.19.orig/handler.c mutt-1.5.19/handler.c
+--- mutt-1.5.19.orig/handler.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/handler.c	2009-01-06 19:40:35.000000000 +0200
+@@ -90,6 +90,8 @@ static void mutt_convert_to_state(iconv_
        if (ob != bufo)
  	state_prefix_put (bufo, ob - bufo, s);
      }
@@ -27,7 +22,7 @@ diff -udprP mutt-1.5.9.orig/handler.c mutt-1.5.9/handler.c
      return;
    }
  
-@@ -1725,6 +1727,8 @@ void mutt_decode_attachment (BODY *b, ST
+@@ -1473,6 +1475,8 @@ void mutt_decode_attachment (BODY *b, ST
    int istext = mutt_is_text_part (b);
    iconv_t cd = (iconv_t)(-1);
  
@@ -36,11 +31,20 @@ diff -udprP mutt-1.5.9.orig/handler.c mutt-1.5.9/handler.c
    if (istext && s->flags & M_CHARCONV)
    {
      char *charset = mutt_get_parameter ("charset", b->parameter);
-diff -udprP mutt-1.5.9.orig/init.h mutt-1.5.9/init.h
---- mutt-1.5.9.orig/init.h	2005-03-01 17:56:02.000000000 +0200
-+++ mutt-1.5.9/init.h	2005-03-13 19:42:58.023680512 +0200
-@@ -2124,6 +2124,19 @@ struct option_t MuttVars[] = {
-   ** have no effect, and if it is set to ask-yes or ask-no, you are
+@@ -1542,7 +1546,7 @@ int mutt_body_handler (BODY *b, STATE *s
+        */
+       if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp (b))
+ 	handler = crypt_pgp_application_pgp_handler;
+-      else if (ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0)
++      else if (ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0 && !s->prefix)
+ 	handler = rfc3676_handler;
+       else
+ 	plaintext = 1;
+diff -udprP mutt-1.5.19.orig/init.h mutt-1.5.19/init.h
+--- mutt-1.5.19.orig/init.h	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/init.h	2009-01-06 19:40:35.000000000 +0200
+@@ -2451,6 +2451,19 @@ struct option_t MuttVars[] = {
+   ** have no effect, and if it is set to \fIask-yes\fP or \fIask-no\fP, you are
    ** prompted for confirmation when you try to quit.
    */
 +  { "quote_empty",	DT_BOOL, R_NONE, OPTQUOTEEMPTY, 1 },
@@ -59,10 +63,10 @@ diff -udprP mutt-1.5.9.orig/init.h mutt-1.5.9/init.h
    { "quote_regexp",	DT_RX,	 R_PAGER, UL &QuoteRegexp, UL "^([ \t]*[|>:}#])+" },
    /*
    ** .pp
-diff -udprP mutt-1.5.9.orig/mutt.h mutt-1.5.9/mutt.h
---- mutt-1.5.9.orig/mutt.h	2005-02-28 17:13:57.000000000 +0200
-+++ mutt-1.5.9/mutt.h	2005-03-13 19:42:58.024680360 +0200
-@@ -404,6 +404,8 @@ enum
+diff -udprP mutt-1.5.19.orig/mutt.h mutt-1.5.19/mutt.h
+--- mutt-1.5.19.orig/mutt.h	2008-09-26 01:00:03.000000000 +0300
++++ mutt-1.5.19/mutt.h	2009-01-06 19:40:35.000000000 +0200
+@@ -398,6 +398,8 @@ enum
    OPTPRINTDECODE,
    OPTPRINTSPLIT,
    OPTPROMPTAFTER,
@@ -71,10 +75,10 @@ diff -udprP mutt-1.5.9.orig/mutt.h mutt-1.5.9/mutt.h
    OPTREADONLY,
    OPTREPLYSELF,
    OPTRESOLVE,
-diff -udprP mutt-1.5.9.orig/muttlib.c mutt-1.5.9/muttlib.c
---- mutt-1.5.9.orig/muttlib.c	2005-02-12 21:30:16.000000000 +0200
-+++ mutt-1.5.9/muttlib.c	2005-03-13 19:42:58.026680056 +0200
-@@ -1254,15 +1254,45 @@ void state_prefix_putc (char c, STATE *s
+diff -udprP mutt-1.5.19.orig/muttlib.c mutt-1.5.19/muttlib.c
+--- mutt-1.5.19.orig/muttlib.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/muttlib.c	2009-01-06 19:40:35.000000000 +0200
+@@ -1497,15 +1497,45 @@ void state_prefix_putc (char c, STATE *s
  {
    if (s->flags & M_PENDINGPREFIX)
    {
@@ -125,3 +129,8 @@ diff -udprP mutt-1.5.9.orig/muttlib.c mutt-1.5.9/muttlib.c
  }
  
  int state_printf (STATE *s, const char *fmt, ...)
+diff -udprP mutt-1.5.19.orig/PATCHES mutt-1.5.19/PATCHES
+--- mutt-1.5.19.orig/PATCHES	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/PATCHES	2009-01-06 19:40:35.000000000 +0200
+@@ -0,0 +1 @@
++vvv.quote

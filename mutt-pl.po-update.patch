@@ -1,53 +1,151 @@
---- mutt-1.5.18/po/pl.po.orig	2008-05-17 21:35:34.000000000 +0200
-+++ mutt-1.5.18/po/pl.po	2008-07-25 17:38:44.512753492 +0200
+--- mutt-1.5.19/po/pl.po.orig	2009-01-06 01:36:44.000000000 +0100
++++ mutt-1.5.19/po/pl.po	2009-02-28 21:54:56.268283689 +0100
 @@ -2,6 +2,8 @@
  # Polskie teksty dla Mutta 1.x
  # 1998-2006 Pawe³ Dziekoñski
  # 1998-2002 Sergiusz Paw³owicz
 +# 2005-2008 Jakub Bogusz
-+# 2007 Adam Go³êbiowski
++# 2007-2009 Adam Go³êbiowski
  # Pre-translation has bean done using PePeSza,
  # get it from http://home.elka.pw.edu.pl/~pkolodz2/pepesza.html
  #
+@@ -10,7 +12,7 @@
+ "Project-Id-Version: mutt-1.5.17\n"
+ "Report-Msgid-Bugs-To: \n"
+ "POT-Creation-Date: 2009-01-05 16:36-0800\n"
+-"PO-Revision-Date: 2007-11-02 11:11+0200\n"
++"PO-Revision-Date: 2009-02-28 21:54+0100\n"
+ "Last-Translator: Pawe³ Dziekoñski <dzieko@gmail.com>\n"
+ "Language-Team: POLISH <pl@li.org>\n"
+ "MIME-Version: 1.0\n"
 @@ -96,18 +98,16 @@
  msgstr "Zapisz do pliku: "
  
- #: alias.c:345
+ #: alias.c:361
 -#, fuzzy
  msgid "Error reading alias file"
 -msgstr "B³±d podczas próby przegl±dania pliku"
 +msgstr "B³±d podczas odczytu pliku aliasów"
  
- #: alias.c:364
+ #: alias.c:382
  msgid "Alias added."
  msgstr "Alias dodany."
  
- #: alias.c:372
+ #: alias.c:390
 -#, fuzzy
  msgid "Error seeking in alias file"
 -msgstr "B³±d podczas próby przegl±dania pliku"
 +msgstr "B³±d podczas przemieszczania po pliku aliasów"
  
- #: attach.c:113 attach.c:245 attach.c:477 attach.c:968
+ #: attach.c:113 attach.c:245 attach.c:477 attach.c:969
  msgid "Can't match nametemplate, continue?"
-@@ -2455,22 +2455,20 @@
+@@ -865,12 +865,11 @@
+ 
+ #: crypt-gpgme.c:1286
+ msgid "aka: "
+-msgstr ""
++msgstr "aka: "
+ 
+ #: crypt-gpgme.c:1297
+-#, fuzzy
+ msgid "created: "
+-msgstr "Utworzyæ %s?"
++msgstr "utworzony: "
+ 
+ #: crypt-gpgme.c:1362
+ msgid "Error getting key information: "
+@@ -881,24 +880,20 @@
+ #. fingerprint and the key validity (which is neither fully or
+ #. ultimate).
+ #: crypt-gpgme.c:1369 crypt-gpgme.c:1384
+-#, fuzzy
+ msgid "Good signature from:"
+ msgstr "Poprawny podpis z³o¿ony przez: "
+ 
+ #: crypt-gpgme.c:1376
+-#, fuzzy
+ msgid "*BAD* signature from:"
+-msgstr "Poprawny podpis z³o¿ony przez: "
++msgstr "*Z£Y* podpis z³o¿ony przez: "
+ 
+ #: crypt-gpgme.c:1392
+-#, fuzzy
+ msgid "Problem signature from:"
+-msgstr "Poprawny podpis z³o¿ony przez: "
++msgstr "Problematyczny podpis z³o¿ony przez: "
+ 
+ #: crypt-gpgme.c:1393
+-#, fuzzy
+ msgid "               expires: "
+-msgstr "                aka: "
++msgstr "                wygasa: "
+ 
+ #. Note: We don't need a current time output because GPGME avoids
+ #. such an attack by separating the meta information from the
+@@ -939,9 +934,9 @@
+ "\n"
+ 
+ #: crypt-gpgme.c:2082
+-#, fuzzy, c-format
++#, c-format
+ msgid "Error extracting key data!\n"
+-msgstr "B³±d sprawdzania klucza: "
++msgstr "B³±d podczas pobierania danych o kluczu!\n"
+ 
+ #: crypt-gpgme.c:2265
+ #, c-format
+@@ -1838,9 +1833,8 @@
+ msgstr "[-- Typ: %s/%s, Kodowanie: %s, Wielko¶æ: %s --]\n"
+ 
+ #: handler.c:1223
+-#, fuzzy
+ msgid "One or more parts of this message could not be displayed"
+-msgstr "Ostrze¿enie: fragment tej wiadomo¶ci nie zosta³ podpisany."
++msgstr "Ostrze¿enie: co najmniej jeden fragment wiadomo¶ci nie móg³ byæ wy¶wietlony"
+ 
+ #: handler.c:1275
+ #, c-format
+@@ -2087,9 +2081,9 @@
+ msgstr "Skrzynka zosta³a zamkniêta"
+ 
+ #: imap/imap.c:126
+-#, fuzzy, c-format
++#, c-format
+ msgid "CREATE failed: %s"
+-msgstr "SSL nie powiod³o siê: %s"
++msgstr "Polecenie CREATE nie powiod³o siê: %s"
+ 
+ #: imap/imap.c:190
+ #, c-format
+@@ -2331,9 +2325,9 @@
+ msgstr "%s nie jest ustawiony"
+ 
+ #: init.c:1926
+-#, fuzzy, c-format
++#, c-format
+ msgid "Invalid value for option %s: \"%s\""
+-msgstr "Niew³a¶ciwy dzieñ miesi±ca: %s"
++msgstr "Niew³a¶ciwy warto¶æ dla opcji %s: \"%s\""
+ 
+ #: init.c:2064
+ #, c-format
+@@ -2484,14 +2478,13 @@
  "Aby zg³osiæ b³±d, odwied¼ stronê http://bugs.mutt.org/.\n"
  
  #: main.c:67
 -#, fuzzy
  msgid ""
- "Copyright (C) 1996-2008 Michael R. Elkins and others.\n"
+ "Copyright (C) 1996-2009 Michael R. Elkins and others.\n"
  "Mutt comes with ABSOLUTELY NO WARRANTY; for details type `mutt -vv'.\n"
  "Mutt is free software, and you are welcome to redistribute it\n"
  "under certain conditions; type `mutt -vv' for details.\n"
  msgstr ""
 -"Copyright (C) 1996-2007 Michael R. Elkins i inni.\n"
-+"Copyright (C) 1996-2008 Michael R. Elkins i inni.\n"
++"Copyright (C) 1996-2009 Michael R. Elkins i inni.\n"
  "Program nie jest objêty ¯ADN¡ gwarancj±; szczegó³y poznasz pisz±c 'mutt -"
  "vv'.\n"
--"Mutt jest darmowym oprogramowaniem, zapraszamy \n"
-+"Mutt jest darmowym oprogramowaniem, zapraszamy\n"
- "do jego redystrybucji pod pewnymi warunkami, szczegó³y poznasz pisz±c 'mutt -"
+ "Mutt jest darmowym oprogramowaniem, zapraszamy \n"
+@@ -2499,7 +2492,6 @@
  "vv'.\n"
  
  #: main.c:73
@@ -55,42 +153,110 @@
  msgid ""
  "Copyright (C) 1996-2007 Michael R. Elkins <me@mutt.org>\n"
  "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
-@@ -2483,11 +2481,11 @@
+@@ -2513,13 +2505,14 @@
  "Many others not mentioned here contributed code, fixes,\n"
  "and suggestions.\n"
  msgstr ""
 -"Copyright (C) 1996-2006 Michael R. Elkins <me@mutt.org>\n"
 +"Copyright (C) 1996-2007 Michael R. Elkins <me@mutt.org>\n"
  "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
- "Copyright (C) 1997-2007 Thomas Roessler <roessler@does-not-exist.org>\n"
+-"Copyright (C) 1997-2007 Thomas Roessler <roessler@does-not-exist.org>\n"
++"Copyright (C) 1997-2008 Thomas Roessler <roessler@does-not-exist.org>\n"
  "Copyright (C) 1998-2005 Werner Koch <wk@isil.d.shuttle.de>\n"
 -"Copyright (C) 1999-2007 Brendan Cully <brendan@kublai.com>\n"
-+"Copyright (C) 1999-2008 Brendan Cully <brendan@kublai.com>\n"
++"Copyright (C) 1999-2009 Brendan Cully <brendan@kublai.com>\n"
  "Copyright (C) 1999-2002 Tommi Komulainen <Tommi.Komulainen@iki.fi>\n"
  "Copyright (C) 2000-2002 Edmund Grimley Evans <edmundo@rano.org>\n"
++"Copyright (C) 2006-2008 Rocco Rutte <pdmef@gmx.net>\n"
  "\n"
-@@ -2654,7 +2652,7 @@
+ "Wielu innych twórców, nie wspomnianych tutaj,\n"
+ "wnios³o wiele nowego kodu, poprawek i sugestii.\n"
+@@ -2560,7 +2553,6 @@
+ "1301, USA.\n"
  
- #: main.c:831
+ #: main.c:113
+-#, fuzzy
+ msgid ""
+ "usage: mutt [<options>] [-z] [-f <file> | -yZ]\n"
+ "       mutt [<options>] [-x] [-Hi <file>] [-s <subj>] [-bc <addr>] [-a "
+@@ -2687,7 +2679,7 @@
+ 
+ #: main.c:848
  msgid "Failed to parse mailto: link\n"
 -msgstr ""
-+msgstr "Nie uda³o siê przeanalizowaæ odno¶nika mailto:\n"
++msgstr "Przetwarzanie odno¶nika mailto: nie powiod³o siê\n"
  
- #: main.c:843
+ #: main.c:860
  msgid "No recipients specified.\n"
-@@ -5001,15 +4999,3 @@
- #: ../keymap_alldefs.h:202
- msgid "show S/MIME options"
- msgstr "poka¿ opcje S/MIME"
--
--#~ msgid "SASL failed to get local IP address"
--#~ msgstr "SASL: b³±d pobierania lokalnego adresu IP"
--
--#~ msgid "SASL failed to parse local IP address"
--#~ msgstr "SASL: b³±d przetwarzania lokalnego adresu IP"
--
--#~ msgid "SASL failed to get remote IP address"
--#~ msgstr "SASL: b³±d pobierania zdalnego adresu IP"
--
--#~ msgid "SASL failed to parse remote IP address"
--#~ msgstr "SASL: b³±d zdalnego lokalnego adresu IP"
+@@ -2841,9 +2833,8 @@
+ msgstr "Sprawdzanie %s..."
+ 
+ #: mh.c:1314 mh.c:1392
+-#, fuzzy
+ msgid "Could not flush message to disk"
+-msgstr "Wys³anie listu nie powiod³o siê."
++msgstr "Zapisane wiadomo¶ci na dysk nie powiod³o siê."
+ 
+ #: mh.c:1359
+ msgid "maildir_commit_message(): unable to set time on file"
+@@ -2971,24 +2962,22 @@
+ msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
+ 
+ #: mutt_ssl.c:696
+-#, fuzzy
+ msgid "cannot get certificate subject"
+-msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
++msgstr "nie mo¿na pobraæ tytu³ certyfikatu"
+ 
+ #: mutt_ssl.c:708
+-#, fuzzy
+ msgid "cannot get certificate common name"
+-msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
++msgstr "nie mo¿na pobraæ ogólnej nazwy certyfikatu"
+ 
+ #: mutt_ssl.c:717
+-#, fuzzy, c-format
++#, c-format
+ msgid "certificate owner does not match hostname %s"
+-msgstr "W³a¶ciciel certyfikatu nie odpowiada nadawcy."
++msgstr "w³a¶ciciel certyfikatu nie zgadza siê z hostem %s"
+ 
+ #: mutt_ssl.c:754
+-#, fuzzy, c-format
++#, c-format
+ msgid "Certificate host check failed: %s"
+-msgstr "Certyfikat zosta³ zapisany"
++msgstr "Weryfikacja hosta certyfikatu nie powiod³a siê: %s"
+ 
+ #: mutt_ssl.c:845 mutt_ssl_gnutls.c:664
+ msgid "This certificate belongs to:"
+@@ -3021,7 +3010,7 @@
+ #: mutt_ssl.c:881 mutt_ssl_gnutls.c:786
+ #, c-format
+ msgid "SSL Certificate check (certificate %d of %d in chain)"
+-msgstr ""
++msgstr "Weryfikacja certyfikatu SSL (certyfikat %d z %d w ³añcuchu)"
+ 
+ #: mutt_ssl.c:887 mutt_ssl_gnutls.c:793
+ msgid "(r)eject, accept (o)nce, (a)ccept always"
+@@ -4220,7 +4209,7 @@
+ 
+ #: smtp.c:228
+ msgid "No from address given"
+-msgstr ""
++msgstr "Brak adresu nadawcy"
+ 
+ #: smtp.c:284
+ msgid "SMTP session failed: read error"
+@@ -4244,9 +4233,9 @@
+ msgstr "Uwierzytelnianie SMTP wymaga SASL"
+ 
+ #: smtp.c:461
+-#, fuzzy, c-format
++#, c-format
+ msgid "%s authentication failed, trying next method"
+-msgstr "Uwierzytelnianie SASL nie powiod³o siê"
++msgstr "Uwierzytelnianie %s nie powiod³o siê"
+ 
+ #: smtp.c:478
+ msgid "SASL authentication failed"

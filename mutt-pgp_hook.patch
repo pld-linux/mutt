@@ -222,13 +222,17 @@
  char *mutt_make_date (char *, size_t);
 --- crypt-hook-both/doc/manual.xml.head Feb 2004 17:45:33 -0000	3.26
 +++ crypt-hook-both/doc/manual.xml.head Feb 2004 13:19:44 -0000
-@@ -1450,3 +1450,5 @@ normally use.  The crypt-hook command pr
- specify the ID of the public key to be used when encrypting messages to
--a certain recipient.
-+a certain recipient.  You may use multiple pgp-hook's with the same
-+pattern; multiple matching pgp-hook's result in the use of multiple
+@@ -3293,7 +3293,9 @@
+ or because, for some reasons, you need to override the key Mutt would
+ normally use.  The <literal>crypt-hook</literal> command provides a
+ method by which you can specify the ID of the public key to be used
+-when encrypting messages to a certain recipient.
++when encrypting messages to a certain recipient. You may use multiple pgp-hook's
++with the same pattern; multiple matching pgp-hook's result in the use of multiple
 +keyids for recipient.
+ </para>
  
+ <para>
 --- crypt-hook-both/doc/muttrc.man.head Feb 2004 17:10:43 -0000	3.10
 +++ crypt-hook-both/doc/muttrc.man.head Feb 2004 13:19:44 -0000
 @@ -297,3 +297,6 @@ to a certain recipient.  The meaning of 

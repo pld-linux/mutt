@@ -30,9 +30,9 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/init.h mutt-1.5.10/init.h
 +  ** .dt %[fmt] .dd the current date and time. ``fmt'' is
 +  **                expanded by the system call ``strftime'';
 +  **                a leading bang disables locales 
-   ** .dt %>X .dd right justify the rest of the string and pad with "X"
-   ** .dt %|X .dd pad to the end of the line with "X"
-   ** .de
+   ** .dt %>X .dd right justify the rest of the string and pad with ``X''
+   ** .dt %|X .dd pad to the end of the line with ``X''
+   ** .dt %*X .dd soft-fill with character ``X'' as pad
 @@ -2671,6 +2674,16 @@
    ** Setting this variable causes the ``status bar'' to be displayed on
    ** the first line of the screen rather than near the bottom.

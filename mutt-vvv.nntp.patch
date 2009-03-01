@@ -9,10 +9,23 @@ autoconf
 Vsevolod Volkov <vvv@mutt.org.ua>
 
 
-diff -udprP mutt-1.5.16.orig/ChangeLog.nntp mutt-1.5.16/ChangeLog.nntp
---- mutt-1.5.16.orig/ChangeLog.nntp	1970-01-01 03:00:00.000000000 +0300
-+++ mutt-1.5.16/ChangeLog.nntp	2007-06-15 17:14:18.000000000 +0300
-@@ -0,0 +1,350 @@
+diff -udprP mutt-1.5.19.orig/ChangeLog.nntp mutt-1.5.19/ChangeLog.nntp
+--- mutt-1.5.19.orig/ChangeLog.nntp	1970-01-01 03:00:00.000000000 +0300
++++ mutt-1.5.19/ChangeLog.nntp	2009-01-06 22:27:38.000000000 +0200
+@@ -0,0 +1,363 @@
++* Tue Jan  6 2009 Vsevolod Volkov <vvv@mutt.org.ua>
++- update to 1.5.19
++
++* Mon May 19 2008 Vsevolod Volkov <vvv@mutt.org.ua>
++- update to 1.5.18
++- fixed SIGSEGV when followup or forward to newsgroup
++
++* Sun Nov  4 2007 Vsevolod Volkov <vvv@mutt.org.ua>
++- update to 1.5.17
++
++* Tue Jul  3 2007 Vsevolod Volkov <vvv@mutt.org.ua>
++- fixed arguments of nntp_format_str()
++
 +* Fri Jun 15 2007 Vsevolod Volkov <vvv@mutt.org.ua>
 +- fixed error selecting news group
 +
@@ -363,415 +376,9 @@ diff -udprP mutt-1.5.16.orig/ChangeLog.nntp mutt-1.5.16/ChangeLog.nntp
 +
 +* Fri Jan 28 2000 Vsevolod Volkov <vvv@mutt.kiev.ua>
 +- update to 1.1.2
-diff -udprP mutt-1.5.16.orig/Makefile.am mutt-1.5.16/Makefile.am
---- mutt-1.5.16.orig/Makefile.am	2007-06-04 07:20:01.000000000 +0300
-+++ mutt-1.5.16/Makefile.am	2007-06-15 17:12:26.000000000 +0300
-@@ -62,6 +62,7 @@ EXTRA_mutt_SOURCES = account.c md5c.c mu
- 	smtp.c browser.h mbyte.h remailer.h url.h \
- 	crypt-mod-pgp-classic.c crypt-mod-smime-classic.c \
- 	pgppacket.c mutt_idna.h hcache.h hcache.c bcache.c bcache.h mutt_ssl_gnutls.c \
-+	nntp.c newsrc.c \
- 	crypt-gpgme.c crypt-mod-pgp-gpgme.c crypt-mod-smime-gpgme.c \
- 	utf8.c wcwidth.c 
- 
-@@ -73,6 +74,7 @@ EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP O
- 	mutt_regex.h mutt_sasl.h mutt_socket.h mutt_ssl.h mutt_tunnel.h \
- 	mx.h pager.h pgp.h pop.h protos.h rfc1524.h rfc2047.h \
- 	rfc2231.h rfc822.h rfc3676.h sha1.h sort.h mime.types VERSION prepare \
-+	nntp.h ChangeLog.nntp \
- 	_regex.h OPS.MIX README.SECURITY remailer.c remailer.h browser.h \
- 	mbyte.h lib.h extlib.c pgpewrap.c smime_keys.pl pgplib.h Muttrc.head Muttrc \
- 	makedoc.c makedoc-defs.h stamp-doc-rc README.SSL smime.h \
-diff -udprP mutt-1.5.16.orig/Makefile.in mutt-1.5.16/Makefile.in
---- mutt-1.5.16.orig/Makefile.in	2007-06-10 05:43:26.000000000 +0300
-+++ mutt-1.5.16/Makefile.in	2007-06-15 17:12:26.000000000 +0300
-@@ -331,6 +331,7 @@ EXTRA_mutt_SOURCES = account.c md5c.c mu
- 	smtp.c browser.h mbyte.h remailer.h url.h \
- 	crypt-mod-pgp-classic.c crypt-mod-smime-classic.c \
- 	pgppacket.c mutt_idna.h hcache.h hcache.c bcache.c bcache.h mutt_ssl_gnutls.c \
-+	nntp.c newsrc.c \
- 	crypt-gpgme.c crypt-mod-pgp-gpgme.c crypt-mod-smime-gpgme.c \
- 	utf8.c wcwidth.c 
- 
-@@ -342,6 +343,7 @@ EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP O
- 	mutt_regex.h mutt_sasl.h mutt_socket.h mutt_ssl.h mutt_tunnel.h \
- 	mx.h pager.h pgp.h pop.h protos.h rfc1524.h rfc2047.h \
- 	rfc2231.h rfc822.h rfc3676.h sha1.h sort.h mime.types VERSION prepare \
-+	nntp.h ChangeLog.nntp \
- 	_regex.h OPS.MIX README.SECURITY remailer.c remailer.h browser.h \
- 	mbyte.h lib.h extlib.c pgpewrap.c smime_keys.pl pgplib.h Muttrc.head Muttrc \
- 	makedoc.c makedoc-defs.h stamp-doc-rc README.SSL smime.h \
-@@ -557,6 +559,8 @@ distclean-compile:
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutt_tunnel.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muttlib.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mx.Po@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newsrc.Po@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nntp.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pager.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/patchlist.Po@am__quote@
---- mutt-1.5.18.orig/doc/Muttrc	2007-06-10 06:29:25.000000000 +0300
-+++ mutt-1.5.18/doc/Muttrc	2007-06-15 17:12:26.000000000 +0300
-@@ -266,6 +266,28 @@ attachments   -I message/external-body
- # if included.
- # 
- # 
-+# set ask_follow_up=no
-+#
-+# Name: ask_follow_up
-+# Type: boolean
-+# Default: no
-+# 
-+# 
-+# If set, Mutt will prompt you for follow-up groups before editing
-+# the body of an outgoing message.
-+# 
-+# 
-+# set ask_x_comment_to=no
-+#
-+# Name: ask_x_comment_to
-+# Type: boolean
-+# Default: no
-+# 
-+# 
-+# If set, Mutt will prompt you for x-comment-to field before editing
-+# the body of an outgoing message.
-+# 
-+# 
- # set attach_format="%u%D%I %t%4n %T%.40d%> [%.7m/%.10M, %.6e%?C?, %C?, %s] "
- #
- # Name: attach_format
-@@ -433,6 +455,17 @@ attachments   -I message/external-body
- # access time when checking for new mail.
- # 
- # 
-+# set catchup_newsgroup=ask-yes
-+#
-+# Name: catchup_newsgroup
-+# Type: quadoption
-+# Default: ask-yes
-+# 
-+# 
-+# If this variable is set, Mutt will mark all articles in newsgroup
-+# as read when you quit the newsgroup (catchup newsgroup).
-+# 
-+# 
- # set charset=""
- #
- # Name: charset
-@@ -930,6 +963,19 @@ attachments   -I message/external-body
- # of the same email for you.
- # 
- # 
-+# set followup_to_poster=ask-yes
-+#
-+# Name: followup_to_poster
-+# Type: quadoption
-+# Default: ask-yes
-+# 
-+# 
-+# If this variable is set and the keyword "poster" is present in
-+# Followup-To header, follow-up to newsgroup function is not
-+# permitted.  The message will be mailed to the submitter of the
-+# message via mail.
-+# 
-+# 
- # set force_name=no
- #
- # Name: force_name
-@@ -1027,6 +1073,28 @@ attachments   -I message/external-body
- # "Franklin" to "Franklin, Steve".
- # 
- # 
-+# set group_index_format="%4C %M%N %5s  %-45.45f %d"
-+#
-+# Name: group_index_format
-+# Type: string
-+# Default: "%4C %M%N %5s  %-45.45f %d"
-+# 
-+# 
-+# This variable allows you to customize the newsgroup browser display to
-+# your personal taste.  This string is similar to ``index_format'', but
-+# has its own set of printf()-like sequences:
-+# 
-+# %C      current newsgroup number
-+# %d      description of newsgroup (becomes from server)
-+# %f      newsgroup name
-+# %M      - if newsgroup not allowed for direct post (moderated for example)
-+# %N      N if newsgroup is new, u if unsubscribed, blank otherwise
-+# %n      number of new articles in newsgroup
-+# %s      number of unread articles in newsgroup
-+# %>X     right justify the rest of the string and pad with character "X"
-+# %|X     pad to the end of the line with character "X"
-+# 
-+# 
- # set hdrs=yes
- #
- # Name: hdrs
-@@ -1472,6 +1540,7 @@ attachments   -I message/external-body
- # %E      number of messages in current thread
- # %f      entire From: line (address + real name)
- # %F      author name, or recipient name if the message is from you
-+# %g      newsgroup name (if compiled with nntp support)
- # %H      spam attribute(s) of this message
- # %i      message-id of the current message
- # %l      number of lines in the message (does not work with maildir,
-@@ -1486,12 +1555,14 @@ attachments   -I message/external-body
- # %O      (_O_riginal save folder)  Where mutt would formerly have
- #         stashed the message: list name or recipient name if no list
- # %P      progress indicator for the builtin pager (how much of the file has been displayed)
-+# %R      `x-comment-to:' field (if present and compiled with nntp support)
- # %s      subject of the message
- # %S      status of the message (N/D/d/!/r/*)
- # %t      `to:' field (recipients)
- # %T      the appropriate character from the $to_chars string
- # %u      user (login) name of the author
- # %v      first name of the author, or the recipient if the message is from you
-+# %W      name of organization of author (`organization:' field)
- # %X      number of attachments
- #         (please see the ``attachments'' section for possible speed effects)
- # %y      `x-label:' field, if present
-@@ -1517,6 +1588,22 @@ attachments   -I message/external-body
- # See also: ``$to_chars''.
- # 
- # 
-+# set inews=""
-+#
-+# Name: inews
-+# Type: path
-+# Default: ""
-+# 
-+# 
-+# If set, specifies the program and arguments used to deliver news posted
-+# by Mutt.  Otherwise, mutt posts article using current connection to
-+# news server.  The following printf-style sequence is understood:
-+# 
-+# %s      newsserver name
-+# 
-+# Example: set inews="/usr/local/bin/inews -hS"
-+# 
-+# 
- # set ispell="ispell"
- #
- # Name: ispell
-@@ -1860,6 +1947,18 @@ attachments   -I message/external-body
- # be attached to the newly composed message if this option is set.
- # 
- # 
-+# set mime_subject=yes
-+#
-+# Name: mime_subject
-+# Type: boolean
-+# Default: yes
-+# 
-+# 
-+# If unset, 8-bit ``subject:'' line in article header will not be
-+# encoded according to RFC2047 to base64.  This is useful when message
-+# is Usenet article, because MIME for news is nonstandard feature.
-+# 
-+# 
- # set mix_entry_format="%4n %c %-16s %a"
- #
- # Name: mix_entry_format
-@@ -1964,6 +2063,118 @@ attachments   -I message/external-body
- # See also ``$read_inc'' and ``$write_inc''.
- # 
- # 
-+# set news_cache_dir="~/.mutt"
-+#
-+# Name: news_cache_dir
-+# Type: path
-+# Default: "~/.mutt"
-+# 
-+# 
-+# This variable pointing to directory where Mutt will save cached news
-+# articles headers in. If unset, headers will not be saved at all
-+# and will be reloaded each time when you enter to newsgroup.
-+# 
-+# 
-+# set news_server=""
-+#
-+# Name: news_server
-+# Type: string
-+# Default: ""
-+# 
-+# 
-+# This variable specifies domain name or address of NNTP server. It
-+# defaults to the newsserver specified in the environment variable
-+# $NNTPSERVER or contained in the file /etc/nntpserver.  You can also
-+# specify username and an alternative port for each newsserver, ie:
-+# 
-+# [news[s]://][username[:password]@]newsserver[:port]
-+# 
-+# 
-+# set newsrc="~/.newsrc"
-+#
-+# Name: newsrc
-+# Type: path
-+# Default: "~/.newsrc"
-+# 
-+# 
-+# The file, containing info about subscribed newsgroups - names and
-+# indexes of read articles.  The following printf-style sequence
-+# is understood:
-+# 
-+# %s      newsserver name
-+# 
-+# 
-+# set nntp_context=1000
-+#
-+# Name: nntp_context
-+# Type: number
-+# Default: 1000
-+# 
-+# 
-+# This variable defines number of articles which will be in index when
-+# newsgroup entered.  If active newsgroup have more articles than this
-+# number, oldest articles will be ignored.  Also controls how many
-+# articles headers will be saved in cache when you quit newsgroup.
-+# 
-+# 
-+# set nntp_load_description=yes
-+#
-+# Name: nntp_load_description
-+# Type: boolean
-+# Default: yes
-+# 
-+# 
-+# This variable controls whether or not descriptions for each newsgroup
-+# must be loaded when newsgroup is added to list (first time list
-+# loading or new newsgroup adding).
-+# 
-+# 
-+# set nntp_user=""
-+#
-+# Name: nntp_user
-+# Type: string
-+# Default: ""
-+# 
-+# 
-+# Your login name on the NNTP server.  If unset and NNTP server requires
-+# authentification, Mutt will prompt you for your account name when you
-+# connect to newsserver.
-+# 
-+# 
-+# set nntp_pass=""
-+#
-+# Name: nntp_pass
-+# Type: string
-+# Default: ""
-+# 
-+# 
-+# Your password for NNTP account.
-+# 
-+# 
-+# set nntp_poll=60
-+#
-+# Name: nntp_poll
-+# Type: number
-+# Default: 60
-+# 
-+# 
-+# The time in seconds until any operations on newsgroup except post new
-+# article will cause recheck for new news.  If set to 0, Mutt will
-+# recheck newsgroup on each operation in index (stepping, read article,
-+# etc.).
-+# 
-+# 
-+# set nntp_reconnect=ask-yes
-+#
-+# Name: nntp_reconnect
-+# Type: quadoption
-+# Default: ask-yes
-+# 
-+# 
-+# Controls whether or not Mutt will try to reconnect to newsserver when
-+# connection lost.
-+# 
-+# 
- # set pager="builtin"
- #
- # Name: pager
-@@ -3167,6 +3378,19 @@ attachments   -I message/external-body
- # string after the inclusion of a message which is being replied to.
- # 
- # 
-+# set post_moderated=ask-yes
-+#
-+# Name: post_moderated
-+# Type: quadoption
-+# Default: ask-yes
-+# 
-+# 
-+# If set to yes, Mutt will post article to newsgroup that have
-+# not permissions to posting (e.g. moderated).  Note: if newsserver
-+# does not support posting to that newsgroup or totally read-only, that
-+# posting will not have an effect.
-+# 
-+# 
- # set postpone=ask-yes
- #
- # Name: postpone
-@@ -3692,6 +3916,41 @@ attachments   -I message/external-body
- # shell from /etc/passwd is used.
- # 
- # 
-+# set save_unsubscribed=no
-+#
-+# Name: save_unsubscribed
-+# Type: boolean
-+# Default: no
-+# 
-+# 
-+# When set, info about unsubscribed newsgroups will be saved into
-+# ``newsrc'' file and into cache.
-+# 
-+# 
-+# set show_new_news=yes
-+#
-+# Name: show_new_news
-+# Type: boolean
-+# Default: yes
-+# 
-+# 
-+# If set, newsserver will be asked for new newsgroups on entering
-+# the browser.  Otherwise, it will be done only once for a newsserver.
-+# Also controls whether or not number of new articles of subscribed
-+# newsgroups will be then checked.
-+# 
-+# 
-+# set show_only_unread=no
-+#
-+# Name: show_only_unread
-+# Type: boolean
-+# Default: no
-+# 
-+# 
-+# If set, only subscribed newsgroups that contain unread articles
-+# will be displayed in browser.
-+# 
-+# 
- # set sig_dashes=yes
- #
- # Name: sig_dashes
-@@ -4405,3 +4664,14 @@ attachments   -I message/external-body
- # in this case.
- # 
- # 
-+# set x_comment_to=no
-+#
-+# Name: x_comment_to
-+# Type: boolean
-+# Default: no
-+# 
-+# 
-+# If set, Mutt will add ``X-Comment-To:'' field (that contains full
-+# name of original article author) to article that followuped to newsgroup.
-+# 
-+# 
-diff -udprP mutt-1.5.16.orig/OPS mutt-1.5.16/OPS
---- mutt-1.5.16.orig/OPS	2007-05-14 20:09:59.000000000 +0300
-+++ mutt-1.5.16/OPS	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/OPS mutt-1.5.19/OPS
+--- mutt-1.5.19.orig/OPS	2008-03-19 22:07:57.000000000 +0200
++++ mutt-1.5.19/OPS	2009-01-06 22:27:38.000000000 +0200
 @@ -8,14 +8,16 @@ OP_BOUNCE_MESSAGE "remail a message to a
  OP_BROWSER_NEW_FILE "select a new file in this directory"
  OP_BROWSER_VIEW_FILE "view file"
@@ -870,15 +477,15 @@ diff -udprP mutt-1.5.16.orig/OPS mutt-1.5.16/OPS
  OP_VERSION "show the Mutt version number and date"
  OP_VIEW_ATTACH "view attachment using mailcap entry if necessary"
  OP_VIEW_ATTACHMENTS "show MIME attachments"
-diff -udprP mutt-1.5.16.orig/PATCHES mutt-1.5.16/PATCHES
---- mutt-1.5.16.orig/PATCHES	2007-04-30 05:07:48.000000000 +0300
-+++ mutt-1.5.16/PATCHES	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/PATCHES mutt-1.5.19/PATCHES
+--- mutt-1.5.19.orig/PATCHES	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/PATCHES	2009-01-06 22:27:38.000000000 +0200
 @@ -0,0 +1 @@
 +vvv.nntp
-diff -udprP mutt-1.5.16.orig/account.c mutt-1.5.16/account.c
---- mutt-1.5.16.orig/account.c	2007-04-11 23:28:23.000000000 +0300
-+++ mutt-1.5.16/account.c	2007-06-15 17:12:26.000000000 +0300
-@@ -54,6 +54,11 @@ int mutt_account_match (const ACCOUNT* a
+diff -udprP mutt-1.5.19.orig/account.c mutt-1.5.19/account.c
+--- mutt-1.5.19.orig/account.c	2008-10-30 02:30:17.000000000 +0200
++++ mutt-1.5.19/account.c	2009-01-06 22:27:38.000000000 +0200
+@@ -51,6 +51,11 @@ int mutt_account_match (const ACCOUNT* a
      user = PopUser;
  #endif
    
@@ -890,7 +497,7 @@ diff -udprP mutt-1.5.16.orig/account.c mutt-1.5.16/account.c
    if (a1->flags & a2->flags & M_ACCT_USER)
      return (!strcmp (a1->user, a2->user));
    if (a1->flags & M_ACCT_USER)
-@@ -133,6 +138,16 @@ void mutt_account_tourl (ACCOUNT* accoun
+@@ -130,6 +135,16 @@ void mutt_account_tourl (ACCOUNT* accoun
    }
  #endif
  
@@ -907,7 +514,7 @@ diff -udprP mutt-1.5.16.orig/account.c mutt-1.5.16/account.c
    url->host = account->host;
    if (account->flags & M_ACCT_PORT)
      url->port = account->port;
-@@ -158,6 +173,10 @@ int mutt_account_getuser (ACCOUNT* accou
+@@ -155,6 +170,10 @@ int mutt_account_getuser (ACCOUNT* accou
    else if ((account->type == M_ACCT_TYPE_POP) && PopUser)
      strfcpy (account->user, PopUser, sizeof (account->user));
  #endif
@@ -918,7 +525,7 @@ diff -udprP mutt-1.5.16.orig/account.c mutt-1.5.16/account.c
    /* prompt (defaults to unix username), copy into account->user */
    else
    {
-@@ -218,6 +237,10 @@ int mutt_account_getpass (ACCOUNT* accou
+@@ -215,6 +234,10 @@ int mutt_account_getpass (ACCOUNT* accou
    else if ((account->type == M_ACCT_TYPE_SMTP) && SmtpPass)
      strfcpy (account->pass, SmtpPass, sizeof (account->pass));
  #endif
@@ -929,9 +536,9 @@ diff -udprP mutt-1.5.16.orig/account.c mutt-1.5.16/account.c
    else
    {
      snprintf (prompt, sizeof (prompt), _("Password for %s@%s: "),
-diff -udprP mutt-1.5.16.orig/account.h mutt-1.5.16/account.h
---- mutt-1.5.16.orig/account.h	2007-04-02 00:58:55.000000000 +0300
-+++ mutt-1.5.16/account.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/account.h mutt-1.5.19/account.h
+--- mutt-1.5.19.orig/account.h	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/account.h	2009-01-06 22:27:38.000000000 +0200
 @@ -29,7 +29,8 @@ enum
    M_ACCT_TYPE_NONE = 0,
    M_ACCT_TYPE_IMAP,
@@ -942,9 +549,9 @@ diff -udprP mutt-1.5.16.orig/account.h mutt-1.5.16/account.h
  };
  
  /* account flags */
-diff -udprP mutt-1.5.16.orig/attach.h mutt-1.5.16/attach.h
---- mutt-1.5.16.orig/attach.h	2007-04-02 00:58:55.000000000 +0300
-+++ mutt-1.5.16/attach.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/attach.h mutt-1.5.19/attach.h
+--- mutt-1.5.19.orig/attach.h	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/attach.h	2009-01-06 22:27:38.000000000 +0200
 @@ -50,7 +50,7 @@ void mutt_print_attachment_list (FILE *f
  
  void mutt_attach_bounce (FILE *, HEADER *, ATTACHPTR **, short, BODY *);
@@ -954,9 +561,9 @@ diff -udprP mutt-1.5.16.orig/attach.h mutt-1.5.16/attach.h
  void mutt_attach_reply (FILE *, HEADER *, ATTACHPTR **, short, BODY *, int);
  
  #endif /* _ATTACH_H_ */
-diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
---- mutt-1.5.16.orig/browser.c	2007-04-16 02:56:26.000000000 +0300
-+++ mutt-1.5.16/browser.c	2007-06-15 17:12:38.000000000 +0300
+diff -udprP mutt-1.5.19.orig/browser.c mutt-1.5.19/browser.c
+--- mutt-1.5.19.orig/browser.c	2009-01-06 01:36:28.000000000 +0200
++++ mutt-1.5.19/browser.c	2009-01-06 22:27:38.000000000 +0200
 @@ -32,6 +32,9 @@
  #ifdef USE_IMAP
  #include "imap.h"
@@ -1229,7 +836,7 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
  #endif
 @@ -464,15 +646,20 @@ static int examine_mailboxes (MUTTMENU *
      strfcpy (buffer, NONULL(tmp->path), sizeof (buffer));
-     mutt_pretty_mailbox (buffer);
+     mutt_pretty_mailbox (buffer, sizeof (buffer));
  
 -    add_folder (menu, state, buffer, &s, tmp->new);
 +    add_folder (menu, state, buffer, &s, NULL, tmp->new);
@@ -1312,7 +919,7 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
    if (*f)
    {
      mutt_expand_path (f, flen);
-@@ -655,6 +884,9 @@ void _mutt_select_file (char *f, size_t 
+@@ -654,6 +883,9 @@ void _mutt_select_file (char *f, size_t 
      menu->tag = file_tag;
  
    menu->help = mutt_compile_help (helpstr, sizeof (helpstr), MENU_FOLDER,
@@ -1322,7 +929,7 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
      FolderHelp);
  
    init_menu (&state, menu, title, sizeof (title), buffy);
-@@ -793,7 +1025,11 @@ void _mutt_select_file (char *f, size_t 
+@@ -792,7 +1024,11 @@ void _mutt_select_file (char *f, size_t 
  	  }
  	}
  
@@ -1334,7 +941,7 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
  	{
  	  strfcpy (f, state.entry[menu->current].name, flen);
  	  mutt_expand_path (f, flen);
-@@ -851,14 +1087,6 @@ void _mutt_select_file (char *f, size_t 
+@@ -850,14 +1086,6 @@ void _mutt_select_file (char *f, size_t 
          break;
  
  #ifdef USE_IMAP
@@ -1348,8 +955,8 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
 -
        case OP_BROWSER_TOGGLE_LSUB:
  	if (option (OPTIMAPLSUB))
- 	{
-@@ -957,6 +1185,11 @@ void _mutt_select_file (char *f, size_t 
+ 	  unset_option (OPTIMAPLSUB);
+@@ -958,6 +1186,11 @@ void _mutt_select_file (char *f, size_t 
        
        case OP_CHANGE_DIRECTORY:
  
@@ -1361,7 +968,7 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
  	strfcpy (buf, LastDir, sizeof (buf));
  #ifdef USE_IMAP
  	if (!state.imap_browse)
-@@ -1213,6 +1446,190 @@ void _mutt_select_file (char *f, size_t 
+@@ -1224,6 +1457,190 @@ void _mutt_select_file (char *f, size_t 
  	  else
  	    mutt_error _("Error trying to view file");
  	}
@@ -1552,9 +1159,10 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
      }
    }
    
---- mutt-1.5.18/browser.h.orig	2008-01-30 05:26:49.000000000 +0100
-+++ mutt-1.5.18/browser.h	2008-07-25 17:49:27.844750139 +0200
-@@ -20,6 +20,10 @@
+diff -udprP mutt-1.5.19.orig/browser.h mutt-1.5.19/browser.h
+--- mutt-1.5.19.orig/browser.h	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/browser.h	2009-01-06 22:27:38.000000000 +0200
+@@ -19,6 +19,10 @@
  #ifndef _BROWSER_H
  #define _BROWSER_H 1
  
@@ -1565,7 +1173,7 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
  struct folder_file
  {
    mode_t mode;
-@@ -38,6 +42,9 @@
+@@ -37,6 +41,9 @@ struct folder_file
    unsigned selectable : 1;
    unsigned inferiors : 1;
  #endif
@@ -1575,9 +1183,9 @@ diff -udprP mutt-1.5.16.orig/browser.c mutt-1.5.16/browser.c
    unsigned tagged : 1;
  };
  
-diff -udprP mutt-1.5.16.orig/buffy.c mutt-1.5.16/buffy.c
---- mutt-1.5.16.orig/buffy.c	2007-04-02 00:58:55.000000000 +0300
-+++ mutt-1.5.16/buffy.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/buffy.c mutt-1.5.19/buffy.c
+--- mutt-1.5.19.orig/buffy.c	2008-08-30 02:39:48.000000000 +0300
++++ mutt-1.5.19/buffy.c	2009-01-06 22:27:38.000000000 +0200
 @@ -285,6 +285,9 @@ int mutt_buffy_check (int force)
  #ifdef USE_POP
    if (!Context || Context->magic != M_POP)
@@ -1597,7 +1205,7 @@ diff -udprP mutt-1.5.16.orig/buffy.c mutt-1.5.16/buffy.c
 +      tmp->magic = M_NNTP;
 +    else
 +#endif
-     if (stat (tmp->path, &sb) != 0 || sb.st_size == 0 ||
+     if (stat (tmp->path, &sb) != 0 || (S_ISREG(sb.st_mode) && sb.st_size == 0) ||
  	(!tmp->magic && (tmp->magic = mx_get_magic (tmp->path)) <= 0))
      {
 @@ -325,25 +333,21 @@ int mutt_buffy_check (int force)
@@ -1636,9 +1244,9 @@ diff -udprP mutt-1.5.16.orig/buffy.c mutt-1.5.16/buffy.c
      {
        switch (tmp->magic)
        {
-diff -udprP mutt-1.5.16.orig/complete.c mutt-1.5.16/complete.c
---- mutt-1.5.16.orig/complete.c	2007-04-08 00:39:04.000000000 +0300
-+++ mutt-1.5.16/complete.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/complete.c mutt-1.5.19/complete.c
+--- mutt-1.5.19.orig/complete.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/complete.c	2009-01-06 22:27:38.000000000 +0200
 @@ -25,6 +25,9 @@
  #include "mailbox.h"
  #include "imap.h"
@@ -1721,9 +1329,9 @@ diff -udprP mutt-1.5.16.orig/complete.c mutt-1.5.16/complete.c
    /* we can use '/' as a delimiter, imap_complete rewrites it */
    if (*s == '=' || *s == '+' || *s == '!')
    {
-diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
---- mutt-1.5.16.orig/compose.c	2007-04-16 02:56:26.000000000 +0300
-+++ mutt-1.5.16/compose.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/compose.c mutt-1.5.19/compose.c
+--- mutt-1.5.19.orig/compose.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/compose.c	2009-01-06 22:27:38.000000000 +0200
 @@ -32,10 +32,15 @@
  #include "mailbox.h"
  #include "sort.h"
@@ -1740,7 +1348,14 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
  
  #include <errno.h>
  #include <string.h>
-@@ -67,11 +72,17 @@ enum
+@@ -60,18 +65,21 @@ enum
+   HDR_REPLYTO,
+   HDR_FCC,
+ 
+-#ifdef MIXMASTER
+-  HDR_MIX,
+-#endif
+ 
    HDR_CRYPT,
    HDR_CRYPTINFO,
  
@@ -1861,7 +1476,7 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
  
    mutt_attach_init (msg->content);
    idx = mutt_gen_attach_list (msg->content, -1, idx, &idxlen, &idxmax, 0, 1);
-@@ -518,10 +574,18 @@ int mutt_compose_menu (HEADER *msg,   /*
+@@ -517,10 +573,18 @@ int mutt_compose_menu (HEADER *msg,   /*
    menu->make_entry = snd_entry;
    menu->tag = mutt_tag_attach;
    menu->data = idx;
@@ -1880,7 +1495,7 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
      switch (op = mutt_menuLoop (menu))
      {
        case OP_REDRAW:
-@@ -534,17 +598,87 @@ int mutt_compose_menu (HEADER *msg,   /*
+@@ -533,17 +597,87 @@ int mutt_compose_menu (HEADER *msg,   /*
          mutt_message_hook (NULL, msg, M_SEND2HOOK);
  	break;
        case OP_COMPOSE_EDIT_TO:
@@ -1968,7 +1583,7 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
        case OP_COMPOSE_EDIT_SUBJECT:
  	if (msg->env->subject)
  	  strfcpy (buf, msg->env->subject, sizeof (buf));
-@@ -707,6 +841,9 @@ int mutt_compose_menu (HEADER *msg,   /*
+@@ -706,6 +840,9 @@ int mutt_compose_menu (HEADER *msg,   /*
          break;
  
        case OP_COMPOSE_ATTACH_MESSAGE:
@@ -1978,7 +1593,7 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
  	{
  	  char *prompt;
  	  HEADER *h;
-@@ -714,7 +851,22 @@ int mutt_compose_menu (HEADER *msg,   /*
+@@ -713,7 +850,22 @@ int mutt_compose_menu (HEADER *msg,   /*
  	  fname[0] = 0;
  	  prompt = _("Open mailbox to attach message from");
  
@@ -2000,8 +1615,8 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
 +#endif
  	  {
  	    strfcpy (fname, NONULL (Context->path), sizeof (fname));
- 	    mutt_pretty_mailbox (fname);
-@@ -723,6 +875,11 @@ int mutt_compose_menu (HEADER *msg,   /*
+ 	    mutt_pretty_mailbox (fname, sizeof (fname));
+@@ -722,6 +874,11 @@ int mutt_compose_menu (HEADER *msg,   /*
  	  if (mutt_enter_fname (prompt, fname, sizeof (fname), &menu->redraw, 1) == -1 || !fname[0])
  	    break;
  
@@ -2013,7 +1628,7 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
  	  mutt_expand_path (fname, sizeof (fname));
  #ifdef USE_IMAP
            if (!mx_is_imap (fname))
-@@ -730,6 +887,9 @@ int mutt_compose_menu (HEADER *msg,   /*
+@@ -729,6 +886,9 @@ int mutt_compose_menu (HEADER *msg,   /*
  #ifdef USE_POP
            if (!mx_is_pop (fname))
  #endif
@@ -2023,9 +1638,9 @@ diff -udprP mutt-1.5.16.orig/compose.c mutt-1.5.16/compose.c
  	  /* check to make sure the file exists and is readable */
  	  if (access (fname, R_OK) == -1)
  	  {
-diff -udprP mutt-1.5.16.orig/config.h.in mutt-1.5.16/config.h.in
---- mutt-1.5.16.orig/config.h.in	2007-06-10 05:44:57.000000000 +0300
-+++ mutt-1.5.16/config.h.in	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/config.h.in mutt-1.5.19/config.h.in
+--- mutt-1.5.19.orig/config.h.in	2008-11-18 01:54:00.000000000 +0200
++++ mutt-1.5.19/config.h.in	2009-01-06 22:27:38.000000000 +0200
 @@ -34,6 +34,9 @@
     significant more memory when defined. */
  #undef EXACT_ADDRESS
@@ -2036,42 +1651,10 @@ diff -udprP mutt-1.5.16.orig/config.h.in mutt-1.5.16/config.h.in
  /* program to use for shell commands */
  #undef EXECSHELL
  
-diff -udprP mutt-1.5.16.orig/configure mutt-1.5.16/configure
---- mutt-1.5.16.orig/configure	2007-06-10 05:43:29.000000000 +0300
-+++ mutt-1.5.16/configure	2007-06-15 17:12:26.000000000 +0300
-@@ -1342,6 +1342,7 @@ Optional Features:
-                           Force use of an external dotlock program
-   --enable-pop            Enable POP3 support
-   --enable-imap           Enable IMAP support
-+  --enable-nntp           Enable NNTP support
-   --enable-smtp           include internal SMTP relay support
-   --enable-debug          Enable debugging support
-   --enable-flock          Use flock() to lock files
-@@ -13919,6 +13920,20 @@ fi
- fi
- done
- 
-+# Check whether --enable-nntp or --disable-nntp was given.
-+if test "${enable_nntp+set}" = set; then
-+  enableval="$enable_nntp"
-+  	if test x$enableval = xyes ; then
-+		cat >>confdefs.h <<\_ACEOF
-+#define USE_NNTP 1
-+_ACEOF
-+
-+		MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS nntp.o newsrc.o"
-+		need_socket="yes"
-+	fi
-+
-+fi;
-+
- 
- 
- for ac_func in strftime
-diff -udprP mutt-1.5.16.orig/configure.ac mutt-1.5.16/configure.ac
---- mutt-1.5.16.orig/configure.ac	2007-06-04 07:20:01.000000000 +0300
-+++ mutt-1.5.16/configure.ac	2007-06-15 17:12:26.000000000 +0300
-@@ -584,6 +584,14 @@ if test x"$need_imap" = xyes -o x"$need_
+diff -udprP mutt-1.5.19.orig/configure.ac mutt-1.5.19/configure.ac
+--- mutt-1.5.19.orig/configure.ac	2008-11-17 22:15:26.000000000 +0200
++++ mutt-1.5.19/configure.ac	2009-01-06 22:27:38.000000000 +0200
+@@ -598,6 +598,14 @@ if test x"$need_imap" = xyes -o x"$need_
    MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS bcache.o"
  fi
  
@@ -2086,18 +1669,18 @@ diff -udprP mutt-1.5.16.orig/configure.ac mutt-1.5.16/configure.ac
  dnl -- end socket dependencies --
  
  if test "$need_socket" = "yes"
-diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
---- mutt-1.5.16.orig/curs_main.c	2007-05-20 10:30:00.000000000 +0300
-+++ mutt-1.5.16/curs_main.c	2007-06-15 17:12:41.000000000 +0300
+diff -udprP mutt-1.5.19.orig/curs_main.c mutt-1.5.19/curs_main.c
+--- mutt-1.5.19.orig/curs_main.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/curs_main.c	2009-01-06 22:27:38.000000000 +0200
 @@ -22,6 +22,7 @@
  
  #include "mutt.h"
  #include "mutt_curses.h"
 +#include "mx.h"
  #include "mutt_menu.h"
- #include "attach.h"
  #include "mailbox.h"
-@@ -40,6 +41,10 @@
+ #include "mapping.h"
+@@ -38,6 +39,10 @@
  
  #include "mutt_crypt.h"
  
@@ -2108,7 +1691,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  
  #include <ctype.h>
  #include <stdlib.h>
-@@ -415,12 +420,27 @@ struct mapping_t IndexHelp[] = {
+@@ -413,12 +418,27 @@ static struct mapping_t IndexHelp[] = {
    { NULL }
  };
  
@@ -2136,7 +1719,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
    int op = OP_NULL;
    int done = 0;                /* controls when to exit the "event" loop */
    int i = 0, j;
-@@ -442,7 +462,11 @@ int mutt_index_menu (void)
+@@ -439,7 +459,11 @@ int mutt_index_menu (void)
    menu->make_entry = index_make_entry;
    menu->color = index_color;
    menu->current = ci_first_message ();
@@ -2149,9 +1732,9 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
    
    if (!attach_msg) 
      mutt_buffy_check(1); /* force the buffy check after we enter the folder */
-@@ -694,6 +718,9 @@ int mutt_index_menu (void)
-       mutt_curs_set (1);	/* fallback from the pager */
-     }
+@@ -690,6 +714,9 @@ int mutt_index_menu (void)
+     imap_disallow_reopen (Context);
+ #endif
  
 +#ifdef USE_NNTP
 +    unset_option (OPTNEWS);	/* for any case */
@@ -2159,7 +1742,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
      switch (op)
      {
  
-@@ -744,6 +771,120 @@ int mutt_index_menu (void)
+@@ -740,6 +767,120 @@ int mutt_index_menu (void)
  	menu_current_bottom (menu);
  	break;
  
@@ -2280,7 +1863,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
        case OP_JUMP:
  
  	CHECK_MSGCOUNT;
-@@ -841,11 +982,33 @@ int mutt_index_menu (void)
+@@ -837,11 +978,33 @@ int mutt_index_menu (void)
          break;
  
        case OP_MAIN_LIMIT:
@@ -2315,7 +1898,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  	{
  	  if (menu->oldcurrent >= 0)
  	  {
-@@ -1053,15 +1216,22 @@ int mutt_index_menu (void)
+@@ -1050,15 +1213,22 @@ int mutt_index_menu (void)
  
        case OP_MAIN_CHANGE_FOLDER:
        case OP_MAIN_NEXT_UNREAD_MAILBOX:
@@ -2345,7 +1928,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
            cp = _("Open mailbox in read-only mode");
          else
            cp = _("Open mailbox");
-@@ -1080,6 +1250,21 @@ int mutt_index_menu (void)
+@@ -1077,6 +1247,21 @@ int mutt_index_menu (void)
  	}
  	else
  	{
@@ -2367,7 +1950,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  	  mutt_buffy (buf, sizeof (buf));
  
  	  if (mutt_enter_fname (cp, buf, sizeof (buf), &menu->redraw, 1) == -1)
-@@ -1099,6 +1284,14 @@ int mutt_index_menu (void)
+@@ -1096,6 +1281,14 @@ int mutt_index_menu (void)
  	  }
  	}
  
@@ -2382,7 +1965,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  	mutt_expand_path (buf, sizeof (buf));
  	if (mx_get_magic (buf) <= 0)
  	{
-@@ -1136,15 +1329,18 @@ int mutt_index_menu (void)
+@@ -1133,15 +1326,18 @@ int mutt_index_menu (void)
  	CurrentMenu = MENU_MAIN;
  	mutt_folder_hook (buf);
  
@@ -2404,7 +1987,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  	mutt_clear_error ();
  	mutt_buffy_check(1); /* force the buffy check after we have changed
  			      the folder */
-@@ -1515,6 +1711,15 @@ int mutt_index_menu (void)
+@@ -1512,6 +1708,15 @@ int mutt_index_menu (void)
  	CHECK_READONLY;
  	CHECK_ACL(M_ACL_WRITE, _("flag message"));
  
@@ -2420,7 +2003,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
          if (tag)
          {
  	  for (j = 0; j < Context->vcount; j++)
-@@ -1862,6 +2067,17 @@ int mutt_index_menu (void)
+@@ -1859,6 +2064,17 @@ int mutt_index_menu (void)
  	}
  	break;
  
@@ -2438,7 +2021,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
        case OP_DISPLAY_ADDRESS:
  
  	CHECK_MSGCOUNT;
-@@ -1989,6 +2205,15 @@ int mutt_index_menu (void)
+@@ -1986,6 +2202,15 @@ int mutt_index_menu (void)
  	  menu->redraw = (tag ? REDRAW_INDEX : REDRAW_CURRENT) | REDRAW_STATUS;
  	}
  #endif
@@ -2454,15 +2037,19 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  
  	MAYBE_REDRAW (menu->redraw);
  	break;
-@@ -2060,6 +2285,37 @@ int mutt_index_menu (void)
+@@ -2057,6 +2282,41 @@ int mutt_index_menu (void)
        
          menu->redraw = REDRAW_FULL;
          break;
 +
 +#ifdef USE_NNTP
-+      case OP_POST:
 +      case OP_FOLLOWUP:
 +      case OP_FORWARD_TO_GROUP:
++
++	CHECK_MSGCOUNT;
++	CHECK_VISIBLE;
++
++      case OP_POST:
 +
 +	CHECK_ATTACH;
 +	if (op != OP_FOLLOWUP || !CURHDR->env->followup_to ||
@@ -2492,7 +2079,7 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
        
        case OP_REPLY:
  
-@@ -2136,6 +2392,12 @@ int mutt_index_menu (void)
+@@ -2133,6 +2393,12 @@ int mutt_index_menu (void)
  	CHECK_READONLY;
  	CHECK_ACL(M_ACL_DELETE, _("undelete message(s)"));
  
@@ -2505,10 +2092,10 @@ diff -udprP mutt-1.5.16.orig/curs_main.c mutt-1.5.16/curs_main.c
  	rc = mutt_thread_set_flag (CURHDR, M_DELETE, 0,
  				   op == OP_UNDELETE_THREAD ? 0 : 1);
  
-diff -udprP mutt-1.5.16.orig/doc/manual.xml.head mutt-1.5.16/doc/manual.xml.head
---- mutt-1.5.16.orig/doc/manual.xml.head	2007-04-04 08:37:13.000000000 +0300
-+++ mutt-1.5.16/doc/manual.xml.head	2007-06-15 17:12:26.000000000 +0300
-@@ -1295,6 +1295,22 @@ fo-table</literal> for details.
+diff -udprP mutt-1.5.19.orig/doc/manual.xml.head mutt-1.5.19/doc/manual.xml.head
+--- mutt-1.5.19.orig/doc/manual.xml.head	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/doc/manual.xml.head	2009-01-06 22:27:38.000000000 +0200
+@@ -1388,6 +1388,22 @@ fo-table</literal> for details.
  
  </sect2>
  
@@ -2531,9 +2118,9 @@ diff -udprP mutt-1.5.16.orig/doc/manual.xml.head mutt-1.5.16/doc/manual.xml.head
  </sect1>
  
  <sect1 id="forwarding-mail">
-diff -udprP mutt-1.5.16.orig/doc/mutt.man mutt-1.5.16/doc/mutt.man
---- mutt-1.5.16.orig/doc/mutt.man	2007-04-04 08:37:13.000000000 +0300
-+++ mutt-1.5.16/doc/mutt.man	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/doc/mutt.man mutt-1.5.19/doc/mutt.man
+--- mutt-1.5.19.orig/doc/mutt.man	2009-01-05 22:18:18.000000000 +0200
++++ mutt-1.5.19/doc/mutt.man	2009-01-06 22:27:38.000000000 +0200
 @@ -23,8 +23,8 @@ mutt \- The Mutt Mail User Agent
  .SH SYNOPSIS
  .PP
@@ -2545,7 +2132,7 @@ diff -udprP mutt-1.5.16.orig/doc/mutt.man mutt-1.5.16/doc/mutt.man
  .PP
  .B mutt 
  [-nx] 
-@@ -83,6 +83,10 @@ files.
+@@ -101,6 +101,10 @@ files.
  Specify which mailbox to load.
  .IP "-F \fImuttrc\fP"
  Specify an initialization file to read instead of ~/.muttrc
@@ -2556,32 +2143,34 @@ diff -udprP mutt-1.5.16.orig/doc/mutt.man mutt-1.5.16/doc/mutt.man
  .IP "-h"
  Display help.
  .IP "-H \fIdraft\fP"
-diff -udprP mutt-1.5.16.orig/functions.h mutt-1.5.16/functions.h
---- mutt-1.5.16.orig/functions.h	2007-05-14 20:10:00.000000000 +0300
-+++ mutt-1.5.16/functions.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/functions.h mutt-1.5.19/functions.h
+--- mutt-1.5.19.orig/functions.h	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/functions.h	2009-01-06 22:27:38.000000000 +0200
 @@ -88,6 +88,10 @@ struct binding_t OpMain[] = { /* map: in
    { "break-thread",		OP_MAIN_BREAK_THREAD,		"#" },
    { "change-folder",		OP_MAIN_CHANGE_FOLDER,		"c" },
    { "change-folder-readonly",	OP_MAIN_CHANGE_FOLDER_READONLY,	"\033c" },
 +#ifdef USE_NNTP
-+  { "change-newsgroup",		OP_MAIN_CHANGE_GROUP,		"I" },
++  { "change-newsgroup",		OP_MAIN_CHANGE_GROUP,		"i" },
 +  { "change-newsgroup-readonly",OP_MAIN_CHANGE_GROUP_READONLY,	"\033i" },
 +#endif
    { "next-unread-mailbox",	OP_MAIN_NEXT_UNREAD_MAILBOX,    NULL },
    { "collapse-thread",		OP_MAIN_COLLAPSE_THREAD,	"\033v" },
    { "collapse-all",		OP_MAIN_COLLAPSE_ALL,		"\033V" },
-@@ -102,6 +106,14 @@ struct binding_t OpMain[] = { /* map: in
+@@ -101,7 +105,15 @@ struct binding_t OpMain[] = { /* map: in
+   { "edit",			OP_EDIT_MESSAGE,		"e" },
    { "edit-type",		OP_EDIT_TYPE,			"\005" },
    { "forward-message",		OP_FORWARD_MESSAGE,		"f" },
-   { "flag-message",		OP_FLAG_MESSAGE,		"F" },
+-  { "flag-message",		OP_FLAG_MESSAGE,		"F" },
 +#ifdef USE_NNTP
 +  { "forward-to-group",		OP_FORWARD_TO_GROUP,		"\033F" },
-+  { "followup-message",		OP_FOLLOWUP,			"\033f" },
++  { "followup-message",		OP_FOLLOWUP,			"F" },
 +  { "get-children",		OP_GET_CHILDREN,		NULL },
 +  { "get-message",		OP_GET_MESSAGE,			"\007" },
 +  { "get-parent",		OP_GET_PARENT,			"\033G" },
 +  { "reconstruct-thread",	OP_RECONSTRUCT_THREAD,		NULL },
 +#endif
++  { "flag-message",		OP_FLAG_MESSAGE,		"\033f" },
    { "group-reply",		OP_GROUP_REPLY,			"g" },
  #ifdef USE_POP
    { "fetch-mail",		OP_MAIN_FETCH_MAIL,		"G" },
@@ -2590,7 +2179,7 @@ diff -udprP mutt-1.5.16.orig/functions.h mutt-1.5.16/functions.h
    { "sort-reverse",		OP_SORT_REVERSE,		"O" },
    { "print-message",		OP_PRINT,			"p" },
 +#ifdef USE_NNTP
-+  { "post-message",		OP_POST,			"\033m" },
++  { "post-message",		OP_POST,			"P" },
 +#endif
    { "previous-thread",		OP_MAIN_PREV_THREAD,		"\020" },
    { "previous-subthread",	OP_MAIN_PREV_SUBTHREAD,		"\033p" },
@@ -2606,50 +2195,71 @@ diff -udprP mutt-1.5.16.orig/functions.h mutt-1.5.16/functions.h
    { "display-message",		OP_DISPLAY_MESSAGE,		M_ENTER_S },
    { "buffy-list",		OP_BUFFY_LIST,			"." },
    { "sync-mailbox",		OP_MAIN_SYNC_FOLDER,		"$" },
+@@ -157,7 +176,7 @@ struct binding_t OpMain[] = { /* map: in
+   { "previous-new-then-unread",	OP_MAIN_PREV_NEW_THEN_UNREAD,	"\033\t" },
+   { "next-unread",		OP_MAIN_NEXT_UNREAD,		NULL },
+   { "previous-unread",		OP_MAIN_PREV_UNREAD,		NULL },
+-  { "parent-message",		OP_MAIN_PARENT_MESSAGE,		"P" },
++  { "parent-message",		OP_MAIN_PARENT_MESSAGE,		NULL },
+ 
+ 
+   { "extract-keys",		OP_EXTRACT_KEYS,		"\013" },
 @@ -177,6 +196,10 @@ struct binding_t OpPager[] = { /* map: p
    { "bounce-message",	OP_BOUNCE_MESSAGE,		"b" },
    { "change-folder",	OP_MAIN_CHANGE_FOLDER,		"c" },
    { "change-folder-readonly",	OP_MAIN_CHANGE_FOLDER_READONLY,	"\033c" },
 +#ifdef USE_NNTP
-+  { "change-newsgroup",		OP_MAIN_CHANGE_GROUP,		"I" },
++  { "change-newsgroup",		OP_MAIN_CHANGE_GROUP,		"i" },
 +  { "change-newsgroup-readonly",OP_MAIN_CHANGE_GROUP_READONLY,	"\033i" },
 +#endif
    { "next-unread-mailbox",	OP_MAIN_NEXT_UNREAD_MAILBOX, NULL },
    { "copy-message",	OP_COPY_MESSAGE,		"C" },
    { "decode-copy",	OP_DECODE_COPY,			"\033C" },
-@@ -185,6 +208,10 @@ struct binding_t OpPager[] = { /* map: p
+@@ -185,8 +208,12 @@ struct binding_t OpPager[] = { /* map: p
    { "delete-subthread",	OP_DELETE_SUBTHREAD,		"\033d" },
    { "edit",		OP_EDIT_MESSAGE,		"e" },
    { "edit-type",	OP_EDIT_TYPE,			"\005" },
 +#ifdef USE_NNTP
-+  { "followup-message",	OP_FOLLOWUP,			"\033f" },
++  { "followup-message",	OP_FOLLOWUP,			"F" },
 +  { "forward-to-group",	OP_FORWARD_TO_GROUP,		"\033F" },
 +#endif
    { "forward-message",	OP_FORWARD_MESSAGE,		"f" },
-   { "flag-message",	OP_FLAG_MESSAGE,		"F" },
+-  { "flag-message",	OP_FLAG_MESSAGE,		"F" },
++  { "flag-message",	OP_FLAG_MESSAGE,		"\033f" },
    { "group-reply",	OP_GROUP_REPLY,			"g" },
+ #ifdef USE_IMAP
+   { "imap-fetch-mail",  OP_MAIN_IMAP_FETCH,		NULL },
 @@ -205,6 +232,9 @@ struct binding_t OpPager[] = { /* map: p
    { "next-thread",	OP_MAIN_NEXT_THREAD,		"\016" },
    { "next-subthread",	OP_MAIN_NEXT_SUBTHREAD,		"\033n" },
    { "print-message",	OP_PRINT,			"p" },
 +#ifdef USE_NNTP
-+  { "post-message",	OP_POST,			"\033m" },
++  { "post-message",	OP_POST,			"P" },
 +#endif
    { "previous-thread",	OP_MAIN_PREV_THREAD,		"\020" },
    { "previous-subthread",OP_MAIN_PREV_SUBTHREAD,	"\033p" },
    { "quit",		OP_QUIT,			"Q" },
-@@ -272,6 +302,10 @@ struct binding_t OpAttach[] = { /* map: 
+@@ -252,7 +282,7 @@ struct binding_t OpPager[] = { /* map: p
+   { "half-down",	OP_HALF_DOWN,			NULL },
+   { "previous-line",	OP_PREV_LINE,			NULL },
+   { "bottom",		OP_PAGER_BOTTOM,		NULL },
+-  { "parent-message",	OP_MAIN_PARENT_MESSAGE,		"P" },
++  { "parent-message",	OP_MAIN_PARENT_MESSAGE,		NULL },
+ 
+ 
+ 
+@@ -273,6 +303,10 @@ struct binding_t OpAttach[] = { /* map: 
    { "bounce-message",	OP_BOUNCE_MESSAGE,		"b" },
    { "display-toggle-weed",	OP_DISPLAY_HEADERS,	"h" },
    { "edit-type",	OP_EDIT_TYPE,			"\005" },
 +#ifdef USE_NNTP
-+  { "followup-message",	OP_FOLLOWUP,			"\033f" },
++  { "followup-message",	OP_FOLLOWUP,			"F" },
 +  { "forward-to-group",	OP_FORWARD_TO_GROUP,		"\033F" },
 +#endif
    { "print-entry",	OP_PRINT,			"p" },
    { "save-entry",	OP_SAVE,			"s" },
    { "pipe-entry",	OP_PIPE,			"|" },
-@@ -297,6 +331,7 @@ struct binding_t OpAttach[] = { /* map: 
+@@ -298,6 +332,7 @@ struct binding_t OpAttach[] = { /* map: 
  struct binding_t OpCompose[] = { /* map: compose */
    { "attach-file",	OP_COMPOSE_ATTACH_FILE,		"a" },
    { "attach-message",	OP_COMPOSE_ATTACH_MESSAGE,	"A" },
@@ -2657,7 +2267,7 @@ diff -udprP mutt-1.5.16.orig/functions.h mutt-1.5.16/functions.h
    { "edit-bcc",		OP_COMPOSE_EDIT_BCC,		"b" },
    { "edit-cc",		OP_COMPOSE_EDIT_CC,		"c" },
    { "copy-file",	OP_SAVE,			"C" },
-@@ -316,6 +351,11 @@ struct binding_t OpCompose[] = { /* map:
+@@ -317,6 +352,11 @@ struct binding_t OpCompose[] = { /* map:
    { "print-entry",	OP_PRINT,			"l" },
    { "edit-mime",	OP_COMPOSE_EDIT_MIME,		"m" },
    { "new-mime",		OP_COMPOSE_NEW_MIME,		"n" },
@@ -2669,7 +2279,7 @@ diff -udprP mutt-1.5.16.orig/functions.h mutt-1.5.16/functions.h
    { "postpone-message",	OP_COMPOSE_POSTPONE_MESSAGE,	"P" },
    { "edit-reply-to",	OP_COMPOSE_EDIT_REPLY_TO,	"r" },
    { "rename-file",	OP_COMPOSE_RENAME_FILE,		"R" },
-@@ -367,14 +407,25 @@ struct binding_t OpBrowser[] = { /* map:
+@@ -368,14 +408,25 @@ struct binding_t OpBrowser[] = { /* map:
    { "select-new",	OP_BROWSER_NEW_FILE,	"N" },
    { "check-new",	OP_CHECK_NEW,		NULL },
    { "toggle-mailboxes", OP_TOGGLE_MAILBOXES, 	"\t" },
@@ -2695,9 +2305,9 @@ diff -udprP mutt-1.5.16.orig/functions.h mutt-1.5.16/functions.h
    { "toggle-subscribed", OP_BROWSER_TOGGLE_LSUB, "T" },
  #endif
    { NULL,		0,			NULL }
-diff -udprP mutt-1.5.16.orig/globals.h mutt-1.5.16/globals.h
---- mutt-1.5.16.orig/globals.h	2007-06-10 05:29:21.000000000 +0300
-+++ mutt-1.5.16/globals.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/globals.h mutt-1.5.19/globals.h
+--- mutt-1.5.19.orig/globals.h	2009-01-04 01:27:10.000000000 +0200
++++ mutt-1.5.19/globals.h	2009-01-06 22:27:38.000000000 +0200
 @@ -95,6 +95,15 @@ WHERE char *MixEntryFormat;
  #endif
  
@@ -2714,7 +2324,7 @@ diff -udprP mutt-1.5.16.orig/globals.h mutt-1.5.16/globals.h
  WHERE char *Outbox;
  WHERE char *Pager;
  WHERE char *PagerFmt;
-@@ -190,6 +199,11 @@ extern unsigned char QuadOptions[];
+@@ -187,6 +196,11 @@ extern unsigned char QuadOptions[];
  
  WHERE unsigned short Counter INITVAL (0);
  
@@ -2726,10 +2336,10 @@ diff -udprP mutt-1.5.16.orig/globals.h mutt-1.5.16/globals.h
  WHERE short ConnectTimeout;
  WHERE short HistSize;
  WHERE short MenuContext;
-diff -udprP mutt-1.5.16.orig/hash.c mutt-1.5.16/hash.c
---- mutt-1.5.16.orig/hash.c	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.16/hash.c	2007-06-15 17:12:26.000000000 +0300
-@@ -51,10 +51,35 @@ HASH *hash_create (int nelem)
+diff -udprP mutt-1.5.19.orig/hash.c mutt-1.5.19/hash.c
+--- mutt-1.5.19.orig/hash.c	2009-01-04 01:27:10.000000000 +0200
++++ mutt-1.5.19/hash.c	2009-01-06 22:27:38.000000000 +0200
+@@ -45,10 +45,35 @@ HASH *hash_create (int nelem)
    if (nelem == 0)
      nelem = 2;
    table->nelem = nelem;
@@ -2765,7 +2375,7 @@ diff -udprP mutt-1.5.16.orig/hash.c mutt-1.5.16/hash.c
  /* table        hash table to update
   * key          key to hash on
   * data         data to associate with `key'
-@@ -74,6 +99,7 @@ int hash_insert (HASH * table, const cha
+@@ -68,6 +93,7 @@ int hash_insert (HASH * table, const cha
    {
      ptr->next = table->table[h];
      table->table[h] = ptr;
@@ -2773,7 +2383,7 @@ diff -udprP mutt-1.5.16.orig/hash.c mutt-1.5.16/hash.c
    }
    else
    {
-@@ -96,6 +122,7 @@ int hash_insert (HASH * table, const cha
+@@ -90,6 +116,7 @@ int hash_insert (HASH * table, const cha
      else
        table->table[h] = ptr;
      ptr->next = tmp;
@@ -2781,7 +2391,7 @@ diff -udprP mutt-1.5.16.orig/hash.c mutt-1.5.16/hash.c
    }
    return h;
  }
-@@ -126,6 +153,7 @@ void hash_delete_hash (HASH * table, int
+@@ -120,6 +147,7 @@ void hash_delete_hash (HASH * table, int
        if (destroy)
  	destroy (ptr->data);
        FREE (&ptr);
@@ -2789,9 +2399,9 @@ diff -udprP mutt-1.5.16.orig/hash.c mutt-1.5.16/hash.c
        
        ptr = *last;
      }
-diff -udprP mutt-1.5.16.orig/hash.h mutt-1.5.16/hash.h
---- mutt-1.5.16.orig/hash.h	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.16/hash.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/hash.h mutt-1.5.19/hash.h
+--- mutt-1.5.19.orig/hash.h	2009-01-04 01:27:10.000000000 +0200
++++ mutt-1.5.19/hash.h	2009-01-06 22:27:38.000000000 +0200
 @@ -28,7 +28,7 @@ struct hash_elem
  
  typedef struct
@@ -2803,15 +2413,15 @@ diff -udprP mutt-1.5.16.orig/hash.h mutt-1.5.16/hash.h
  HASH;
 @@ -40,6 +40,7 @@ HASH;
  HASH *hash_create (int nelem);
- int hash_string (const unsigned char *s, int n);
+ unsigned int hash_string (const unsigned char *s, unsigned int n);
  int hash_insert (HASH * table, const char *key, void *data, int allow_dup);
 +HASH *hash_resize (HASH * table, int nelem);
  void *hash_find_hash (const HASH * table, int hash, const char *key);
  void hash_delete_hash (HASH * table, int hash, const char *key, const void *data,
  		       void (*destroy) (void *));
-diff -udprP mutt-1.5.16.orig/hdrline.c mutt-1.5.16/hdrline.c
---- mutt-1.5.16.orig/hdrline.c	2007-04-16 02:56:26.000000000 +0300
-+++ mutt-1.5.16/hdrline.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/hdrline.c mutt-1.5.19/hdrline.c
+--- mutt-1.5.19.orig/hdrline.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/hdrline.c	2009-01-06 22:27:38.000000000 +0200
 @@ -209,6 +209,7 @@ int mutt_user_is_recipient (HEADER *h)
   * %E = number of messages in current thread
   * %f = entire from line
@@ -2878,9 +2488,9 @@ diff -udprP mutt-1.5.16.orig/hdrline.c mutt-1.5.16/hdrline.c
      case 'Z':
      
        ch = ' ';
-diff -udprP mutt-1.5.16.orig/headers.c mutt-1.5.16/headers.c
---- mutt-1.5.16.orig/headers.c	2007-04-10 07:33:44.000000000 +0300
-+++ mutt-1.5.16/headers.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/headers.c mutt-1.5.19/headers.c
+--- mutt-1.5.19.orig/headers.c	2008-08-15 21:30:12.000000000 +0300
++++ mutt-1.5.19/headers.c	2009-01-06 22:27:38.000000000 +0200
 @@ -118,6 +118,9 @@ void mutt_edit_headers (const char *edit
    msg->env = n; n = NULL;
  
@@ -2891,10 +2501,10 @@ diff -udprP mutt-1.5.16.orig/headers.c mutt-1.5.16/headers.c
      mutt_free_list (&msg->env->references);
  
    mutt_expand_aliases_env (msg->env);
-diff -udprP mutt-1.5.16.orig/init.c mutt-1.5.16/init.c
---- mutt-1.5.16.orig/init.c	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.16/init.c	2007-06-15 17:12:26.000000000 +0300
-@@ -2859,6 +2859,28 @@ void mutt_init (int skip_sys_rc, LIST *c
+diff -udprP mutt-1.5.19.orig/init.c mutt-1.5.19/init.c
+--- mutt-1.5.19.orig/init.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/init.c	2009-01-06 22:27:38.000000000 +0200
+@@ -2965,6 +2965,28 @@ void mutt_init (int skip_sys_rc, LIST *c
    else
      Fqdn = safe_strdup(NONULL(Hostname));
  
@@ -2923,33 +2533,33 @@ diff -udprP mutt-1.5.16.orig/init.c mutt-1.5.16/init.c
    if ((p = getenv ("MAIL")))
      Spoolfile = safe_strdup (p);
    else if ((p = getenv ("MAILDIR")))
-diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
---- mutt-1.5.16.orig/init.h	2007-06-10 05:29:21.000000000 +0300
-+++ mutt-1.5.16/init.h	2007-06-15 17:12:26.000000000 +0300
-@@ -169,6 +169,20 @@ struct option_t MuttVars[] = {
-   ** If set, Mutt will prompt you for carbon-copy (Cc) recipients before
+diff -udprP mutt-1.5.19.orig/init.h mutt-1.5.19/init.h
+--- mutt-1.5.19.orig/init.h	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/init.h	2009-01-06 22:27:38.000000000 +0200
+@@ -176,6 +176,20 @@ struct option_t MuttVars[] = {
+   ** If \fIset\fP, Mutt will prompt you for carbon-copy (Cc) recipients before
    ** editing the body of an outgoing message.
-   */  
+   */
 +#ifdef USE_NNTP
 +  { "ask_follow_up",	DT_BOOL, R_NONE, OPTASKFOLLOWUP, 0 },
 +  /*
 +  ** .pp
 +  ** If set, Mutt will prompt you for follow-up groups before editing
 +  ** the body of an outgoing message.
-+  */  
++  */
 +  { "ask_x_comment_to",	DT_BOOL, R_NONE, OPTASKXCOMMENTTO, 0 },
 +  /*
 +  ** .pp
 +  ** If set, Mutt will prompt you for x-comment-to field before editing
 +  ** the body of an outgoing message.
-+  */  
++  */
 +#endif
    { "assumed_charset", DT_STR, R_NONE, UL &AssumedCharset, UL 0},
    /*
    ** .pp
-@@ -308,6 +322,14 @@ struct option_t MuttVars[] = {
-   ** When this variable is set, mutt will use file size attribute instead of
-   ** access time when checking for new mail.
+@@ -329,6 +343,14 @@ struct option_t MuttVars[] = {
+   ** mailbox by performing a fast mailbox scan when it is defined.
+   ** Afterwards the new mail status is tracked by file size changes.
    */
 +#ifdef USE_NNTP
 +  { "catchup_newsgroup", DT_QUAD, R_NONE, OPT_CATCHUP, M_ASKYES },
@@ -2962,7 +2572,7 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "charset",		DT_STR,	 R_NONE, UL &Charset, UL 0 },
    /*
    ** .pp
-@@ -635,6 +657,16 @@ struct option_t MuttVars[] = {
+@@ -690,6 +712,16 @@ struct option_t MuttVars[] = {
    ** sent to both the list and your address, resulting in two copies
    ** of the same email for you.
    */
@@ -2979,9 +2589,9 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "force_name",	DT_BOOL, R_NONE, OPTFORCENAME, 0 },
    /*
    ** .pp
-@@ -706,6 +738,27 @@ struct option_t MuttVars[] = {
+@@ -760,6 +792,27 @@ struct option_t MuttVars[] = {
    ** a regular expression that will match the whole name so mutt will expand
-   ** "Franklin" to "Franklin, Steve".
+   ** ``Franklin'' to ``Franklin, Steve''.
    */
 +#ifdef USE_NNTP
 +  { "group_index_format", DT_STR, R_BOTH, UL &GroupFormat, UL "%4C %M%N %5s  %-45.45f %d" },
@@ -3007,32 +2617,32 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "hdr_format",	DT_SYN,  R_NONE, UL "index_format", 0 },
    /*
    */
-@@ -996,6 +1049,7 @@ struct option_t MuttVars[] = {
+@@ -1090,6 +1143,7 @@ struct option_t MuttVars[] = {
    ** .dt %E .dd number of messages in current thread
-   ** .dt %f .dd entire From: line (address + real name)
+   ** .dt %f .dd sender (address + real name), either From: or Return-Path:
    ** .dt %F .dd author name, or recipient name if the message is from you
 +  ** .dt %g .dd newsgroup name (if compiled with nntp support)
    ** .dt %H .dd spam attribute(s) of this message
    ** .dt %i .dd message-id of the current message
    ** .dt %l .dd number of lines in the message (does not work with maildir,
-@@ -1010,12 +1064,14 @@ struct option_t MuttVars[] = {
-   ** .dt %O .dd (_O_riginal save folder)  Where mutt would formerly have
-   **            stashed the message: list name or recipient name if no list
+@@ -1105,12 +1159,14 @@ struct option_t MuttVars[] = {
+   **            stashed the message: list name or recipient name
+   **            if not sent to a list
    ** .dt %P .dd progress indicator for the builtin pager (how much of the file has been displayed)
 +  ** .dt %R .dd `x-comment-to:' field (if present and compiled with nntp support)
    ** .dt %s .dd subject of the message
-   ** .dt %S .dd status of the message (N/D/d/!/r/\(as)
-   ** .dt %t .dd `to:' field (recipients)
+   ** .dt %S .dd status of the message (``N''/``D''/``d''/``!''/``r''/\(as)
+   ** .dt %t .dd ``To:'' field (recipients)
    ** .dt %T .dd the appropriate character from the $$to_chars string
    ** .dt %u .dd user (login) name of the author
    ** .dt %v .dd first name of the author, or the recipient if the message is from you
 +  ** .dt %W .dd name of organization of author (`organization:' field)
    ** .dt %X .dd number of attachments
    **            (please see the ``$attachments'' section for possible speed effects)
-   ** .dt %y .dd `x-label:' field, if present
-@@ -1040,6 +1096,21 @@ struct option_t MuttVars[] = {
-   ** .pp
-   ** See also: ``$$to_chars''.
+   ** .dt %y .dd ``X-Label:'' field, if present
+@@ -1145,6 +1201,21 @@ struct option_t MuttVars[] = {
+   ** Note that these expandos are supported in
+   ** ``$save-hook'', ``$fcc-hook'' and ``$fcc-save-hook'', too.
    */
 +#ifdef USE_NNTP
 +  { "inews",          DT_PATH, R_NONE, UL &Inews, UL "" },
@@ -3052,10 +2662,10 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "ispell",		DT_PATH, R_NONE, UL &Ispell, UL ISPELL },
    /*
    ** .pp
-@@ -1254,6 +1325,16 @@ struct option_t MuttVars[] = {
-   ** be attached to the newly composed message if this option is set.
+@@ -1368,6 +1439,15 @@ struct option_t MuttVars[] = {
+   ** menu, attachments which cannot be decoded in a reasonable manner will
+   ** be attached to the newly composed message if this option is \fIset\fP.
    */
- 
 +#ifdef USE_NNTP
 +  { "mime_subject",   DT_BOOL, R_NONE, OPTMIMESUBJECT, 1 },
 +  /*
@@ -3065,14 +2675,13 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
 +  ** is Usenet article, because MIME for news is nonstandard feature.
 +  */
 +#endif
-+
  #ifdef MIXMASTER
    { "mix_entry_format", DT_STR,  R_NONE, UL &MixEntryFormat, UL "%4n %c %-16s %a" },
    /*
-@@ -1331,6 +1412,77 @@ struct option_t MuttVars[] = {
-    ** See also ``$$read_inc'' and ``$$write_inc''.
+@@ -1448,6 +1528,77 @@ struct option_t MuttVars[] = {
+    ** See also $$read_inc, $$write_inc and $$net_inc.
     */
- #endif  
+ #endif
 +#ifdef USE_NNTP
 +  { "news_cache_dir", DT_PATH, R_NONE, UL &NewsCacheDir, UL "~/.mutt" },
 +  /*
@@ -3147,7 +2756,7 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "pager",		DT_PATH, R_NONE, UL &Pager, UL "builtin" },
    /*
    ** .pp
-@@ -2141,6 +2293,16 @@ struct option_t MuttVars[] = {
+@@ -2331,6 +2482,16 @@ struct option_t MuttVars[] = {
    { "post_indent_str",  DT_SYN,  R_NONE, UL "post_indent_string", 0 },
    /*
    */
@@ -3164,9 +2773,9 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "postpone",		DT_QUAD, R_NONE, OPT_POSTPONE, M_ASKYES },
    /*
    ** .pp
-@@ -2497,6 +2659,28 @@ struct option_t MuttVars[] = {
+@@ -2725,6 +2886,28 @@ struct option_t MuttVars[] = {
    ** Command to use when spawning a subshell.  By default, the user's login
-   ** shell from /etc/passwd is used.
+   ** shell from \fC/etc/passwd\fP is used.
    */
 +#ifdef USE_NNTP
 +  { "save_unsubscribed",DT_BOOL, R_NONE, OPTSAVEUNSUB, 0 },
@@ -3193,8 +2802,8 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    { "sig_dashes",	DT_BOOL, R_NONE, OPTSIGDASHES, 1 },
    /*
    ** .pp
-@@ -3005,6 +3189,14 @@ struct option_t MuttVars[] = {
-   ** option does nothing: mutt will never write out the BCC header
+@@ -3275,6 +3458,14 @@ struct option_t MuttVars[] = {
+   ** option does nothing: mutt will never write out the ``Bcc:'' header
    ** in this case.
    */
 +#ifdef USE_NNTP
@@ -3208,9 +2817,20 @@ diff -udprP mutt-1.5.16.orig/init.h mutt-1.5.16/init.h
    /*--*/
    { NULL }
  };
-diff -udprP mutt-1.5.16.orig/mailbox.h mutt-1.5.16/mailbox.h
---- mutt-1.5.16.orig/mailbox.h	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.16/mailbox.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/keymap.c mutt-1.5.19/keymap.c
+--- mutt-1.5.19.orig/keymap.c	2008-11-26 20:48:48.000000000 +0200
++++ mutt-1.5.19/keymap.c	2009-01-06 22:27:38.000000000 +0200
+@@ -654,7 +654,6 @@ void km_init (void)
+   km_bindkey ("<enter>", MENU_MAIN, OP_DISPLAY_MESSAGE);
+ 
+   km_bindkey ("x", MENU_PAGER, OP_EXIT);
+-  km_bindkey ("i", MENU_PAGER, OP_EXIT);
+   km_bindkey ("<backspace>", MENU_PAGER, OP_PREV_LINE);
+   km_bindkey ("<pagedown>", MENU_PAGER, OP_NEXT_PAGE);
+   km_bindkey ("<pageup>", MENU_PAGER, OP_PREV_PAGE);
+diff -udprP mutt-1.5.19.orig/mailbox.h mutt-1.5.19/mailbox.h
+--- mutt-1.5.19.orig/mailbox.h	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/mailbox.h	2009-01-06 22:27:38.000000000 +0200
 @@ -74,6 +74,9 @@ int mx_is_imap (const char *);
  #ifdef USE_POP
  int mx_is_pop (const char *);
@@ -3221,10 +2841,10 @@ diff -udprP mutt-1.5.16.orig/mailbox.h mutt-1.5.16/mailbox.h
  
  int mx_access (const char*, int);
  int mx_check_empty (const char *);
-diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
---- mutt-1.5.16.orig/main.c	2007-04-10 23:53:08.000000000 +0300
-+++ mutt-1.5.16/main.c	2007-06-15 17:12:26.000000000 +0300
-@@ -56,6 +56,10 @@
+diff -udprP mutt-1.5.19.orig/main.c mutt-1.5.19/main.c
+--- mutt-1.5.19.orig/main.c	2009-01-04 01:27:10.000000000 +0200
++++ mutt-1.5.19/main.c	2009-01-06 22:27:38.000000000 +0200
+@@ -60,6 +60,10 @@
  #include <stringprep.h>
  #endif
  
@@ -3235,7 +2855,7 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
  static const char *ReachingUs = N_("\
  To contact the developers, please mail to <mutt-dev@mutt.org>.\n\
  To report a bug, please visit http://bugs.mutt.org/.\n");
-@@ -127,6 +131,8 @@ options:\n\
+@@ -133,6 +137,8 @@ options:\n\
  "  -e <command>\tspecify a command to be executed after initialization\n\
    -f <file>\tspecify which mailbox to read\n\
    -F <file>\tspecify an alternate muttrc file\n\
@@ -3244,7 +2864,7 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
    -H <file>\tspecify a draft file to read header and body from\n\
    -i <file>\tspecify a file which Mutt should include in the body\n\
    -m <type>\tspecify a default mailbox type\n\
-@@ -253,6 +259,12 @@ static void show_version (void)
+@@ -255,6 +261,12 @@ static void show_version (void)
  	"-USE_POP  "
  #endif
  
@@ -3257,7 +2877,7 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
  #ifdef USE_IMAP
          "+USE_IMAP  "
  #else
-@@ -521,6 +533,9 @@ static void start_curses (void)
+@@ -522,6 +534,9 @@ static void start_curses (void)
  #define M_NOSYSRC (1<<2)	/* -n */
  #define M_RO      (1<<3)	/* -R */
  #define M_SELECT  (1<<4)	/* -y */
@@ -3267,19 +2887,19 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
  
  int main (int argc, char **argv)
  {
-@@ -577,7 +592,11 @@ int main (int argc, char **argv)
-       break;
+@@ -594,7 +609,11 @@ int main (int argc, char **argv)
+         argv[nargc++] = argv[optind];
      }
  
 +#ifdef USE_NNTP
-+  while ((i = getopt (argc, argv, "A:a:b:F:f:c:Dd:e:g:GH:s:i:hm:npQ:RvxyzZ")) != EOF)
++    if ((i = getopt (argc, argv, "+A:a:b:F:f:c:Dd:e:g:GH:s:i:hm:npQ:RvxyzZ")) != EOF)
 +#else
-   while ((i = getopt (argc, argv, "A:a:b:F:f:c:Dd:e:H:s:i:hm:npQ:RvxyzZ")) != EOF)
+     if ((i = getopt (argc, argv, "+A:a:b:F:f:c:Dd:e:H:s:i:hm:npQ:RvxyzZ")) != EOF)
 +#endif
-     switch (i)
-     {
+       switch (i)
+       {
        case 'A':
-@@ -670,6 +689,20 @@ int main (int argc, char **argv)
+@@ -687,6 +706,20 @@ int main (int argc, char **argv)
  	flags |= M_SELECT;
  	break;
  
@@ -3300,7 +2920,7 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
        case 'z':
  	flags |= M_IGNORE;
  	break;
-@@ -947,6 +980,18 @@ int main (int argc, char **argv)
+@@ -974,6 +1007,18 @@ int main (int argc, char **argv)
      }
      else if (flags & M_SELECT)
      {
@@ -3319,7 +2939,7 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
        if (!Incoming) {
  	mutt_endwin _("No incoming mailboxes defined.");
  	exit (1);
-@@ -962,6 +1007,15 @@ int main (int argc, char **argv)
+@@ -989,6 +1034,15 @@ int main (int argc, char **argv)
  
      if (!folder[0])
        strfcpy (folder, NONULL(Spoolfile), sizeof (folder));
@@ -3335,10 +2955,10 @@ diff -udprP mutt-1.5.16.orig/main.c mutt-1.5.16/main.c
      mutt_expand_path (folder, sizeof (folder));
  
      mutt_str_replace (&CurrentFolder, folder);
-diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
---- mutt-1.5.16.orig/mutt.h	2007-04-11 06:14:01.000000000 +0300
-+++ mutt-1.5.16/mutt.h	2007-06-15 17:12:26.000000000 +0300
-@@ -243,6 +243,9 @@ enum
+diff -udprP mutt-1.5.19.orig/mutt.h mutt-1.5.19/mutt.h
+--- mutt-1.5.19.orig/mutt.h	2008-09-26 01:00:03.000000000 +0300
++++ mutt-1.5.19/mutt.h	2009-01-06 22:27:38.000000000 +0200
+@@ -223,6 +223,9 @@ enum
    M_PGP_KEY,
    M_XLABEL,
    M_MIMEATTACH,
@@ -3348,7 +2968,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    
    /* Options for Mailcap lookup */
    M_EDIT,
-@@ -298,6 +301,12 @@ enum
+@@ -278,6 +281,12 @@ enum
  #endif
    OPT_SUBJECT,
    OPT_VERIFYSIG,      /* verify PGP signatures */
@@ -3361,7 +2981,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
      
    /* THIS MUST BE THE LAST VALUE. */
    OPT_MAX
-@@ -313,6 +322,7 @@ enum
+@@ -293,6 +302,7 @@ enum
  #define SENDMAILX	(1<<6)
  #define SENDKEY		(1<<7)
  #define SENDRESEND	(1<<8)
@@ -3369,7 +2989,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
  
  /* flags to _mutt_select_file() */
  #define M_SEL_BUFFY	(1<<0)
-@@ -332,6 +342,8 @@ enum
+@@ -312,6 +322,8 @@ enum
    OPTASCIICHARS,
    OPTASKBCC,
    OPTASKCC,
@@ -3378,7 +2998,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    OPTATTACHSPLIT,
    OPTAUTOEDIT,
    OPTAUTOTAG,
-@@ -407,6 +419,9 @@ enum
+@@ -387,6 +399,9 @@ enum
    OPTMETOO,
    OPTMHPURGE,
    OPTMIMEFORWDECODE,
@@ -3388,7 +3008,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    OPTNARROWTREE,
    OPTPAGERSTOP,
    OPTPIPEDECODE,
-@@ -488,6 +503,16 @@ enum
+@@ -468,6 +483,16 @@ enum
    OPTPGPAUTOINLINE,
    OPTPGPREPLYINLINE,
  
@@ -3405,7 +3025,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    /* pseudo options */
  
    OPTAUXSORT,		/* (pseudo) using auxillary sort function */
-@@ -508,6 +533,7 @@ enum
+@@ -488,6 +513,7 @@ enum
    OPTSORTSUBTHREADS,	/* (pseudo) used when $sort_aux changes */
    OPTNEEDRESCORE,	/* (pseudo) set when the `score' command is used */
    OPTATTACHMSG,		/* (pseudo) used by attach-message */
@@ -3413,7 +3033,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    OPTKEEPQUIET,		/* (pseudo) shut up the message and refresh
  			 * 	    functions while we are executing an
  			 * 	    external program.
-@@ -518,6 +544,12 @@ enum
+@@ -498,6 +524,12 @@ enum
    OPTDONTHANDLEPGPKEYS,	/* (pseudo) used to extract PGP keys */
    OPTUNBUFFEREDINPUT,   /* (pseudo) don't use key buffer */
  
@@ -3426,7 +3046,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    OPTMAX
  };
  
-@@ -595,6 +627,13 @@ typedef struct envelope
+@@ -575,6 +607,13 @@ typedef struct envelope
    char *supersedes;
    char *date;
    char *x_label;
@@ -3440,7 +3060,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    BUFFER *spam;
    LIST *references;		/* message references (in reverse order) */
    LIST *in_reply_to;		/* in-reply-to header content */
-@@ -761,6 +800,9 @@ typedef struct header
+@@ -741,6 +780,9 @@ typedef struct header
    ENVELOPE *env;		/* envelope information */
    BODY *content;		/* list of MIME parts */
    char *path;
@@ -3450,7 +3070,7 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    
    char *tree;           	/* character string to print thread tree */
    struct thread *thread;
-@@ -776,7 +818,7 @@ typedef struct header
+@@ -756,7 +798,7 @@ typedef struct header
    int refno;			/* message number on server */
  #endif
  
@@ -3459,9 +3079,9 @@ diff -udprP mutt-1.5.16.orig/mutt.h mutt-1.5.16/mutt.h
    void *data;            	/* driver-specific data */
  #endif
    
-diff -udprP mutt-1.5.16.orig/muttlib.c mutt-1.5.16/muttlib.c
---- mutt-1.5.16.orig/muttlib.c	2007-05-14 20:10:00.000000000 +0300
-+++ mutt-1.5.16/muttlib.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/muttlib.c mutt-1.5.19/muttlib.c
+--- mutt-1.5.19.orig/muttlib.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/muttlib.c	2009-01-06 22:27:38.000000000 +0200
 @@ -286,7 +286,7 @@ void mutt_free_header (HEADER **h)
  #ifdef MIXMASTER
    mutt_free_list (&(*h)->chain);
@@ -3485,7 +3105,7 @@ diff -udprP mutt-1.5.16.orig/muttlib.c mutt-1.5.16/muttlib.c
  
    mutt_buffer_free (&(*p)->spam);
  
-@@ -1394,6 +1401,14 @@ int mutt_save_confirm (const char *s, st
+@@ -1455,6 +1462,14 @@ int mutt_save_confirm (const char *s, st
      }
    }
  
@@ -3500,10 +3120,10 @@ diff -udprP mutt-1.5.16.orig/muttlib.c mutt-1.5.16/muttlib.c
    if (stat (s, st) != -1)
    {
      if (magic == -1)
-diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
---- mutt-1.5.16.orig/mx.c	2007-04-03 20:41:14.000000000 +0300
-+++ mutt-1.5.16/mx.c	2007-06-15 17:12:26.000000000 +0300
-@@ -348,6 +348,22 @@ int mx_is_pop (const char *p)
+diff -udprP mutt-1.5.19.orig/mx.c mutt-1.5.19/mx.c
+--- mutt-1.5.19.orig/mx.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/mx.c	2009-01-06 22:27:38.000000000 +0200
+@@ -343,6 +343,22 @@ int mx_is_pop (const char *p)
  }
  #endif
  
@@ -3526,7 +3146,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
  int mx_get_magic (const char *path)
  {
    struct stat st;
-@@ -365,6 +381,11 @@ int mx_get_magic (const char *path)
+@@ -360,6 +376,11 @@ int mx_get_magic (const char *path)
      return M_POP;
  #endif /* USE_POP */
  
@@ -3538,7 +3158,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
    if (stat (path, &st) == -1)
    {
      dprint (1, (debugfile, "mx_get_magic(): unable to stat %s: %s (errno %d).\n",
-@@ -704,6 +725,12 @@ CONTEXT *mx_open_mailbox (const char *pa
+@@ -699,6 +720,12 @@ CONTEXT *mx_open_mailbox (const char *pa
        break;
  #endif /* USE_POP */
  
@@ -3551,7 +3171,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
      default:
        rc = -1;
        break;
-@@ -796,6 +823,12 @@ static int sync_mailbox (CONTEXT *ctx, i
+@@ -791,6 +818,12 @@ static int sync_mailbox (CONTEXT *ctx, i
        rc = pop_sync_mailbox (ctx, index_hint);
        break;
  #endif /* USE_POP */
@@ -3564,7 +3184,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
    }
  
  #if 0
-@@ -822,6 +855,16 @@ int mx_close_mailbox (CONTEXT *ctx, int 
+@@ -817,6 +850,16 @@ int mx_close_mailbox (CONTEXT *ctx, int 
  
    ctx->closing = 1;
  
@@ -3581,7 +3201,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
    if (ctx->readonly || ctx->dontwrite)
    {
      /* mailbox is readonly or we don't want to write */
-@@ -1359,6 +1402,11 @@ int mx_check_mailbox (CONTEXT *ctx, int 
+@@ -1354,6 +1397,11 @@ int mx_check_mailbox (CONTEXT *ctx, int 
        case M_POP:
  	return (pop_check_mailbox (ctx, index_hint));
  #endif /* USE_POP */
@@ -3593,7 +3213,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
      }
    }
  
-@@ -1419,6 +1467,15 @@ MESSAGE *mx_open_message (CONTEXT *ctx, 
+@@ -1414,6 +1462,15 @@ MESSAGE *mx_open_message (CONTEXT *ctx, 
      }
  #endif /* USE_POP */
  
@@ -3609,7 +3229,7 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
      default:
        dprint (1, (debugfile, "mx_open_message(): function not implemented for mailbox type %d.\n", ctx->magic));
        FREE (&msg);
-@@ -1500,6 +1557,9 @@ int mx_close_message (MESSAGE **msg)
+@@ -1495,6 +1552,9 @@ int mx_close_message (MESSAGE **msg)
  #ifdef USE_POP
        || (*msg)->magic == M_POP
  #endif
@@ -3619,9 +3239,9 @@ diff -udprP mutt-1.5.16.orig/mx.c mutt-1.5.16/mx.c
        )
    {
      r = safe_fclose (&(*msg)->fp);
-diff -udprP mutt-1.5.16.orig/mx.h mutt-1.5.16/mx.h
---- mutt-1.5.16.orig/mx.h	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.16/mx.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/mx.h mutt-1.5.19/mx.h
+--- mutt-1.5.19.orig/mx.h	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/mx.h	2009-01-06 22:27:38.000000000 +0200
 @@ -40,6 +40,9 @@ enum
  #ifdef USE_POP
    , M_POP
@@ -3632,14 +3252,14 @@ diff -udprP mutt-1.5.16.orig/mx.h mutt-1.5.16/mx.h
  };
  
  WHERE short DefaultMagic INITVAL (M_MBOX);
-diff -udprP mutt-1.5.16.orig/newsrc.c mutt-1.5.16/newsrc.c
---- mutt-1.5.16.orig/newsrc.c	1970-01-01 03:00:00.000000000 +0300
-+++ mutt-1.5.16/newsrc.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/newsrc.c mutt-1.5.19/newsrc.c
+--- mutt-1.5.19.orig/newsrc.c	1970-01-01 03:00:00.000000000 +0300
++++ mutt-1.5.19/newsrc.c	2009-01-06 22:27:38.000000000 +0200
 @@ -0,0 +1,1170 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
 + * Copyright (C) 1999 Andrej Gritsenko <andrej@lucky.net>
-+ * Copyright (C) 2000-2007 Vsevolod Volkov <vvv@mutt.org.ua>
++ * Copyright (C) 2000-2009 Vsevolod Volkov <vvv@mutt.org.ua>
 + * 
 + *     This program is free software; you can redistribute it and/or modify
 + *     it under the terms of the GNU General Public License as published by
@@ -3903,7 +3523,7 @@ diff -udprP mutt-1.5.16.orig/newsrc.c mutt-1.5.16/newsrc.c
 +}
 +
 +const char *
-+nntp_format_str (char *dest, size_t destlen, char op, const char *src,
++nntp_format_str (char *dest, size_t destlen, size_t col, char op, const char *src,
 +		const char *fmt, const char *ifstring, const char *elsestring,
 +		unsigned long data, format_flag flags)
 +{
@@ -4638,7 +4258,7 @@ diff -udprP mutt-1.5.16.orig/newsrc.c mutt-1.5.16/newsrc.c
 +	    tm->tm_sec, h->env->message_id);
 +      fputs (buf, f);
 +      if (h->env->references)
-+	mutt_write_references (h->env->references, f);
++	mutt_write_references (h->env->references, f, 10);
 +      snprintf (buf, sizeof(buf), "\t%ld\t%d\tXref: %s\n", (long int) h->content->length,
 +	    (int) h->lines, NONULL(h->env->xref));
 +      if (fputs (buf, f) == EOF)
@@ -4806,9 +4426,9 @@ diff -udprP mutt-1.5.16.orig/newsrc.c mutt-1.5.16/newsrc.c
 +    }
 +  }
 +}
-diff -udprP mutt-1.5.16.orig/nntp.c mutt-1.5.16/nntp.c
---- mutt-1.5.16.orig/nntp.c	1970-01-01 03:00:00.000000000 +0300
-+++ mutt-1.5.16/nntp.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/nntp.c mutt-1.5.19/nntp.c
+--- mutt-1.5.19.orig/nntp.c	1970-01-01 03:00:00.000000000 +0300
++++ mutt-1.5.19/nntp.c	2009-01-06 22:27:38.000000000 +0200
 @@ -0,0 +1,1588 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -6398,9 +6018,9 @@ diff -udprP mutt-1.5.16.orig/nntp.c mutt-1.5.16/nntp.c
 +  FREE (&cc.child);
 +  return ret;
 +}
-diff -udprP mutt-1.5.16.orig/nntp.h mutt-1.5.16/nntp.h
---- mutt-1.5.16.orig/nntp.h	1970-01-01 03:00:00.000000000 +0300
-+++ mutt-1.5.16/nntp.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/nntp.h mutt-1.5.19/nntp.h
+--- mutt-1.5.19.orig/nntp.h	1970-01-01 03:00:00.000000000 +0300
++++ mutt-1.5.19/nntp.h	2009-01-06 22:27:38.000000000 +0200
 @@ -0,0 +1,136 @@
 +/*
 + * Copyright (C) 1998 Brandon Long <blong@fiction.net>
@@ -6532,16 +6152,16 @@ diff -udprP mutt-1.5.16.orig/nntp.h mutt-1.5.16/nntp.h
 +void nntp_buffy (char *);
 +void nntp_expand_path (char *, size_t, ACCOUNT *);
 +void nntp_logout_all ();
-+const char *nntp_format_str (char *, size_t, char, const char *, const char *,
++const char *nntp_format_str (char *, size_t, size_t, char, const char *, const char *,
 +		const char *, const char *, unsigned long, format_flag);
 +
 +NNTP_SERVER *CurrentNewsSrv INITVAL (NULL);
 +
 +#endif /* _NNTP_H_ */
-diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
---- mutt-1.5.16.orig/pager.c	2007-04-16 02:56:26.000000000 +0300
-+++ mutt-1.5.16/pager.c	2007-06-15 17:12:26.000000000 +0300
-@@ -1055,6 +1055,11 @@ fill_buffer (FILE *f, LOFF_T *last_pos, 
+diff -udprP mutt-1.5.19.orig/pager.c mutt-1.5.19/pager.c
+--- mutt-1.5.19.orig/pager.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/pager.c	2009-01-06 22:27:38.000000000 +0200
+@@ -1048,6 +1048,11 @@ fill_buffer (FILE *f, LOFF_T *last_pos, 
    return b_read;
  }
  
@@ -6553,7 +6173,7 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
  
  static int format_line (struct line_t **lineInfo, int n, unsigned char *buf,
  			int flags, ansi_attr *pa, int cnt,
-@@ -1490,6 +1495,16 @@ static struct mapping_t PagerHelpExtra[]
+@@ -1489,6 +1494,16 @@ static struct mapping_t PagerHelpExtra[]
    { NULL,	0 }
  };
  
@@ -6570,7 +6190,7 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
  
  
  /* This pager is actually not so simple as it once was.  It now operates in
-@@ -1531,6 +1546,10 @@ mutt_pager (const char *banner, const ch
+@@ -1530,6 +1545,10 @@ mutt_pager (const char *banner, const ch
    int old_PagerIndexLines;		/* some people want to resize it
    					 * while inside the pager... */
  
@@ -6581,7 +6201,7 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
    if (!(flags & M_SHOWCOLOR))
      flags |= M_SHOWFLAT;
  
-@@ -1570,7 +1589,11 @@ mutt_pager (const char *banner, const ch
+@@ -1569,7 +1588,11 @@ mutt_pager (const char *banner, const ch
    if (IsHeader (extra))
    {
      strfcpy (tmphelp, helpstr, sizeof (tmphelp));
@@ -6594,7 +6214,7 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
      snprintf (helpstr, sizeof (helpstr), "%s %s", tmphelp, buffer);
    }
    if (!InHelp)
-@@ -2398,6 +2421,15 @@ search_next:
+@@ -2407,6 +2430,15 @@ search_next:
  	CHECK_READONLY;
  	CHECK_ACL(M_ACL_WRITE, "flag message");
  
@@ -6610,7 +6230,7 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
  	mutt_set_flag (Context, extra->hdr, M_FLAG, !extra->hdr->flagged);
  	redraw = REDRAW_STATUS | REDRAW_INDEX;
  	if (option (OPTRESOLVE))
-@@ -2431,6 +2463,60 @@ search_next:
+@@ -2440,6 +2472,60 @@ search_next:
  	redraw = REDRAW_FULL;
  	break;
  
@@ -6671,7 +6291,7 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
        case OP_REPLY:
  	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
          CHECK_ATTACH;      
-@@ -2477,7 +2563,7 @@ search_next:
+@@ -2486,7 +2572,7 @@ search_next:
          CHECK_ATTACH;
          if (IsMsgAttach (extra))
  	  mutt_attach_forward (extra->fp, extra->hdr, extra->idx,
@@ -6680,9 +6300,9 @@ diff -udprP mutt-1.5.16.orig/pager.c mutt-1.5.16/pager.c
          else
  	  ci_send_message (SENDFORWARD, NULL, NULL, extra->ctx, extra->hdr);
  	redraw = REDRAW_FULL;
-diff -udprP mutt-1.5.16.orig/parse.c mutt-1.5.16/parse.c
---- mutt-1.5.16.orig/parse.c	2007-04-02 00:58:56.000000000 +0300
-+++ mutt-1.5.16/parse.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/parse.c mutt-1.5.19/parse.c
+--- mutt-1.5.19.orig/parse.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/parse.c	2009-01-06 22:27:38.000000000 +0200
 @@ -89,7 +89,7 @@ char *mutt_read_rfc822_line (FILE *f, ch
    /* not reached */
  }
@@ -6691,8 +6311,8 @@ diff -udprP mutt-1.5.16.orig/parse.c mutt-1.5.16/parse.c
 +LIST *mutt_parse_references (char *s, int in_reply_to)
  {
    LIST *t, *lst = NULL;
-   int m, n = 0;
-@@ -1068,6 +1068,17 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
+   char *m;
+@@ -1067,6 +1067,17 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
        e->from = rfc822_parse_adrlist (e->from, p);
        matched = 1;
      }
@@ -6710,7 +6330,7 @@ diff -udprP mutt-1.5.16.orig/parse.c mutt-1.5.16/parse.c
      break;
      
      case 'i':
-@@ -1152,6 +1163,27 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
+@@ -1151,6 +1162,27 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
      }
      break;
      
@@ -6738,7 +6358,7 @@ diff -udprP mutt-1.5.16.orig/parse.c mutt-1.5.16/parse.c
      case 'r':
      if (!ascii_strcasecmp (line + 1, "eferences"))
      {
-@@ -1260,6 +1292,20 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
+@@ -1259,6 +1291,20 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
        e->x_label = safe_strdup(p);
        matched = 1;
      }
@@ -6759,9 +6379,9 @@ diff -udprP mutt-1.5.16.orig/parse.c mutt-1.5.16/parse.c
      
      default:
      break;
-diff -udprP mutt-1.5.16.orig/pattern.c mutt-1.5.16/pattern.c
---- mutt-1.5.16.orig/pattern.c	2007-04-08 02:36:55.000000000 +0300
-+++ mutt-1.5.16/pattern.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/pattern.c mutt-1.5.19/pattern.c
+--- mutt-1.5.19.orig/pattern.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/pattern.c	2009-01-06 22:27:38.000000000 +0200
 @@ -91,6 +91,9 @@ Flags[] =
    { 'U', M_UNREAD,		0,		NULL },
    { 'v', M_COLLAPSED,		0,		NULL },
@@ -6772,7 +6392,7 @@ diff -udprP mutt-1.5.16.orig/pattern.c mutt-1.5.16/pattern.c
    { 'x', M_REFERENCE,		0,		eat_regexp },
    { 'X', M_MIMEATTACH,		0,		eat_range },
    { 'y', M_XLABEL,		0,		eat_regexp },
-@@ -1214,6 +1217,10 @@ mutt_pattern_exec (struct pattern_t *pat
+@@ -1201,6 +1204,10 @@ mutt_pattern_exec (struct pattern_t *pat
        }
      case M_UNREFERENCED:
        return (pat->not ^ (h->thread && !h->thread->child));
@@ -6791,10 +6411,10 @@ diff -udprP mutt-1.5.16.orig/pattern.c mutt-1.5.16/pattern.c
    if (mutt_get_field (prompt, buf, sizeof (buf), M_PATTERN | M_CLEAR) != 0 || !buf[0])
      return (-1);
  
-diff -udprP mutt-1.5.16.orig/po/POTFILES.in mutt-1.5.16/po/POTFILES.in
---- mutt-1.5.16.orig/po/POTFILES.in	2007-04-02 00:58:57.000000000 +0300
-+++ mutt-1.5.16/po/POTFILES.in	2007-06-15 17:12:26.000000000 +0300
-@@ -47,6 +47,8 @@ mutt_ssl_gnutls.c
+diff -udprP mutt-1.5.19.orig/po/POTFILES.in mutt-1.5.19/po/POTFILES.in
+--- mutt-1.5.19.orig/po/POTFILES.in	2008-03-19 22:07:57.000000000 +0200
++++ mutt-1.5.19/po/POTFILES.in	2009-01-06 22:27:38.000000000 +0200
+@@ -46,6 +46,8 @@ mutt_ssl_gnutls.c
  mutt_tunnel.c
  muttlib.c
  mx.c
@@ -6803,10 +6423,10 @@ diff -udprP mutt-1.5.16.orig/po/POTFILES.in mutt-1.5.16/po/POTFILES.in
  pager.c
  parse.c
  pattern.c
-diff -udprP mutt-1.5.16.orig/postpone.c mutt-1.5.16/postpone.c
---- mutt-1.5.16.orig/postpone.c	2007-04-02 00:58:57.000000000 +0300
-+++ mutt-1.5.16/postpone.c	2007-06-15 17:12:26.000000000 +0300
-@@ -126,15 +126,26 @@ int mutt_num_postponed (int force)
+diff -udprP mutt-1.5.19.orig/postpone.c mutt-1.5.19/postpone.c
+--- mutt-1.5.19.orig/postpone.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/postpone.c	2009-01-06 22:27:38.000000000 +0200
+@@ -124,15 +124,26 @@ int mutt_num_postponed (int force)
  
    if (LastModify < st.st_mtime)
    {
@@ -6833,10 +6453,10 @@ diff -udprP mutt-1.5.16.orig/postpone.c mutt-1.5.16/postpone.c
    }
  
    return (PostCount);
-diff -udprP mutt-1.5.16.orig/protos.h mutt-1.5.16/protos.h
---- mutt-1.5.16.orig/protos.h	2007-04-16 02:56:26.000000000 +0300
-+++ mutt-1.5.16/protos.h	2007-06-15 17:12:26.000000000 +0300
-@@ -113,6 +113,7 @@ HASH *mutt_make_id_hash (CONTEXT *);
+diff -udprP mutt-1.5.19.orig/protos.h mutt-1.5.19/protos.h
+--- mutt-1.5.19.orig/protos.h	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/protos.h	2009-01-06 22:27:38.000000000 +0200
+@@ -115,6 +115,7 @@ HASH *mutt_make_id_hash (CONTEXT *);
  HASH *mutt_make_subj_hash (CONTEXT *);
  
  LIST *mutt_make_references(ENVELOPE *e);
@@ -6844,18 +6464,10 @@ diff -udprP mutt-1.5.16.orig/protos.h mutt-1.5.16/protos.h
  
  char *mutt_read_rfc822_line (FILE *, char *, size_t *);
  ENVELOPE *mutt_read_rfc822_header (FILE *, HEADER *, short, short);
-@@ -256,6 +257,7 @@ void mutt_unblock_signals_system (int);
- void mutt_update_encoding (BODY *a);
- void mutt_version (void);
- void mutt_view_attachments (HEADER *);
-+void mutt_write_references (LIST *, FILE *);
- void mutt_write_address_list (ADDRESS *adr, FILE *fp, int linelen, int display);
- void mutt_set_virtual (CONTEXT *);
- 
-diff -udprP mutt-1.5.16.orig/recvattach.c mutt-1.5.16/recvattach.c
---- mutt-1.5.16.orig/recvattach.c	2007-04-16 02:56:26.000000000 +0300
-+++ mutt-1.5.16/recvattach.c	2007-06-15 17:12:26.000000000 +0300
-@@ -1088,6 +1088,15 @@ void mutt_view_attachments (HEADER *hdr)
+diff -udprP mutt-1.5.19.orig/recvattach.c mutt-1.5.19/recvattach.c
+--- mutt-1.5.19.orig/recvattach.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/recvattach.c	2009-01-06 22:27:38.000000000 +0200
+@@ -1107,6 +1107,15 @@ void mutt_view_attachments (HEADER *hdr)
  	}
  #endif
  
@@ -6871,7 +6483,7 @@ diff -udprP mutt-1.5.16.orig/recvattach.c mutt-1.5.16/recvattach.c
          if (WithCrypto && hdr->security & ~PGP_TRADITIONAL_CHECKED)
          {
  	  mutt_message _(
-@@ -1179,10 +1188,33 @@ void mutt_view_attachments (HEADER *hdr)
+@@ -1198,10 +1207,33 @@ void mutt_view_attachments (HEADER *hdr)
        case OP_FORWARD_MESSAGE:
          CHECK_ATTACH;
          mutt_attach_forward (fp, hdr, idx, idxlen,
@@ -6906,10 +6518,10 @@ diff -udprP mutt-1.5.16.orig/recvattach.c mutt-1.5.16/recvattach.c
        case OP_REPLY:
        case OP_GROUP_REPLY:
        case OP_LIST_REPLY:
-diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
---- mutt-1.5.16.orig/recvcmd.c	2007-04-02 00:58:57.000000000 +0300
-+++ mutt-1.5.16/recvcmd.c	2007-06-15 17:12:26.000000000 +0300
-@@ -377,7 +377,7 @@ static BODY ** copy_problematic_attachme
+diff -udprP mutt-1.5.19.orig/recvcmd.c mutt-1.5.19/recvcmd.c
+--- mutt-1.5.19.orig/recvcmd.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/recvcmd.c	2009-01-06 22:27:38.000000000 +0200
+@@ -373,7 +373,7 @@ static BODY ** copy_problematic_attachme
  static void attach_forward_bodies (FILE * fp, HEADER * hdr,
  				   ATTACHPTR ** idx, short idxlen,
  				   BODY * cur,
@@ -6918,7 +6530,7 @@ diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
  {
    short i;
    short mime_fwd_all = 0;
-@@ -523,7 +523,7 @@ _("Can't decode all tagged attachments. 
+@@ -519,7 +519,7 @@ _("Can't decode all tagged attachments. 
    tmpfp = NULL;
  
    /* now that we have the template, send it. */
@@ -6927,7 +6539,7 @@ diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
    return;
    
    bail:
-@@ -550,7 +550,7 @@ _("Can't decode all tagged attachments. 
+@@ -546,7 +546,7 @@ _("Can't decode all tagged attachments. 
   */
  
  static void attach_forward_msgs (FILE * fp, HEADER * hdr, 
@@ -6936,7 +6548,7 @@ diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
  {
    HEADER *curhdr = NULL;
    HEADER *tmphdr;
-@@ -655,23 +655,23 @@ static void attach_forward_msgs (FILE * 
+@@ -651,23 +651,23 @@ static void attach_forward_msgs (FILE * 
    else
      mutt_free_header (&tmphdr);
  
@@ -6964,7 +6576,7 @@ diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
    }
  }
  
-@@ -729,28 +729,40 @@ attach_reply_envelope_defaults (ENVELOPE
+@@ -725,28 +725,40 @@ attach_reply_envelope_defaults (ENVELOPE
      return -1;
    }
  
@@ -7019,7 +6631,7 @@ diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
    mutt_make_misc_reply_headers (env, Context, curhdr, curenv);
  
    if (parent)
-@@ -811,6 +823,13 @@ void mutt_attach_reply (FILE * fp, HEADE
+@@ -807,6 +819,13 @@ void mutt_attach_reply (FILE * fp, HEADE
    char prefix[SHORT_STRING];
    int rc;
    
@@ -7033,9 +6645,9 @@ diff -udprP mutt-1.5.16.orig/recvcmd.c mutt-1.5.16/recvcmd.c
    if (check_all_msg (idx, idxlen, cur, 0) == -1)
    {
      nattach = count_tagged (idx, idxlen);
-diff -udprP mutt-1.5.16.orig/rfc1524.c mutt-1.5.16/rfc1524.c
---- mutt-1.5.16.orig/rfc1524.c	2007-04-02 00:58:58.000000000 +0300
-+++ mutt-1.5.16/rfc1524.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/rfc1524.c mutt-1.5.19/rfc1524.c
+--- mutt-1.5.19.orig/rfc1524.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/rfc1524.c	2009-01-06 22:27:38.000000000 +0200
 @@ -569,13 +569,13 @@ int rfc1524_expand_filename (char *namet
   * safe_fopen().
   */
@@ -7061,9 +6673,9 @@ diff -udprP mutt-1.5.16.orig/rfc1524.c mutt-1.5.16/rfc1524.c
 +{
 +  return _mutt_rename_file (oldfile, newfile, 0);
 +}
-diff -udprP mutt-1.5.16.orig/rfc1524.h mutt-1.5.16/rfc1524.h
---- mutt-1.5.16.orig/rfc1524.h	2007-04-02 00:58:58.000000000 +0300
-+++ mutt-1.5.16/rfc1524.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/rfc1524.h mutt-1.5.19/rfc1524.h
+--- mutt-1.5.19.orig/rfc1524.h	2008-03-19 22:07:06.000000000 +0200
++++ mutt-1.5.19/rfc1524.h	2009-01-06 22:27:38.000000000 +0200
 @@ -40,5 +40,6 @@ int rfc1524_expand_command (BODY *, char
  int rfc1524_expand_filename (char *, char *, char *, size_t);
  int rfc1524_mailcap_lookup (BODY *, char *, rfc1524_entry *, int);
@@ -7071,21 +6683,22 @@ diff -udprP mutt-1.5.16.orig/rfc1524.h mutt-1.5.16/rfc1524.h
 +int _mutt_rename_file (char *, char *, int);
  
  #endif /* _RFC1524_H */
-diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
---- mutt-1.5.16.orig/send.c	2007-04-10 07:34:53.000000000 +0300
-+++ mutt-1.5.16/send.c	2007-06-15 17:12:26.000000000 +0300
-@@ -45,6 +45,10 @@
+diff -udprP mutt-1.5.19.orig/send.c mutt-1.5.19/send.c
+--- mutt-1.5.19.orig/send.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/send.c	2009-01-06 22:27:38.000000000 +0200
+@@ -44,6 +44,11 @@
  #include <sys/types.h>
  #include <utime.h>
  
 +#ifdef USE_NNTP
 +#include "nntp.h"
++#include "mx.h"
 +#endif
 +
  #ifdef MIXMASTER
  #include "remailer.h"
  #endif
-@@ -214,17 +218,51 @@ static int edit_address (ADDRESS **a, /*
+@@ -213,17 +218,51 @@ static int edit_address (ADDRESS **a, /*
    return 0;
  }
  
@@ -7144,7 +6757,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  
    if (en->subject)
    {
-@@ -260,6 +298,14 @@ static int edit_envelope (ENVELOPE *en)
+@@ -259,6 +298,14 @@ static int edit_envelope (ENVELOPE *en)
    return 0;
  }
  
@@ -7159,7 +6772,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  static void process_user_recips (ENVELOPE *env)
  {
    LIST *uh = UserHeader;
-@@ -272,6 +318,14 @@ static void process_user_recips (ENVELOP
+@@ -271,6 +318,14 @@ static void process_user_recips (ENVELOP
        env->cc = rfc822_parse_adrlist (env->cc, uh->data + 3);
      else if (ascii_strncasecmp ("bcc:", uh->data, 4) == 0)
        env->bcc = rfc822_parse_adrlist (env->bcc, uh->data + 4);
@@ -7174,7 +6787,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
    }
  }
  
-@@ -302,6 +356,12 @@ static void process_user_header (ENVELOP
+@@ -309,6 +364,12 @@ static void process_user_header (ENVELOP
      else if (ascii_strncasecmp ("to:", uh->data, 3) != 0 &&
  	     ascii_strncasecmp ("cc:", uh->data, 3) != 0 &&
  	     ascii_strncasecmp ("bcc:", uh->data, 4) != 0 &&
@@ -7187,7 +6800,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  	     ascii_strncasecmp ("subject:", uh->data, 8) != 0)
      {
        if (last)
-@@ -645,6 +705,10 @@ void mutt_add_to_reference_headers (ENVE
+@@ -652,6 +713,10 @@ void mutt_add_to_reference_headers (ENVE
    if (pp) *pp = p;
    if (qq) *qq = q;
    
@@ -7198,7 +6811,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  }
  
  static void 
-@@ -701,6 +765,16 @@ envelope_defaults (ENVELOPE *env, CONTEX
+@@ -708,6 +773,16 @@ envelope_defaults (ENVELOPE *env, CONTEX
  
    if (flags & SENDREPLY)
    {
@@ -7215,7 +6828,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
      if (tag)
      {
        HEADER *h;
-@@ -847,7 +921,18 @@ void mutt_set_followup_to (ENVELOPE *e)
+@@ -854,7 +929,18 @@ void mutt_set_followup_to (ENVELOPE *e)
     * it hasn't already been set
     */
  
@@ -7235,7 +6848,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
    {
      if (mutt_is_list_cc (0, e->to, e->cc))
      {
-@@ -1008,6 +1093,9 @@ static int send_message (HEADER *msg)
+@@ -1015,6 +1101,9 @@ static int send_message (HEADER *msg)
  #endif
  
  #if USE_SMTP
@@ -7245,7 +6858,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
    if (SmtpUrl)
        return mutt_smtp_send (msg->env->from, msg->env->to, msg->env->cc,
                               msg->env->bcc, tempfile,
-@@ -1100,6 +1188,13 @@ ci_send_message (int flags,		/* send mod
+@@ -1107,6 +1196,13 @@ ci_send_message (int flags,		/* send mod
  
    int rv = -1;
    
@@ -7259,7 +6872,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
    if (!flags && !msg && quadoption (OPT_RECALL) != M_NO &&
        mutt_num_postponed (1))
    {
-@@ -1130,6 +1225,22 @@ ci_send_message (int flags,		/* send mod
+@@ -1137,6 +1233,22 @@ ci_send_message (int flags,		/* send mod
      {
        if ((flags = mutt_get_postponed (ctx, msg, &cur, fcc, sizeof (fcc))) < 0)
  	goto cleanup;
@@ -7282,7 +6895,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
      }
  
      if (flags & (SENDPOSTPONED|SENDRESEND))
-@@ -1237,11 +1348,16 @@ ci_send_message (int flags,		/* send mod
+@@ -1248,11 +1360,16 @@ ci_send_message (int flags,		/* send mod
      if (flags & SENDREPLY)
        mutt_fix_reply_recipients (msg->env);
  
@@ -7300,7 +6913,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  	goto cleanup;
      }
  
-@@ -1495,6 +1611,11 @@ main_loop:
+@@ -1509,6 +1626,11 @@ main_loop:
      if (i == -1)
      {
        /* abort */
@@ -7312,7 +6925,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
        mutt_message _("Mail not sent.");
        goto cleanup;
      }
-@@ -1527,6 +1648,9 @@ main_loop:
+@@ -1541,6 +1663,9 @@ main_loop:
      }
    }
  
@@ -7322,7 +6935,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
    if (!msg->env->to && !msg->env->cc && !msg->env->bcc)
    {
      if (! (flags & SENDBATCH))
-@@ -1559,6 +1683,19 @@ main_loop:
+@@ -1573,6 +1698,19 @@ main_loop:
        mutt_error _("No subject specified.");
      goto main_loop;
    }
@@ -7342,7 +6955,7 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  
    if (msg->content->next)
      msg->content = mutt_make_multipart (msg->content);
-@@ -1764,7 +1901,12 @@ full_fcc:
+@@ -1778,7 +1916,12 @@ full_fcc:
      }
    }
    else if (!option (OPTNOCURSES) && ! (flags & SENDMAILX))
@@ -7356,9 +6969,9 @@ diff -udprP mutt-1.5.16.orig/send.c mutt-1.5.16/send.c
  
    if (WithCrypto && (msg->security & ENCRYPT))
      FREE (&pgpkeylist);
-diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
---- mutt-1.5.16.orig/sendlib.c	2007-06-10 01:12:38.000000000 +0300
-+++ mutt-1.5.16/sendlib.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/sendlib.c mutt-1.5.19/sendlib.c
+--- mutt-1.5.19.orig/sendlib.c	2009-01-04 01:27:11.000000000 +0200
++++ mutt-1.5.19/sendlib.c	2009-01-06 22:27:38.000000000 +0200
 @@ -45,6 +45,10 @@
  #include <sys/wait.h>
  #include <fcntl.h>
@@ -7370,16 +6983,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
  #ifdef HAVE_SYSEXITS_H
  #include <sysexits.h>
  #else /* Make sure EX_OK is defined <philiph@pobox.com> */
-@@ -1525,7 +1529,7 @@ void mutt_write_address_list (ADDRESS *a
- /* need to write the list in reverse because they are stored in reverse order
-  * when parsed to speed up threading
-  */
--static void write_references (LIST *r, FILE *f)
-+void mutt_write_references (LIST *r, FILE *f)
- {
-   LIST **ref = NULL;
-   int refcnt = 0, refmax = 0;
-@@ -1750,6 +1754,9 @@ int mutt_write_rfc822_header (FILE *fp, 
+@@ -1748,6 +1752,9 @@ int mutt_write_rfc822_header (FILE *fp, 
    LIST *tmp = env->userhdrs;
    int has_agent = 0; /* user defined user-agent header field exists */
    
@@ -7389,7 +6993,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    if (mode == 0 && !privacy)
      fputs (mutt_make_date (buffer, sizeof(buffer)), fp);
  
-@@ -1776,6 +1783,9 @@ int mutt_write_rfc822_header (FILE *fp, 
+@@ -1774,6 +1781,9 @@ int mutt_write_rfc822_header (FILE *fp, 
      mutt_write_address_list (env->to, fp, 4, 0);
    }
    else if (mode > 0)
@@ -7399,7 +7003,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
      fputs ("To: \n", fp);
  
    if (env->cc)
-@@ -1784,6 +1794,9 @@ int mutt_write_rfc822_header (FILE *fp, 
+@@ -1782,6 +1792,9 @@ int mutt_write_rfc822_header (FILE *fp, 
      mutt_write_address_list (env->cc, fp, 4, 0);
    }
    else if (mode > 0)
@@ -7409,7 +7013,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
      fputs ("Cc: \n", fp);
  
    if (env->bcc)
-@@ -1795,8 +1808,28 @@ int mutt_write_rfc822_header (FILE *fp, 
+@@ -1793,8 +1806,28 @@ int mutt_write_rfc822_header (FILE *fp, 
      }
    }
    else if (mode > 0)
@@ -7438,7 +7042,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    if (env->subject)
      mutt_write_one_header (fp, "Subject", env->subject, NULL, 0);
    else if (mode == 1)
-@@ -1815,6 +1848,9 @@ int mutt_write_rfc822_header (FILE *fp, 
+@@ -1813,6 +1846,9 @@ int mutt_write_rfc822_header (FILE *fp, 
      fputs ("Reply-To: \n", fp);
  
    if (env->mail_followup_to)
@@ -7448,25 +7052,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    {
      fputs ("Mail-Followup-To: ", fp);
      mutt_write_address_list (env->mail_followup_to, fp, 18, 0);
-@@ -1825,7 +1861,7 @@ int mutt_write_rfc822_header (FILE *fp, 
-     if (env->references)
-     {
-       fputs ("References:", fp);
--      write_references (env->references, fp);
-+      mutt_write_references (env->references, fp);
-       fputc('\n', fp);
-     }
- 
-@@ -1837,7 +1873,7 @@ int mutt_write_rfc822_header (FILE *fp, 
-   if (env->in_reply_to)
-   {
-     fputs ("In-Reply-To:", fp);
--    write_references (env->in_reply_to, fp);
-+    mutt_write_references (env->in_reply_to, fp);
-     fputc ('\n', fp);
-   }
-   
-@@ -2153,11 +2189,30 @@ mutt_invoke_sendmail (ADDRESS *from,	/* 
+@@ -2151,11 +2187,30 @@ mutt_invoke_sendmail (ADDRESS *from,	/* 
  		 const char *msg, /* file containing message */
  		 int eightbit) /* message contains 8bit chars */
  {
@@ -7498,7 +7084,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    ps = s;
    i = 0;
    while ((ps = strtok (ps, " ")))
-@@ -2181,6 +2236,10 @@ mutt_invoke_sendmail (ADDRESS *from,	/* 
+@@ -2179,6 +2234,10 @@ mutt_invoke_sendmail (ADDRESS *from,	/* 
      i++;
    }
  
@@ -7509,7 +7095,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    if (eightbit && option (OPTUSE8BITMIME))
      args = add_option (args, &argslen, &argsmax, "-B8BITMIME");
  
-@@ -2212,6 +2271,9 @@ mutt_invoke_sendmail (ADDRESS *from,	/* 
+@@ -2210,6 +2269,9 @@ mutt_invoke_sendmail (ADDRESS *from,	/* 
    args = add_args (args, &argslen, &argsmax, to);
    args = add_args (args, &argslen, &argsmax, cc);
    args = add_args (args, &argslen, &argsmax, bcc);
@@ -7519,8 +7105,8 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
  
    if (argslen == argsmax)
      safe_realloc (&args, sizeof (char *) * (++argsmax));
-@@ -2344,6 +2406,9 @@ void mutt_prepare_envelope (ENVELOPE *en
-   rfc2047_encode_adrlist (env->reply_to, "Reply-To");
+@@ -2290,6 +2352,9 @@ void mutt_prepare_envelope (ENVELOPE *en
+   rfc2047_encode_string (&env->x_label);
  
    if (env->subject)
 +#ifdef USE_NNTP
@@ -7529,7 +7115,7 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    {
      rfc2047_encode_string (&env->subject);
    }
-@@ -2449,6 +2514,10 @@ int mutt_bounce_message (FILE *fp, HEADE
+@@ -2399,6 +2464,10 @@ int mutt_bounce_message (FILE *fp, HEADE
    }
    rfc822_write_address (resent_from, sizeof (resent_from), from, 0);
  
@@ -7540,10 +7126,10 @@ diff -udprP mutt-1.5.16.orig/sendlib.c mutt-1.5.16/sendlib.c
    ret = _mutt_bounce_message (fp, h, to, resent_from, from);
  
    rfc822_free_address (&from);
-diff -udprP mutt-1.5.16.orig/sort.c mutt-1.5.16/sort.c
---- mutt-1.5.16.orig/sort.c	2007-06-06 19:02:56.000000000 +0300
-+++ mutt-1.5.16/sort.c	2007-06-15 17:12:26.000000000 +0300
-@@ -151,6 +151,15 @@ int compare_order (const void *a, const 
+diff -udprP mutt-1.5.19.orig/sort.c mutt-1.5.19/sort.c
+--- mutt-1.5.19.orig/sort.c	2008-10-29 00:29:44.000000000 +0200
++++ mutt-1.5.19/sort.c	2009-01-06 22:27:38.000000000 +0200
+@@ -151,6 +151,15 @@ static int compare_order (const void *a,
    HEADER **ha = (HEADER **) a;
    HEADER **hb = (HEADER **) b;
  
@@ -7559,9 +7145,9 @@ diff -udprP mutt-1.5.16.orig/sort.c mutt-1.5.16/sort.c
    /* no need to auxsort because you will never have equality here */
    return (SORTCODE ((*ha)->index - (*hb)->index));
  }
-diff -udprP mutt-1.5.16.orig/url.c mutt-1.5.16/url.c
---- mutt-1.5.16.orig/url.c	2007-04-11 02:15:42.000000000 +0300
-+++ mutt-1.5.16/url.c	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/url.c mutt-1.5.19/url.c
+--- mutt-1.5.19.orig/url.c	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/url.c	2009-01-06 22:27:38.000000000 +0200
 @@ -39,6 +39,8 @@ static struct mapping_t UrlMap[] =
    { "imaps", 	U_IMAPS },
    { "pop",  	U_POP },
@@ -7571,9 +7157,9 @@ diff -udprP mutt-1.5.16.orig/url.c mutt-1.5.16/url.c
    { "mailto",	U_MAILTO },
    { "smtp",     U_SMTP },
    { "smtps",    U_SMTPS },
-diff -udprP mutt-1.5.16.orig/url.h mutt-1.5.16/url.h
---- mutt-1.5.16.orig/url.h	2007-04-11 02:16:09.000000000 +0300
-+++ mutt-1.5.16/url.h	2007-06-15 17:12:26.000000000 +0300
+diff -udprP mutt-1.5.19.orig/url.h mutt-1.5.19/url.h
+--- mutt-1.5.19.orig/url.h	2008-03-19 22:07:57.000000000 +0200
++++ mutt-1.5.19/url.h	2009-01-06 22:27:38.000000000 +0200
 @@ -8,6 +8,8 @@ typedef enum url_scheme
    U_POPS,
    U_IMAP,
@@ -7583,3 +7169,442 @@ diff -udprP mutt-1.5.16.orig/url.h mutt-1.5.16/url.h
    U_SMTP,
    U_SMTPS,
    U_MAILTO,
+diff -udprP mutt-1.5.19.orig/Makefile.am mutt-1.5.19/Makefile.am
+--- mutt-1.5.19.orig/Makefile.am	2009-01-05 21:20:53.000000000 +0200
++++ mutt-1.5.19/Makefile.am	2009-01-06 22:27:38.000000000 +0200
+@@ -53,6 +53,7 @@ EXTRA_mutt_SOURCES = account.c bcache.c 
+ 	mutt_idna.c mutt_sasl.c mutt_socket.c mutt_ssl.c mutt_ssl_gnutls.c \
+ 	mutt_tunnel.c pgp.c pgpinvoke.c pgpkey.c pgplib.c pgpmicalg.c \
+ 	pgppacket.c pop.c pop_auth.c pop_lib.c remailer.c resize.c sha1.c \
++	nntp.c newsrc.c \
+ 	smime.c smtp.c utf8.c wcwidth.c \
+ 	bcache.h browser.h hcache.h mbyte.h mutt_idna.h remailer.h url.h
+ 
+@@ -64,6 +65,7 @@ EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP O
+ 	mutt_regex.h mutt_sasl.h mutt_socket.h mutt_ssl.h mutt_tunnel.h \
+ 	mx.h pager.h pgp.h pop.h protos.h rfc1524.h rfc2047.h \
+ 	rfc2231.h rfc822.h rfc3676.h sha1.h sort.h mime.types VERSION prepare \
++	nntp.h ChangeLog.nntp \
+ 	_regex.h OPS.MIX README.SECURITY remailer.c remailer.h browser.h \
+ 	mbyte.h lib.h extlib.c pgpewrap.c smime_keys.pl pgplib.h \
+ 	README.SSL smime.h \
+diff -udprP mutt-1.5.19.orig/Makefile.in mutt-1.5.19/Makefile.in
+--- mutt-1.5.19.orig/Makefile.in	2009-01-05 21:24:13.000000000 +0200
++++ mutt-1.5.19/Makefile.in	2009-01-06 22:27:38.000000000 +0200
+@@ -323,6 +323,7 @@ EXTRA_mutt_SOURCES = account.c bcache.c 
+ 	mutt_idna.c mutt_sasl.c mutt_socket.c mutt_ssl.c mutt_ssl_gnutls.c \
+ 	mutt_tunnel.c pgp.c pgpinvoke.c pgpkey.c pgplib.c pgpmicalg.c \
+ 	pgppacket.c pop.c pop_auth.c pop_lib.c remailer.c resize.c sha1.c \
++	nntp.c newsrc.c \
+ 	smime.c smtp.c utf8.c wcwidth.c \
+ 	bcache.h browser.h hcache.h mbyte.h mutt_idna.h remailer.h url.h
+ 
+@@ -334,6 +335,7 @@ EXTRA_DIST = COPYRIGHT GPL OPS OPS.PGP O
+ 	mutt_regex.h mutt_sasl.h mutt_socket.h mutt_ssl.h mutt_tunnel.h \
+ 	mx.h pager.h pgp.h pop.h protos.h rfc1524.h rfc2047.h \
+ 	rfc2231.h rfc822.h rfc3676.h sha1.h sort.h mime.types VERSION prepare \
++	nntp.h ChangeLog.nntp \
+ 	_regex.h OPS.MIX README.SECURITY remailer.c remailer.h browser.h \
+ 	mbyte.h lib.h extlib.c pgpewrap.c smime_keys.pl pgplib.h \
+ 	README.SSL smime.h \
+@@ -555,6 +557,8 @@ distclean-compile:
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutt_tunnel.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muttlib.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mx.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newsrc.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nntp.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pager.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/patchlist.Po@am__quote@
+diff -udprP mutt-1.5.19.orig/configure mutt-1.5.19/configure
+--- mutt-1.5.19.orig/configure	2008-11-18 01:53:41.000000000 +0200
++++ mutt-1.5.19/configure	2009-01-06 22:27:38.000000000 +0200
+@@ -1359,6 +1359,7 @@ Optional Features:
+                           Force use of an external dotlock program
+   --enable-pop            Enable POP3 support
+   --enable-imap           Enable IMAP support
++  --enable-nntp           Enable NNTP support
+   --enable-smtp           include internal SMTP relay support
+   --enable-debug          Enable debugging support
+   --enable-flock          Use flock() to lock files
+@@ -12547,6 +12548,20 @@ fi
+ fi
+ done
+ 
++# Check whether --enable-nntp or --disable-nntp was given.
++if test "${enable_nntp+set}" = set; then
++  enableval="$enable_nntp"
++  	if test x$enableval = xyes ; then
++		cat >>confdefs.h <<\_ACEOF
++#define USE_NNTP 1
++_ACEOF
++
++		MUTT_LIB_OBJECTS="$MUTT_LIB_OBJECTS nntp.o newsrc.o"
++		need_socket="yes"
++	fi
++
++fi;
++
+ 
+ 
+ for ac_func in strftime
+diff -udprP mutt-1.5.19.orig/doc/Muttrc mutt-1.5.19/doc/Muttrc
+--- mutt-1.5.19.orig/doc/Muttrc	2009-01-06 02:36:17.000000000 +0200
++++ mutt-1.5.19/doc/Muttrc	2009-01-06 22:27:38.000000000 +0200
+@@ -278,6 +278,28 @@ attachments   -I message/external-body
+ # of the value as shown above if included.
+ # 
+ # 
++# set ask_follow_up=no
++#
++# Name: ask_follow_up
++# Type: boolean
++# Default: no
++# 
++# 
++# If set, Mutt will prompt you for follow-up groups before editing
++# the body of an outgoing message.
++# 
++# 
++# set ask_x_comment_to=no
++#
++# Name: ask_x_comment_to
++# Type: boolean
++# Default: no
++# 
++# 
++# If set, Mutt will prompt you for x-comment-to field before editing
++# the body of an outgoing message.
++# 
++# 
+ # set attach_format="%u%D%I %t%4n %T%.40d%> [%.7m/%.10M, %.6e%?C?, %C?, %s] "
+ #
+ # Name: attach_format
+@@ -458,6 +480,17 @@ attachments   -I message/external-body
+ # Afterwards the new mail status is tracked by file size changes.
+ # 
+ # 
++# set catchup_newsgroup=ask-yes
++#
++# Name: catchup_newsgroup
++# Type: quadoption
++# Default: ask-yes
++# 
++# 
++# If this variable is set, Mutt will mark all articles in newsgroup
++# as read when you quit the newsgroup (catchup newsgroup).
++# 
++# 
+ # set charset=""
+ #
+ # Name: charset
+@@ -988,6 +1021,19 @@ attachments   -I message/external-body
+ # of the same email for you.
+ # 
+ # 
++# set followup_to_poster=ask-yes
++#
++# Name: followup_to_poster
++# Type: quadoption
++# Default: ask-yes
++# 
++# 
++# If this variable is set and the keyword "poster" is present in
++# Followup-To header, follow-up to newsgroup function is not
++# permitted.  The message will be mailed to the submitter of the
++# message via mail.
++# 
++# 
+ # set force_name=no
+ #
+ # Name: force_name
+@@ -1084,6 +1130,28 @@ attachments   -I message/external-body
+ # ``Franklin'' to ``Franklin, Steve''.
+ # 
+ # 
++# set group_index_format="%4C %M%N %5s  %-45.45f %d"
++#
++# Name: group_index_format
++# Type: string
++# Default: "%4C %M%N %5s  %-45.45f %d"
++# 
++# 
++# This variable allows you to customize the newsgroup browser display to
++# your personal taste.  This string is similar to ``index_format'', but
++# has its own set of printf()-like sequences:
++# 
++# %C      current newsgroup number
++# %d      description of newsgroup (becomes from server)
++# %f      newsgroup name
++# %M      - if newsgroup not allowed for direct post (moderated for example)
++# %N      N if newsgroup is new, u if unsubscribed, blank otherwise
++# %n      number of new articles in newsgroup
++# %s      number of unread articles in newsgroup
++# %>X     right justify the rest of the string and pad with character "X"
++# %|X     pad to the end of the line with character "X"
++# 
++# 
+ # set hdrs=yes
+ #
+ # Name: hdrs
+@@ -1572,6 +1640,7 @@ attachments   -I message/external-body
+ # %E      number of messages in current thread
+ # %f      sender (address + real name), either From: or Return-Path:
+ # %F      author name, or recipient name if the message is from you
++# %g      newsgroup name (if compiled with nntp support)
+ # %H      spam attribute(s) of this message
+ # %i      message-id of the current message
+ # %l      number of lines in the message (does not work with maildir,
+@@ -1587,12 +1656,14 @@ attachments   -I message/external-body
+ #         stashed the message: list name or recipient name
+ #         if not sent to a list
+ # %P      progress indicator for the builtin pager (how much of the file has been displayed)
++# %R      `x-comment-to:' field (if present and compiled with nntp support)
+ # %s      subject of the message
+ # %S      status of the message (``N''/``D''/``d''/``!''/``r''/*)
+ # %t      ``To:'' field (recipients)
+ # %T      the appropriate character from the $to_chars string
+ # %u      user (login) name of the author
+ # %v      first name of the author, or the recipient if the message is from you
++# %W      name of organization of author (`organization:' field)
+ # %X      number of attachments
+ #         (please see the ``attachments'' section for possible speed effects)
+ # %y      ``X-Label:'' field, if present
+@@ -1628,6 +1699,22 @@ attachments   -I message/external-body
+ # ``save-hook'', ``fcc-hook'' and ``fcc-save-hook'', too.
+ # 
+ # 
++# set inews=""
++#
++# Name: inews
++# Type: path
++# Default: ""
++# 
++# 
++# If set, specifies the program and arguments used to deliver news posted
++# by Mutt.  Otherwise, mutt posts article using current connection to
++# news server.  The following printf-style sequence is understood:
++# 
++# %s      newsserver name
++# 
++# Example: set inews="/usr/local/bin/inews -hS"
++# 
++# 
+ # set ispell="ispell"
+ #
+ # Name: ispell
+@@ -1982,6 +2069,18 @@ attachments   -I message/external-body
+ # be attached to the newly composed message if this option is set.
+ # 
+ # 
++# set mime_subject=yes
++#
++# Name: mime_subject
++# Type: boolean
++# Default: yes
++# 
++# 
++# If unset, 8-bit ``subject:'' line in article header will not be
++# encoded according to RFC2047 to base64.  This is useful when message
++# is Usenet article, because MIME for news is nonstandard feature.
++# 
++# 
+ # set mix_entry_format="%4n %c %-16s %a"
+ #
+ # Name: mix_entry_format
+@@ -2091,6 +2190,118 @@ attachments   -I message/external-body
+ # See also $read_inc, $write_inc and $net_inc.
+ # 
+ # 
++# set news_cache_dir="~/.mutt"
++#
++# Name: news_cache_dir
++# Type: path
++# Default: "~/.mutt"
++# 
++# 
++# This variable pointing to directory where Mutt will save cached news
++# articles headers in. If unset, headers will not be saved at all
++# and will be reloaded each time when you enter to newsgroup.
++# 
++# 
++# set news_server=""
++#
++# Name: news_server
++# Type: string
++# Default: ""
++# 
++# 
++# This variable specifies domain name or address of NNTP server. It
++# defaults to the newsserver specified in the environment variable
++# $NNTPSERVER or contained in the file /etc/nntpserver.  You can also
++# specify username and an alternative port for each newsserver, ie:
++# 
++# [news[s]://][username[:password]@]newsserver[:port]
++# 
++# 
++# set newsrc="~/.newsrc"
++#
++# Name: newsrc
++# Type: path
++# Default: "~/.newsrc"
++# 
++# 
++# The file, containing info about subscribed newsgroups - names and
++# indexes of read articles.  The following printf-style sequence
++# is understood:
++# 
++# %s      newsserver name
++# 
++# 
++# set nntp_context=1000
++#
++# Name: nntp_context
++# Type: number
++# Default: 1000
++# 
++# 
++# This variable defines number of articles which will be in index when
++# newsgroup entered.  If active newsgroup have more articles than this
++# number, oldest articles will be ignored.  Also controls how many
++# articles headers will be saved in cache when you quit newsgroup.
++# 
++# 
++# set nntp_load_description=yes
++#
++# Name: nntp_load_description
++# Type: boolean
++# Default: yes
++# 
++# 
++# This variable controls whether or not descriptions for each newsgroup
++# must be loaded when newsgroup is added to list (first time list
++# loading or new newsgroup adding).
++# 
++# 
++# set nntp_user=""
++#
++# Name: nntp_user
++# Type: string
++# Default: ""
++# 
++# 
++# Your login name on the NNTP server.  If unset and NNTP server requires
++# authentification, Mutt will prompt you for your account name when you
++# connect to newsserver.
++# 
++# 
++# set nntp_pass=""
++#
++# Name: nntp_pass
++# Type: string
++# Default: ""
++# 
++# 
++# Your password for NNTP account.
++# 
++# 
++# set nntp_poll=60
++#
++# Name: nntp_poll
++# Type: number
++# Default: 60
++# 
++# 
++# The time in seconds until any operations on newsgroup except post new
++# article will cause recheck for new news.  If set to 0, Mutt will
++# recheck newsgroup on each operation in index (stepping, read article,
++# etc.).
++# 
++# 
++# set nntp_reconnect=ask-yes
++#
++# Name: nntp_reconnect
++# Type: quadoption
++# Default: ask-yes
++# 
++# 
++# Controls whether or not Mutt will try to reconnect to newsserver when
++# connection lost.
++# 
++# 
+ # set pager="builtin"
+ #
+ # Name: pager
+@@ -3361,6 +3572,19 @@ attachments   -I message/external-body
+ # string after the inclusion of a message which is being replied to.
+ # 
+ # 
++# set post_moderated=ask-yes
++#
++# Name: post_moderated
++# Type: quadoption
++# Default: ask-yes
++# 
++# 
++# If set to yes, Mutt will post article to newsgroup that have
++# not permissions to posting (e.g. moderated).  Note: if newsserver
++# does not support posting to that newsgroup or totally read-only, that
++# posting will not have an effect.
++# 
++# 
+ # set postpone=ask-yes
+ #
+ # Name: postpone
+@@ -3924,6 +4148,41 @@ attachments   -I message/external-body
+ # shell from /etc/passwd is used.
+ # 
+ # 
++# set save_unsubscribed=no
++#
++# Name: save_unsubscribed
++# Type: boolean
++# Default: no
++# 
++# 
++# When set, info about unsubscribed newsgroups will be saved into
++# ``newsrc'' file and into cache.
++# 
++# 
++# set show_new_news=yes
++#
++# Name: show_new_news
++# Type: boolean
++# Default: yes
++# 
++# 
++# If set, newsserver will be asked for new newsgroups on entering
++# the browser.  Otherwise, it will be done only once for a newsserver.
++# Also controls whether or not number of new articles of subscribed
++# newsgroups will be then checked.
++# 
++# 
++# set show_only_unread=no
++#
++# Name: show_only_unread
++# Type: boolean
++# Default: no
++# 
++# 
++# If set, only subscribed newsgroups that contain unread articles
++# will be displayed in browser.
++# 
++# 
+ # set sig_dashes=yes
+ #
+ # Name: sig_dashes
+@@ -4678,3 +4937,14 @@ attachments   -I message/external-body
+ # in this case.
+ # 
+ # 
++# set x_comment_to=no
++#
++# Name: x_comment_to
++# Type: boolean
++# Default: no
++# 
++# 
++# If set, Mutt will add ``X-Comment-To:'' field (that contains full
++# name of original article author) to article that followuped to newsgroup.
++# 
++# 
