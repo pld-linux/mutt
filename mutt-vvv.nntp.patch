@@ -1348,14 +1348,7 @@ diff -udprP mutt-1.5.19.orig/compose.c mutt-1.5.19/compose.c
  
  #include <errno.h>
  #include <string.h>
-@@ -60,18 +65,21 @@ enum
-   HDR_REPLYTO,
-   HDR_FCC,
- 
--#ifdef MIXMASTER
--  HDR_MIX,
--#endif
- 
+@@ -67,11 +69,17 @@ enum
    HDR_CRYPT,
    HDR_CRYPTINFO,
  
