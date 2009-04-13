@@ -1,0 +1,49 @@
+diff -urN mutt-1.5.19/doc/Muttrc.head mutt-1.5.19.conf/doc/Muttrc.head
+--- mutt-1.5.19/doc/Muttrc.head	2009-04-13 19:06:54.325723485 +0200
++++ mutt-1.5.19.conf/doc/Muttrc.head	2009-04-13 18:36:22.943095974 +0200
+@@ -7,10 +7,23 @@
+ ignore *
+ 
+ # ... then allow these through.
+-unignore from: subject to cc date x-mailer x-url user-agent
++unignore from: subject to cc date x-mailer x-url user-agent mail-followup-to reply-to lines
+ 
+ # Display the fields in this order
+ hdr_order date from to cc subject
++
++# Some sane bindings (next/prev-undeleted idea is just sick)
++bind index <up> previous-entry
++bind index <down> next-entry
++bind index + collapse-thread
++bind index - collapse-thread
++
++# Same as above, and
++# Up/Down is much more intiuitive than Backspace/Enter for up and down
++bind pager <up> previous-line
++bind pager <down> next-line
++bind pager <left> previous-entry
++bind pager <right> next-entry
+ 
+ # imitate the old search-body function
+ macro index \eb "<search>~b " "search in message bodies"
+@@ -47,6 +60,20 @@
+ # be undone with unmime_lookup.
+ mime_lookup application/octet-stream
+ 
++auto_view text/richtext text/html text/x-sgml text/x-vcard application/x-tex \
++	application/x-dvi applicatoin/x-gzip-dvi application/x-gzip \
++	application/x-gunzip application/x-cpio application/x-gtar \
++	application/x-tar application/x-tar-gz application/x-rar-compressed \
++	application/x-zip-compressed application/zip application/x-csh \
++	application/x-sh application/x-script application/x-latex \
++	application/x-tex application/x-shar application/x-troff \
++	application/x-troff-man application/x-troff-me \
++	application/x-pgp-message application/msword \
++	application/ms-tnef application/rtf application/octet-stream \
++	application/x-tcl application/x-perl message/partial
++
++alternative_order text/enriched text/plain text/html
++
+ ##
+ ## *** DEFAULT SETTINGS FOR THE ATTACHMENTS PATCH ***
+ ##
