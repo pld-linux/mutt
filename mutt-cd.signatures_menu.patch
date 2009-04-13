@@ -690,3 +690,24 @@ diff -pruN mutt-1.3.27.orig/PATCHES mutt-1.3.27/PATCHES
 +++ mutt-1.3.27/PATCHES Thu Dec  6 16:27:55 2001
 @@ -1,0 +1 @@
 +patch-1.3.27.cd.signatures_menu.2.1
+diff --git a/menu.c b/menu.c
+--- a/menu.c
++++ b/menu.c
+@@ -642,7 +640,7 @@
+     mutt_error _("No entries.");
+ }
+ 
+-static void menu_next_entry (MUTTMENU *menu)
++void menu_next_entry (MUTTMENU *menu)
+ {
+   if (menu->current < menu->max - 1)
+   {
+@@ -653,7 +651,7 @@
+     mutt_error _("You are on the last entry.");
+ }
+ 
+-static void menu_prev_entry (MUTTMENU *menu)
++void menu_prev_entry (MUTTMENU *menu)
+ {
+   if (menu->current)
+   {
