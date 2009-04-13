@@ -224,11 +224,10 @@ install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
-cat <<EOF >$RPM_BUILD_ROOT%{_bindir}/mutt_source-muttrc.d
+cat <<'EOF' >$RPM_BUILD_ROOT%{_bindir}/mutt_source-muttrc.d
 #!/bin/sh -e
-
 for rc in /etc/Muttrc.d/*.rc; do
-	test -r "\$rc" && echo "source \"\$rc\""
+	[ ! -r "$rc" ] || echo "source \"$rc\""
 done
 EOF
 
