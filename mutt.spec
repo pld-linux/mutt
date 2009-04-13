@@ -1,6 +1,5 @@
 #
 # TODO:
-# - rework -cd.signatures_menu.patch 
 # - finish -folder_columns.patch
 #
 # Conditional build:
@@ -23,7 +22,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.19
-Release:	0.1
+Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
@@ -151,8 +150,7 @@ Mutt - це невеликий, але потужний повноекранни
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-# XXX: needs update (searchBuf was removed from MUTTMENU struct in 1.5.19)
-#%%patch8 -p1
+%patch8 -p1
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
