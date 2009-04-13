@@ -402,11 +402,10 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  snprintf (title, sizeof (title), _("Signature : %s"), file);
 +
-+  menu = mutt_new_menu ();
++  menu = mutt_new_menu (MENU_SIG);
 +  menu->make_entry = sig_make_entry;
 +  menu->tag = NULL;
 +  menu->search = sig_menu_search;
-+  menu->menu = MENU_SIG;
 +  menu->title = title;
 +  menu->help = mutt_compile_help (helpstr, sizeof (helpstr),
 +				  MENU_SIG, SigHelp);
@@ -463,6 +462,8 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +  safe_free ((void **)&SigTable);
 +  return result;
 +}
++
++extern char* SearchBuffers[MENU_MAX];
 +
 +static SIG_LIST *sig_search_filter (MUTTMENU *menu, char *path)
 +{
@@ -595,11 +596,10 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  snprintf (title, sizeof (title), "Signature directory : %s", path);
 +
-+  menu = mutt_new_menu ();
++  menu = mutt_new_menu (MENU_SIG_DIR);
 +  menu->make_entry = sig_dir_make_entry;
 +  menu->search = NULL; /* search within files with sig_search_filter() */
 +  menu->tag = sig_dir_tag;
-+  menu->menu = MENU_SIG_DIR;
 +  menu->title = title;
 +  menu->help = mutt_compile_help (helpstr, sizeof (helpstr),
 +				  MENU_SIG_DIR, SigDirHelp);
