@@ -49,14 +49,6 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: pager_index_lines
  # Type: number
-@@ -3208,6 +3214,7 @@
- # 
- # 
- # set ssl_ca_certificates_file=""
-+set ssl_ca_certificates_file="/etc/certs/ca-certificates.crt"
- #
- # Name: ssl_ca_certificates_file
- # Type: path
 @@ -3546,6 +3553,7 @@
  # 
  # 
