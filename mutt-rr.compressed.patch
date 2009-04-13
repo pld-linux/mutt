@@ -965,14 +965,20 @@ diff -udprP mutt-1.5.19.orig/doc/manual.xml.head mutt-1.5.19/doc/manual.xml.head
 diff -udprP mutt-1.5.19.orig/doc/Muttrc.head mutt-1.5.19/doc/Muttrc.head
 --- mutt-1.5.19.orig/doc/Muttrc.head	2008-06-14 03:08:43.000000000 +0300
 +++ mutt-1.5.19/doc/Muttrc.head	2009-01-06 19:16:04.000000000 +0200
-@@ -29,6 +29,11 @@ macro generic,pager <F1> "<shell-escape>
+@@ -29,6 +29,17 @@ macro generic,pager <F1> "<shell-escape>
  macro index,pager y "<change-folder>?<toggle-mailboxes>" "show incoming mailboxes list"
  bind browser y exit
  
 +# Use folders which match on \\.gz$ as gzipped folders:
-+# open-hook \\.gz$ "gzip -cd %f > %t"
-+# close-hook \\.gz$ "gzip -c %t > %f"
-+# append-hook \\.gz$ "gzip -c %t >> %f"
++open-hook \\.gz$ "gzip -cd %f > %t"
++close-hook \\.gz$ "gzip -c %t > %f"
++append-hook \\.gz$ "gzip -c %t >> %f"
++open-hook \\.bz2$ "bzip2 -cd %f > %t"
++close-hook \\.bz2$ "bzip2 -c %t > %f"
++append-hook \\.bz2$ "bzip2 -c %t >> %f"
++open-hook \\.xz$ "xz -cd %f > %t"
++close-hook \\.xz$ "xz -c %t > %f"
++append-hook \\.xz$ "xz -c %t >> %f"
 +
  # If Mutt is unable to determine your site's domain name correctly, you can
  # set the default here.
