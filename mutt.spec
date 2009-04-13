@@ -48,19 +48,19 @@ Patch9:		%{name}-crypt-autoselectkey.patch
 # http://www.mutt.ca/patches/ (dw.crypt-hook-both)
 Patch10:	%{name}-pgp_hook.patch
 Patch11:	%{name}-manual.patch
-Patch12:	%{name}-send_charset.patch
-Patch13:	%{name}-xface.patch
-Patch14:	%{name}-Muttrc_mbox_path.patch
-Patch15:	%{name}-po.patch
+Patch12:	%{name}-xface.patch
+Patch13:	%{name}-Muttrc_mbox_path.patch
+Patch14:	%{name}-po.patch
 # http://mutt.org.ua/download/
-Patch16:	%{name}-vvv.nntp.patch
-Patch17:	%{name}-home_etc.patch
-Patch18:	%{name}-Muttrc.patch
-Patch19:	%{name}-muttbug-tmp.patch
-Patch20:	%{name}-folder_columns.patch
-Patch21:	%{name}-nr.tag_prefix_cond.patch
-Patch22:	%{name}-imap_mxcmp.patch
-Patch23:	%{name}-imap_recent.patch
+Patch15:	%{name}-vvv.nntp.patch
+Patch16:	%{name}-home_etc.patch
+Patch17:	%{name}-Muttrc.patch
+Patch18:	%{name}-muttbug-tmp.patch
+Patch19:	%{name}-folder_columns.patch
+Patch20:	%{name}-imap_mxcmp.patch
+Patch21:	%{name}-imap_recent.patch
+Patch22:	%{name}-Muttrc.head.patch
+Patch23:	%{name}-smime.rc.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -159,17 +159,16 @@ Mutt - це невеликий, але потужний повноекранни
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
-%{?with_nntp:%patch16 -p1}
-%{?with_home_etc:%patch17 -p1}
+%{?with_nntp:%patch15 -p1}
+%{?with_home_etc:%patch16 -p1}
+%patch17 -p1
 %patch18 -p1
-%patch19 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch20 -p1}
-# disabled - changes default behaviour
-#%patch21 -p0
+%{?with_folder_column:%patch19 -p1}
+%patch20 -p1
+%{?with_imap_recent:%patch21 -p1}
 %patch22 -p1
-%{?with_imap_recent:%patch23 -p1}
+%patch23 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
@@ -193,7 +192,8 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
 	--enable-smtp \
-	--with-bdb=/usr --without-gdbm \
+	--with-bdb=/usr \
+	--without-gdbm \
 	%{!?with_slang:--with-curses} \
 	--with-docdir=%{_docdir}/%{name} \
 	%{?with_home_etc:--with-home-etc} \
@@ -209,17 +209,29 @@ rm -f doc/{manual*.html,manual.txt}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1}
+install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1} \
+	$RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH12}
+%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH17}
+
+install contrib/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
+install contrib/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
+install contrib/colors.linux $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d/colors.rc
 
 install %{SOURCE1} $RPM_BUILD_ROOT%{_desktopdir}
 install %{SOURCE2} $RPM_BUILD_ROOT%{_pixmapsdir}
 install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
+
+cat <<EOF >$RPM_BUILD_ROOT%{_bindir}/mutt_source-muttrc.d
+#!/bin/sh -e
+for rc in /etc/Muttrc.d/*.rc; do
+	test -r "$rc" && echo "source \"$rc\""
+done
+EOF
 
 # keep manual.txt.gz, the rest is installed as %doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
@@ -238,8 +250,11 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface
+%dir %{_sysconfdir}/Muttrc.d
 %config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
+%config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc.d/*.rc
 %attr(755,root,root) %{_bindir}/mutt
+%attr(755,root,root) %{_bindir}/mutt_source-muttrc.d
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
 %attr(755,root,root) %{_bindir}/pgp*
