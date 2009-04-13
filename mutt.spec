@@ -22,7 +22,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.19
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
@@ -226,8 +226,9 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 cat <<EOF >$RPM_BUILD_ROOT%{_bindir}/mutt_source-muttrc.d
 #!/bin/sh -e
+
 for rc in /etc/Muttrc.d/*.rc; do
-	test -r "$rc" && echo "source \"$rc\""
+	test -r "\$rc" && echo "source \"\$rc\""
 done
 EOF
 
