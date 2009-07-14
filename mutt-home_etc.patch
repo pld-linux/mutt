@@ -1,6 +1,6 @@
-diff -Nur mutt-1.5.11.orig/configure.in mutt-1.5.11/configure.in
---- mutt-1.5.11.orig/configure.in	2006-05-11 23:23:13.000000000 +0200
-+++ mutt-1.5.11/configure.in	2006-05-12 00:58:13.000000000 +0200
+diff -Nur mutt-1.5.11.orig/configure.ac mutt-1.5.11/configure.ac
+--- mutt-1.5.11.orig/configure.ac	2006-05-11 23:23:13.000000000 +0200
++++ mutt-1.5.11/configure.ac	2006-05-12 00:58:13.000000000 +0200
 @@ -816,6 +816,32 @@
  fi])
  dnl -- end cache --
@@ -107,7 +107,7 @@ diff -Nur mutt-1.5.11.orig/init.c mutt-1.5.11/init.c
    }
  
    Tempdir = safe_strdup ((p = getenv ("TMPDIR")) ? p : "/tmp");
-@@ -2415,13 +2434,13 @@
+@@ -2981,15 +2981,15 @@
    
    if (!Muttrc)
    {
@@ -122,7 +122,10 @@ diff -Nur mutt-1.5.11.orig/init.c mutt-1.5.11/init.c
      if (access(buffer, F_OK) == -1)
 -      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(Homedir));
 +      snprintf (buffer, sizeof (buffer), "%s/.mutt/muttrc", NONULL(H_CFDIR));
-     
+     if (access(buffer, F_OK) == -1) /* default to .muttrc for alias_file */
+-      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(Homedir));
++      snprintf (buffer, sizeof(buffer), "%s/.muttrc", NONULL(H_CFDIR));
+ 
      default_rc = 1;
      Muttrc = safe_strdup (buffer);
 @@ -2526,10 +2545,10 @@

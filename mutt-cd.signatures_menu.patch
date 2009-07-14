@@ -179,7 +179,7 @@ diff -pruN2 mutt-1.3.27.orig/protos.h mutt-1.3.27/protos.h
 diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 --- mutt-1.3.27.orig/signature.c	Thu Jan  1 01:00:00 1970
 +++ mutt-1.3.27/signature.c	Wed Jan 23 22:35:32 2002
-@@ -0,0 +1,499 @@
+@@ -0,0 +1,505 @@
 +/*
 + * Copyright (C) 2001 Cedric Duval <cedricduval@free.fr>
 + * 
@@ -402,11 +402,10 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  snprintf (title, sizeof (title), _("Signature : %s"), file);
 +
-+  menu = mutt_new_menu ();
++  menu = mutt_new_menu (MENU_SIG);
 +  menu->make_entry = sig_make_entry;
 +  menu->tag = NULL;
 +  menu->search = sig_menu_search;
-+  menu->menu = MENU_SIG;
 +  menu->title = title;
 +  menu->help = mutt_compile_help (helpstr, sizeof (helpstr),
 +				  MENU_SIG, SigHelp);
@@ -464,21 +463,29 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +  return result;
 +}
 +
++extern char* SearchBuffers[MENU_MAX];
++
 +static SIG_LIST *sig_search_filter (MUTTMENU *menu, char *path)
 +{
 +  regex_t re;
 +  char buf[STRING];
 +  SIG_LIST *result = NULL;
 +  int i;
++  char* searchBuf = menu->menu >= 0 && menu->menu < MENU_MAX ?
++                    SearchBuffers[menu->menu] : NULL;
 +
-+  snprintf (buf, sizeof(buf), menu->searchBuf ? menu->searchBuf : "");
++  snprintf (buf, sizeof(buf), searchBuf ? searchBuf : "");
 +  if (mutt_get_field (_("Search for: "), buf,
 +		      sizeof (buf), M_CLEAR) != 0 || !buf[0])
 +    return (NULL);
-+  mutt_str_replace (&menu->searchBuf, buf);
++  if (menu->menu >= 0 && menu->menu < MENU_MAX)
++  {
++    mutt_str_replace (&SearchBuffers[menu->menu], buf);
++    searchBuf = SearchBuffers[menu->menu];
++  }
 +
-+  if ((i = regcomp (&re, menu->searchBuf, REG_NOSUB | REG_EXTENDED | REG_WORDS
-+		    | mutt_which_case (menu->searchBuf))) != 0)
++  if ((i = regcomp (&re, searchBuf, REG_NOSUB | REG_EXTENDED | REG_WORDS
++		    | mutt_which_case (searchBuf))) != 0)
 +  {
 +    regerror (i, &re, buf, sizeof (buf));
 +    regfree (&re);
@@ -589,11 +596,10 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  snprintf (title, sizeof (title), "Signature directory : %s", path);
 +
-+  menu = mutt_new_menu ();
++  menu = mutt_new_menu (MENU_SIG_DIR);
 +  menu->make_entry = sig_dir_make_entry;
 +  menu->search = NULL; /* search within files with sig_search_filter() */
 +  menu->tag = sig_dir_tag;
-+  menu->menu = MENU_SIG_DIR;
 +  menu->title = title;
 +  menu->help = mutt_compile_help (helpstr, sizeof (helpstr),
 +				  MENU_SIG_DIR, SigDirHelp);
@@ -684,3 +690,24 @@ diff -pruN mutt-1.3.27.orig/PATCHES mutt-1.3.27/PATCHES
 +++ mutt-1.3.27/PATCHES Thu Dec  6 16:27:55 2001
 @@ -1,0 +1 @@
 +patch-1.3.27.cd.signatures_menu.2.1
+diff --git a/menu.c b/menu.c
+--- a/menu.c
++++ b/menu.c
+@@ -642,7 +640,7 @@
+     mutt_error _("No entries.");
+ }
+ 
+-static void menu_next_entry (MUTTMENU *menu)
++void menu_next_entry (MUTTMENU *menu)
+ {
+   if (menu->current < menu->max - 1)
+   {
+@@ -653,7 +651,7 @@
+     mutt_error _("You are on the last entry.");
+ }
+ 
+-static void menu_prev_entry (MUTTMENU *menu)
++void menu_prev_entry (MUTTMENU *menu)
+ {
+   if (menu->current)
+   {
