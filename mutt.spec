@@ -1,6 +1,7 @@
 #
 # TODO:
 # - finish -folder_columns.patch
+# - update to 1.5.20. See DEVEL branch
 #
 # Conditional build:
 %bcond_with	slang		# use slang library instead of ncurses
@@ -21,6 +22,7 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
+# See DEVEL branch for 1.5.20. It is almost ready.
 Version:	1.5.19
 Release:	2
 Epoch:		6
