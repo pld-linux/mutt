@@ -39,8 +39,8 @@ diff -Nur mutt-1.5.11.orig/doc/mutt.man mutt-1.5.11/doc/mutt.man
 +++ mutt-1.5.11/doc/mutt.man	2006-05-12 00:58:13.000000000 +0200
 @@ -122,6 +122,8 @@
  .IP "MAILDIR"
- Full path of the user's spool mailbox.  Commonly used when the spool
- mailbox is a 
+ Full path of the user's spool mailbox if MAIL is unset.  Commonly used when the spool
+ mailbox is a
 +.IP "HOME_ETC"
 +Path to alternative configuration directory.
  .B maildir (5)
