@@ -1,7 +1,6 @@
 #
 # TODO:
 # - finish -folder_columns.patch
-# - update to 1.5.20. See DEVEL branch
 #
 # Conditional build:
 %bcond_with	slang		# use slang library instead of ncurses
@@ -22,14 +21,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-# See DEVEL branch for 1.5.20. It is almost ready.
-Version:	1.5.19
-Release:	3
+Version:	1.5.20
+Release:	0.1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
-# Source0-md5:	73b3747bc7f7c805921e8d24ebac693f
+# Source0-md5:	027cdd9959203de0c3c64149a7ee351c
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -46,22 +44,19 @@ Patch7:		%{name}-cd.purge_message.patch
 Patch8:		%{name}-cd.signatures_menu.patch
 # http://www.mutt.ca/patches/ (dw.crypt-autoselectkey)
 Patch9:		%{name}-crypt-autoselectkey.patch
-# http://www.mutt.ca/patches/ (dw.crypt-hook-both)
-Patch10:	%{name}-pgp_hook.patch
-Patch11:	%{name}-manual.patch
-Patch12:	%{name}-xface.patch
-Patch13:	%{name}-Muttrc_mbox_path.patch
-Patch14:	%{name}-po.patch
+Patch10:	%{name}-manual.patch
+Patch11:	%{name}-xface.patch
+Patch12:	%{name}-Muttrc_mbox_path.patch
+Patch13:	%{name}-po.patch
 # http://mutt.org.ua/download/
-Patch15:	%{name}-vvv.nntp.patch
-Patch16:	%{name}-home_etc.patch
-Patch17:	%{name}-Muttrc.patch
-Patch18:	%{name}-muttbug-tmp.patch
-Patch19:	%{name}-folder_columns.patch
-Patch20:	%{name}-imap_mxcmp.patch
-Patch21:	%{name}-imap_recent.patch
-Patch22:	%{name}-Muttrc.head.patch
-Patch23:	%{name}-smime.rc.patch
+Patch14:	%{name}-vvv.nntp.patch
+Patch15:	%{name}-home_etc.patch
+Patch16:	%{name}-Muttrc.patch
+Patch17:	%{name}-muttbug-tmp.patch
+Patch18:	%{name}-folder_columns.patch
+Patch19:	%{name}-imap_recent.patch
+Patch20:	%{name}-Muttrc.head.patch
+Patch21:	%{name}-smime.rc.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -158,17 +153,15 @@ Mutt - це невеликий, але потужний повноекранни
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch14 -p1
-%{?with_nntp:%patch15 -p1}
-%{?with_home_etc:%patch16 -p1}
+%{?with_nntp:%patch14 -p1}
+%{?with_home_etc:%patch15 -p1}
+%patch16 -p1
 %patch17 -p1
-%patch18 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch19 -p1}
+%{?with_folder_column:%patch18 -p1}
+%{?with_imap_recent:%patch19 -p1}
 %patch20 -p1
-%{?with_imap_recent:%patch21 -p1}
-%patch22 -p1
-%patch23 -p1
+%patch21 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
