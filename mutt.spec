@@ -211,7 +211,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1} \
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH17}
+%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
 
 install contrib/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
 install contrib/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
