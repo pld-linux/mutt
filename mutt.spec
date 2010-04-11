@@ -24,7 +24,7 @@ Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 # See DEVEL branch for 1.5.20. It is almost ready.
 Version:	1.5.19
-Release:	2
+Release:	3
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
