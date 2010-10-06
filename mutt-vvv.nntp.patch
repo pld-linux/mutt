@@ -4869,7 +4869,7 @@ diff -udprP mutt-1.5.19.orig/nntp.c mutt-1.5.19/nntp.c
 +  int ret;
 +  HEADER *h = ctx->hdrs[ctx->msgcount];
 +
-+  mutt_mktemp (tempfile);
++  mutt_mktemp (tempfile, sizeof(tempfile));
 +  if (!(f = safe_fopen (tempfile, "w+")))
 +    return -1;
 +
@@ -5368,7 +5368,7 @@ diff -udprP mutt-1.5.19.orig/nntp.c mutt-1.5.19/nntp.c
 +  mutt_message (m);
 +
 +  cache->index = ctx->hdrs[msgno]->index;
-+  mutt_mktemp (path);
++  mutt_mktemp (path, sizeof(path));
 +  cache->path = safe_strdup (path);
 +  if (!(msg->fp = safe_fopen (path, "w+")))
 +  {

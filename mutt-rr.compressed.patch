@@ -142,7 +142,7 @@ diff -udprP mutt-1.5.19.orig/compress.c mutt-1.5.19/compress.c
 +  ctx->realpath = ctx->path;
 +
 +  /* Uncompress to /tmp */
-+  mutt_mktemp (tmppath);
++  mutt_mktemp (tmppath, sizeof(tmppath));
 +  ctx->path = safe_malloc (strlen (tmppath) + 1);
 +  strcpy (ctx->path, tmppath);
 +}
