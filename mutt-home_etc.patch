@@ -173,9 +173,9 @@ diff -Nur mutt-1.5.11.orig/mutt_ssl.c mutt-1.5.11/mutt_ssl.c
 +# define H_CFDIR Homedir
 +#endif
 +
- typedef struct _sslsockdata
- {
-   SSL_CTX *ctx;
+ /* keep a handle on accepted certificates in case we want to
+  * open up another connection to the same server in this session */
+ static STACK_OF(X509) *SslSessionCerts = NULL;
 @@ -162,7 +169,7 @@
      /* load entropy from egd sockets */
  #ifdef HAVE_RAND_EGD

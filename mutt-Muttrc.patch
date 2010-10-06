@@ -92,7 +92,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
 @@ -4436,6 +4448,7 @@
  # 
  # 
- # set thorough_search=no
+ # set thorough_search=yes
 +set thorough_search=yes
  #
  # Name: thorough_search

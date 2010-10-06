@@ -919,7 +919,7 @@ diff -udprP mutt-1.5.19.orig/doc/manual.xml.head mutt-1.5.19/doc/manual.xml.head
 +
 +<listitem>
 +<cmdsynopsis>
- <command><link linkend="auto-view">auto-view</link></command>
+ <command><link linkend="auto-view">auto_view</link></command>
  <arg choice="plain">
  <replaceable>mimetype</replaceable>
 @@ -7007,6 +7285,18 @@ The following are the commands understoo
@@ -1052,8 +1052,8 @@ diff -udprP mutt-1.5.19.orig/init.h mutt-1.5.19/init.h
 +  { "close-hook",	mutt_parse_hook,	M_CLOSEHOOK },
 +  { "append-hook",	mutt_parse_hook,	M_APPENDHOOK },
 +#endif
-   { "group",		parse_group,		0 },
-   { "ungroup",		parse_ungroup,		0 },
+   { "group",		parse_group,		M_GROUP },
+   { "ungroup",		parse_ungroup,		M_UNGROUP },
    { "hdr_order",	parse_list,		UL &HeaderOrderList },
 diff -udprP mutt-1.5.19.orig/main.c mutt-1.5.19/main.c
 --- mutt-1.5.19.orig/main.c	2009-01-04 01:27:10.000000000 +0200
@@ -1262,9 +1262,9 @@ diff -udprP mutt-1.5.19.orig/mx.h mutt-1.5.19/mx.h
 --- mutt-1.5.19.orig/mx.h	2008-03-19 22:07:06.000000000 +0200
 +++ mutt-1.5.19/mx.h	2009-01-06 19:16:04.000000000 +0200
 @@ -40,6 +40,9 @@ enum
- #ifdef USE_POP
-   , M_POP
- #endif
+   M_MAILDIR,
+   M_IMAP,
+   M_POP
 +#ifdef USE_COMPRESSED
 +  , M_COMPRESSED
 +#endif

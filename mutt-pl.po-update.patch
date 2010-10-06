@@ -9,15 +9,6 @@
  # Pre-translation has bean done using PePeSza,
  # get it from http://home.elka.pw.edu.pl/~pkolodz2/pepesza.html
  #
-@@ -10,7 +12,7 @@
- "Project-Id-Version: mutt-1.5.17\n"
- "Report-Msgid-Bugs-To: \n"
- "POT-Creation-Date: 2009-06-14 11:53-0700\n"
--"PO-Revision-Date: 2007-11-02 11:11+0200\n"
-+"PO-Revision-Date: 2009-02-28 21:54+0100\n"
- "Last-Translator: Pawe³ Dziekoñski <dzieko@gmail.com>\n"
- "Language-Team: POLISH <pl@li.org>\n"
- "MIME-Version: 1.0\n"
 @@ -96,18 +98,16 @@
  msgstr "Zapisz do pliku: "
  
@@ -108,7 +99,7 @@
 @@ -1947,7 +1941,6 @@
  msgstr "Nie mo¿na otworzyæ pliku tymczasowego!"
  
- #: handler.c:1724
+ #: handler.c:1723
 -#, fuzzy
  msgid "[-- This is an attachment "
  msgstr "[-- Ten za³±cznik typu %s/%s "
@@ -128,14 +119,14 @@
 @@ -2361,9 +2354,9 @@
  msgstr "%s nie jest ustawiony"
  
- #: init.c:1926
+ #: init.c:1909
 -#, fuzzy, c-format
 +#, c-format
  msgid "Invalid value for option %s: \"%s\""
 -msgstr "Niew³a¶ciwy dzieñ miesi±ca: %s"
 +msgstr "Niew³a¶ciwy warto¶æ dla opcji %s: \"%s\""
  
- #: init.c:2064
+ #: init.c:2046
  #, c-format
 @@ -2527,14 +2520,13 @@
  "Aby zg³osiæ b³±d, odwied¼ stronê http://bugs.mutt.org/.\n"
@@ -199,44 +190,44 @@
 @@ -2882,9 +2873,8 @@
  msgstr "Sprawdzanie %s..."
  
- #: mh.c:1331 mh.c:1409
+ #: mh.c:1332 mh.c:1410
 -#, fuzzy
  msgid "Could not flush message to disk"
 -msgstr "Wys³anie listu nie powiod³o siê."
 +msgstr "Zapisane wiadomo¶ci na dysk nie powiod³o siê."
  
- #: mh.c:1376
+ #: mh.c:1377
  msgid "maildir_commit_message(): unable to set time on file"
 @@ -3012,24 +3002,22 @@
  msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
  
- #: mutt_ssl.c:699
+ #: mutt_ssl.c:780
 -#, fuzzy
  msgid "cannot get certificate subject"
 -msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
 +msgstr "nie mo¿na pobraæ tytu³ certyfikatu"
  
- #: mutt_ssl.c:711
+ #: mutt_ssl.c:790 mutt_ssl.c:799
 -#, fuzzy
  msgid "cannot get certificate common name"
 -msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
 +msgstr "nie mo¿na pobraæ ogólnej nazwy certyfikatu"
  
- #: mutt_ssl.c:720
+ #: mutt_ssl.c:813
 -#, fuzzy, c-format
 +#, c-format
  msgid "certificate owner does not match hostname %s"
 -msgstr "W³a¶ciciel certyfikatu nie odpowiada nadawcy."
 +msgstr "w³a¶ciciel certyfikatu nie zgadza siê z hostem %s"
  
- #: mutt_ssl.c:761
+ #: mutt_ssl.c:854
 -#, fuzzy, c-format
 +#, c-format
  msgid "Certificate host check failed: %s"
 -msgstr "Certyfikat zosta³ zapisany"
 +msgstr "Weryfikacja hosta certyfikatu nie powiod³a siê: %s"
  
- #: mutt_ssl.c:839 mutt_ssl_gnutls.c:732
+ #: mutt_ssl.c:932 mutt_ssl_gnutls.c:732
  msgid "This certificate belongs to:"
 @@ -3062,7 +3050,7 @@
  #: mutt_ssl.c:875 mutt_ssl_gnutls.c:854
@@ -259,12 +250,12 @@
 @@ -4313,9 +4301,9 @@
  msgstr "Uwierzytelnianie SMTP wymaga SASL"
  
- #: smtp.c:499
+ #: smtp.c:493
 -#, fuzzy, c-format
 +#, c-format
  msgid "%s authentication failed, trying next method"
 -msgstr "Uwierzytelnianie SASL nie powiod³o siê"
 +msgstr "Uwierzytelnianie %s nie powiod³o siê"
  
- #: smtp.c:516
+ #: smtp.c:510
  msgid "SASL authentication failed"
