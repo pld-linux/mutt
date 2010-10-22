@@ -230,7 +230,6 @@ EOF
 
 # keep manual.txt.gz, the rest is installed as %doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
-gzip -9nf $RPM_BUILD_ROOT%{_docdir}/%{name}/manual.txt
 
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
