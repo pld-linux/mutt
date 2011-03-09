@@ -22,7 +22,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.21
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
@@ -58,6 +58,7 @@ Patch19:	%{name}-imap_recent.patch
 Patch20:	%{name}-Muttrc.head.patch
 Patch21:	%{name}-smime.rc.patch
 Patch22:	%{name}-ac.patch
+Patch23:	%{name}-sidebar.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -164,6 +165,7 @@ Mutt - це невеликий, але потужний повноекранни
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
+%patch23 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
