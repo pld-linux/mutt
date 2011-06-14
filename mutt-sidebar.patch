@@ -52,7 +52,7 @@ diff -urN mutt-1.5.21/buffy.c mutt-1.5.21-sidebar/buffy.c
 +        mailbox->msgcount++;
 +    }
 +  }
-+
++  closedir (dirp);
    return rc;
  }
  
@@ -169,7 +169,7 @@ diff -urN mutt-1.5.21/compose.c mutt-1.5.21-sidebar/compose.c
    int off = 0;
  
 -  mvaddstr (HDR_CRYPT, 0, "Security: ");
-+  mvaddstr (HDR_CRYPT, SidebarWidth,     "Security: ");
++  mvaddstr (HDR_CRYPT, SidebarWidth, "Security: ");
  
    if ((WithCrypto & (APPLICATION_PGP | APPLICATION_SMIME)) == 0)
    {
