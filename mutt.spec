@@ -22,7 +22,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.21
-Release:	4
+Release:	5
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
@@ -67,18 +67,18 @@ BuildRequires:	automake
 BuildRequires:	db-devel >= 4.0
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
-%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	gettext-devel
 BuildRequires:	gpgme-devel >= 1:1.1.0
+%{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	libidn-devel
+BuildRequires:	libxslt-progs
 BuildRequires:	lynx
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_slang:BuildRequires:	slang-devel}
-BuildRequires:	libxslt-progs
 Requires:	iconv
-%{?with_home_etc:Requires:	home-etc >= 1.0.8}
 Suggests:	mailcap
+%{?with_home_etc:Conflicts:	home-etc < 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	-fomit-frame-pointer
@@ -105,11 +105,9 @@ POP, des fils de discussion, des touches liées et d'un mode de tri sur
 les fils.
 
 %description -l ko.UTF-8
-Mutt는 작지만 매우 강력한 텍스트 기반의 메일 클라이언트이다. Mutt는
-많은 설정이 가능하다. 그리고, 키바인딩, 키보드 메크로, 메일 스레딩과
-같은 진보된 형태와 정규표현식 검색, 메일에서 선택된 그룹의 내용에서
-강력하게 일정한 패턴을 찾아내는 것을 지원함으로써 메일의 파워 유저에게
-가장 적합하다.
+Mutt는 작지만 매우 강력한 텍스트 기반의 메일 클라이언트이다. Mutt는 많은 설정이 가능하다. 그리고, 키바인딩, 키보드
+메크로, 메일 스레딩과 같은 진보된 형태와 정규표현식 검색, 메일에서 선택된 그룹의 내용에서 강력하게 일정한 패턴을 찾아내는
+것을 지원함으로써 메일의 파워 유저에게 가장 적합하다.
 
 %description -l pl.UTF-8
 Mutt jest niewielkim programem pocztowym dla terminali tekstowych,
@@ -227,7 +225,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_mandir}/pl/man1
 
 cat <<'EOF' >$RPM_BUILD_ROOT%{_bindir}/mutt_source-muttrc.d
 #!/bin/sh -e
-for rc in /etc/Muttrc.d/*.rc; do
+for rc in %{_sysconfdir}/Muttrc.d/*.rc; do
 	[ ! -r "$rc" ] || echo "source \"$rc\""
 done
 EOF
@@ -238,7 +236,7 @@ rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
 # conflict with qmail
 rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 
-rm -f $RPM_BUILD_ROOT/etc/mime.types
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 
 %find_lang %{name}
 
@@ -249,8 +247,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface
 %dir %{_sysconfdir}/Muttrc.d
-%config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc
-%config(noreplace,missingok) %verify(not md5 size mtime) %{_sysconfdir}/Muttrc.d/*.rc
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/Muttrc
+%config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/Muttrc.d/*.rc
 %attr(755,root,root) %{_bindir}/mutt
 %attr(755,root,root) %{_bindir}/mutt_source-muttrc.d
 %attr(755,root,root) %{_bindir}/flea
