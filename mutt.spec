@@ -65,8 +65,10 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 BuildRequires:	db-devel >= 4.0
+BuildRequires:	db4.7-devel
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
+BuildRequires:	gdbm-devel
 BuildRequires:	gettext-devel
 BuildRequires:	gpgme-devel >= 1:1.1.0
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
@@ -75,7 +77,9 @@ BuildRequires:	libxslt-progs
 BuildRequires:	lynx
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
+BuildRequires:	qdbm-devel
 %{?with_slang:BuildRequires:	slang-devel}
+BuildRequires:	tokyocabinet-devel
 Requires:	iconv
 Suggests:	mailcap
 %{?with_home_etc:Conflicts:	home-etc < 1.0.8}
