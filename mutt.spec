@@ -57,9 +57,8 @@ Patch18:	%{name}-folder_columns.patch
 Patch19:	%{name}-imap_recent.patch
 Patch20:	%{name}-Muttrc.head.patch
 Patch21:	%{name}-smime.rc.patch
-Patch22:	%{name}-ac.patch
-Patch23:	%{name}-sidebar.patch
-Patch24:	%{name}-imap_fast_trash.patch
+Patch22:	%{name}-sidebar.patch
+Patch23:	%{name}-imap_fast_trash.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -169,7 +168,6 @@ Mutt - це невеликий, але потужний повноекранни
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
-%patch24 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 rm -f doc/{manual*.html,manual.txt}
