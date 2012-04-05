@@ -64,7 +64,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
 BuildRequires:	db-devel >= 4.0
-BuildRequires:	db4.7-devel
+#BuildRequires:	db4.7-devel
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
 BuildRequires:	gdbm-devel
