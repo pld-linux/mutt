@@ -1,5 +1,6 @@
 #
 # TODO:
+# - gss/heimdal
 # - finish -folder_columns.patch
 #
 # Conditional build:
@@ -9,7 +10,13 @@
 %bcond_with	imap_recent	# show IMAP RECENT messages as new (instead of UNSEEN)
 %bcond_without	sasl		# don't use sasl
 %bcond_without	home_etc	# don't use home_etc
+%bcond_with	gdbm		# use GDBM instead of BerkeleyDB
+%bcond_with	qdbm		# use QDBM instead of BerkeleyDB
+%bcond_with	tokyocabinet	# use TokyoCabinet instead of BerkeleyDB
 #
+%if %{without gdbm} && %{without qdbm} && %{without tokyocabinet}
+%define	with_bdb	1
+%endif
 Summary:	The Mutt Mail User Agent
 Summary(de.UTF-8):	Der Mutt Mail-User-Agent
 Summary(es.UTF-8):	Mutt, cliente de correo electrónico
@@ -22,7 +29,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.21
-Release:	8
+Release:	9
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
@@ -59,26 +66,26 @@ Patch20:	%{name}-Muttrc.head.patch
 Patch21:	%{name}-smime.rc.patch
 Patch22:	%{name}-sidebar.patch
 Patch23:	%{name}-imap_fast_trash.patch
+Patch24:	%{name}-db.patch
 URL:		http://www.mutt.org/
-BuildRequires:	autoconf
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.54
+BuildRequires:	automake >= 1.6
 %{?with_sasl:BuildRequires:	cyrus-sasl-devel >= 2.1.0}
-BuildRequires:	db-devel >= 4.0
-BuildRequires:	db4.7-devel
+%{?with_bdb:BuildRequires:	db-devel >= 4.0}
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
-BuildRequires:	gdbm-devel
+%{?with_gdbm:BuildRequires:	gdbm-devel}
 BuildRequires:	gettext-devel
-BuildRequires:	gpgme-devel >= 1:1.1.0
+BuildRequires:	gpgme-devel >= 1:1.1.1
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	libidn-devel
 BuildRequires:	libxslt-progs
 BuildRequires:	lynx
 %{!?with_slang:BuildRequires:	ncurses-devel >= 5.0}
 BuildRequires:	openssl-devel >= 0.9.7d
-BuildRequires:	qdbm-devel
+%{?with_qdbm:BuildRequires:	qdbm-devel}
 %{?with_slang:BuildRequires:	slang-devel}
-BuildRequires:	tokyocabinet-devel
+%{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
 Requires:	iconv
 Suggests:	mailcap
 %{?with_home_etc:Conflicts:	home-etc < 1.0.8}
@@ -168,9 +175,10 @@ Mutt - це невеликий, але потужний повноекранни
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
+%patch24 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
-rm -f doc/{manual*.html,manual.txt}
+%{__rm} doc/{manual*.html,manual.txt}
 
 %build
 %{__aclocal} -I m4
@@ -191,17 +199,19 @@ rm -f doc/{manual*.html,manual.txt}
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
 	--enable-smtp \
-	--with-bdb=/usr \
-	--without-gdbm \
+	%{?with_bdb:--with-bdb=/usr} \
 	%{!?with_slang:--with-curses} \
 	--with-docdir=%{_docdir}/%{name} \
+	%{?with_gdbm:--with-gdbm} \
 	%{?with_home_etc:--with-home-etc} \
 	--with-mailpath=/var/mail \
 	--with-mixmaster \
+	%{?with_qdbm:--with-qdbm} \
 	--with-regex \
 	%{?with_sasl:--with-sasl} \
 	%{?with_slang:--with-slang} \
-	--with-ssl
+	--with-ssl \
+	%{?with_tokyocabinet:--with-tokyocabinet}
 
 %{__make} -j1 -C doc
 %{__make}
@@ -233,12 +243,12 @@ done
 EOF
 
 # keep manual.txt.gz, the rest is installed as %doc
-rm -rf $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
+%{__rm} -r $RPM_BUILD_ROOT%{_docdir}/%{name}/[!m]*
 
 # conflict with qmail
-rm -f $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
-
-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
+# belongs to mailcap
+%{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 
 %find_lang %{name}
 
@@ -260,7 +270,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
 %{_docdir}/%{name}
-%{_desktopdir}/*.desktop
+%{_desktopdir}/mutt.desktop
 %{_pixmapsdir}/mutt.png
-%{_mandir}/man*/*
-%lang(pl) %{_mandir}/pl/man*/*
+%{_mandir}/man1/flea.1*
+%{_mandir}/man1/mutt*.1*
+%{_mandir}/man1/smime_keys.1*
+%{_mandir}/man5/mmdf.5*
+%{_mandir}/man5/muttrc.5*
+%lang(pl) %{_mandir}/pl/man1/*
