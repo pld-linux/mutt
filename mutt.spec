@@ -55,18 +55,18 @@ Patch10:	%{name}-manual.patch
 Patch11:	%{name}-xface.patch
 Patch12:	%{name}-Muttrc_mbox_path.patch
 Patch13:	%{name}-po.patch
+Patch14:	%{name}-home_etc.patch
+Patch15:	%{name}-Muttrc.patch
+Patch16:	%{name}-muttbug-tmp.patch
+Patch17:	%{name}-folder_columns.patch
+Patch18:	%{name}-imap_recent.patch
+Patch19:	%{name}-Muttrc.head.patch
+Patch20:	%{name}-smime.rc.patch
+Patch21:	%{name}-sidebar.patch
+Patch22:	%{name}-imap_fast_trash.patch
+Patch23:	%{name}-db.patch
 # http://mutt.org.ua/download/
-Patch14:	%{name}-vvv.nntp.patch
-Patch15:	%{name}-home_etc.patch
-Patch16:	%{name}-Muttrc.patch
-Patch17:	%{name}-muttbug-tmp.patch
-Patch18:	%{name}-folder_columns.patch
-Patch19:	%{name}-imap_recent.patch
-Patch20:	%{name}-Muttrc.head.patch
-Patch21:	%{name}-smime.rc.patch
-Patch22:	%{name}-sidebar.patch
-Patch23:	%{name}-imap_fast_trash.patch
-Patch24:	%{name}-db.patch
+Patch24:	%{name}-vvv.nntp.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1.6
@@ -164,18 +164,18 @@ Mutt - це невеликий, але потужний повноекранни
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%{?with_nntp:%patch14 -p1}
-%{?with_home_etc:%patch15 -p1}
+%{?with_home_etc:%patch14 -p1}
+%patch15 -p1
 %patch16 -p1
-%patch17 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch18 -p1}
-%{?with_imap_recent:%patch19 -p1}
+%{?with_folder_column:%patch17 -p1}
+%{?with_imap_recent:%patch18 -p1}
+%patch19 -p1
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
-%patch24 -p1
+%{?with_nntp:%patch24 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}
@@ -225,7 +225,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1} \
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH16}
+%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH15}
 
 install contrib/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
 install contrib/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
