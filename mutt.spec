@@ -86,9 +86,9 @@ BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
+%{?with_home_etc:Requires:	home-etc-lib >= 1.0.8}
 Requires:	iconv
 Suggests:	mailcap
-%{?with_home_etc:Conflicts:	home-etc < 1.0.8}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		specflags_ia32	-fomit-frame-pointer
