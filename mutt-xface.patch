@@ -321,7 +321,7 @@ diff -urp ../MUTT/mutt/muttlib.c mutt/muttlib.c
 diff -urp ../MUTT/mutt/pager.c mutt/pager.c
 --- ../MUTT/mutt/pager.c	2004-07-18 01:25:28.000000000 +0200
 +++ mutt/pager.c	2004-07-21 13:36:34.000000000 +0200
-@@ -1441,6 +1441,66 @@ upNLines (int nlines, struct line_t *inf
+@@ -1527,6 +1527,66 @@ upNLines (int nlines, struct line_t *inf
    return cur;
  }
  
@@ -385,7 +385,7 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
 +  write(slrnface_fd, "show\n", sizeof "show");
 +}
 +
- static struct mapping_t PagerHelp[] = {
+ static const struct mapping_t PagerHelp[] = {
    { N_("Exit"),	OP_EXIT },
    { N_("PrevPg"), OP_PREV_PAGE },
 @@ -1545,6 +1605,9 @@ mutt_pager (const char *banner, const ch

@@ -179,7 +179,7 @@ diff -pruN2 mutt-1.3.27.orig/protos.h mutt-1.3.27/protos.h
 diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 --- mutt-1.3.27.orig/signature.c	Thu Jan  1 01:00:00 1970
 +++ mutt-1.3.27/signature.c	Wed Jan 23 22:35:32 2002
-@@ -0,0 +1,505 @@
+@@ -0,0 +1,504 @@
 +/*
 + * Copyright (C) 2001 Cedric Duval <cedricduval@free.fr>
 + * 
@@ -352,11 +352,10 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  SETCOLOR (MT_COLOR_STATUS);
 +  mvaddstr (SIG_DISPLAY_LINES + 1, 0, _("-- Signature"));
-+  BKGDSET (MT_COLOR_STATUS);
++  SETCOLOR (MT_COLOR_STATUS);
 +  clrtoeol ();
 +
-+  BKGDSET (MT_COLOR_NORMAL);
-+  SETCOLOR (MT_COLOR_NORMAL);
++  NORMAL_COLOR;
 +}
 +
 +static void free_sig_list (SIG_LIST **sigs)
@@ -688,12 +687,12 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 diff -pruN mutt-1.3.27.orig/PATCHES mutt-1.3.27/PATCHES
 --- mutt-1.3.27.orig/PATCHES    Mon Nov 26 20:16:52 2001
 +++ mutt-1.3.27/PATCHES Thu Dec  6 16:27:55 2001
-@@ -1,0 +1 @@
+@@ -1,0 +2 @@
 +patch-1.3.27.cd.signatures_menu.2.1
 diff --git a/menu.c b/menu.c
 --- a/menu.c
 +++ b/menu.c
-@@ -642,7 +640,7 @@
+@@ -642,7 +642,7 @@
      mutt_error _("No entries.");
  }
  
@@ -702,7 +701,7 @@ diff --git a/menu.c b/menu.c
  {
    if (menu->current < menu->max - 1)
    {
-@@ -653,7 +651,7 @@
+@@ -653,7 +653,7 @@
      mutt_error _("You are on the last entry.");
  }
  

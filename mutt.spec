@@ -28,13 +28,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	1.5.21
-Release:	12
+Version:	1.5.22
+Release:	0.1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/mutt/devel/%{name}-%{version}.tar.gz
-# Source0-md5:	a29db8f1d51e2f10c070bf88e8a553fd
+# Source0-md5:	48267aba1bc53db636777f4a1ec87cb6
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -67,8 +67,7 @@ Patch22:	%{name}-imap_fast_trash.patch
 Patch23:	%{name}-db.patch
 # http://mutt.org.ua/download/
 Patch24:	%{name}-vvv.nntp.patch
-Patch25:	autoconf.patch
-Patch26:	format-security.patch
+Patch25:	format-security.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1.6
@@ -179,7 +178,6 @@ Mutt - це невеликий, але потужний повноекранни
 %patch23 -p1
 %{?with_nntp:%patch24 -p1}
 %patch25 -p1
-%patch26 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}
@@ -278,6 +276,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pixmapsdir}/mutt.png
 %{_mandir}/man1/flea.1*
 %{_mandir}/man1/mutt*.1*
+%{_mandir}/man1/pgp*.1*
 %{_mandir}/man1/smime_keys.1*
 %{_mandir}/man5/mmdf.5*
 %{_mandir}/man5/muttrc.5*

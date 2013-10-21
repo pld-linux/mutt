@@ -569,7 +569,7 @@ diff -udprP mutt-1.5.19.orig/configure mutt-1.5.19/configure
 diff -udprP mutt-1.5.19.orig/configure.ac mutt-1.5.19/configure.ac
 --- mutt-1.5.19.orig/configure.ac	2008-11-17 22:15:26.000000000 +0200
 +++ mutt-1.5.19/configure.ac	2009-01-06 19:16:04.000000000 +0200
-@@ -789,6 +789,11 @@ AC_ARG_ENABLE(mailtool, AC_HELP_STRING([
+@@ -807,6 +807,11 @@ AC_ARG_ENABLE(mailtool, AC_HELP_STRING([
                  AC_DEFINE(SUN_ATTACHMENT,1,[ Define to enable Sun mailtool attachments support. ])
          fi])
  
@@ -578,7 +578,7 @@ diff -udprP mutt-1.5.19.orig/configure.ac mutt-1.5.19/configure.ac
 +                AC_DEFINE(USE_COMPRESSED,1,[ Define to enable compressed folders support. ])
 +        fi])
 +
- AC_ARG_ENABLE(locales-fix, AC_HELP_STRING([--enable-locales-fix], [The result of isprint() is unreliable]),
+ AC_ARG_ENABLE(locales-fix, AS_HELP_STRING([--enable-locales-fix],[The result of isprint() is unreliable]),
          [if test x$enableval = xyes; then
                  AC_DEFINE(LOCALES_HACK,1,[ Define if the result of isprint() is unreliable. ])
 diff -udprP mutt-1.5.19.orig/curs_main.c mutt-1.5.19/curs_main.c

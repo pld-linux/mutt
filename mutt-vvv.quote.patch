@@ -31,15 +31,15 @@ diff -udprP mutt-1.5.19.orig/handler.c mutt-1.5.19/handler.c
    if (istext && s->flags & M_CHARCONV)
    {
      char *charset = mutt_get_parameter ("charset", b->parameter);
-@@ -1542,7 +1546,7 @@ int mutt_body_handler (BODY *b, STATE *s
+@@ -1617,7 +1621,7 @@ int mutt_body_handler (BODY *b, STATE *s
         */
        if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp (b))
  	handler = crypt_pgp_application_pgp_handler;
--      else if (ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0)
-+      else if (ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0 && !s->prefix)
+-      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0)
++      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0 && !s->prefix)
  	handler = rfc3676_handler;
        else
- 	plaintext = 1;
+ 	handler = text_plain_handler;
 diff -udprP mutt-1.5.19.orig/init.h mutt-1.5.19/init.h
 --- mutt-1.5.19.orig/init.h	2009-01-05 21:20:53.000000000 +0200
 +++ mutt-1.5.19/init.h	2009-01-06 19:40:35.000000000 +0200
