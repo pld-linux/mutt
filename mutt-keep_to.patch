@@ -1,0 +1,47 @@
+Add keep_to option to control where To: recipients are copied on group-reply (To: or Cc:).
+
+author: Jan Palus
+
+diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
+--- mutt-1.5.23.orig/send.c	2014-10-12 16:55:39.680846728 +0200
++++ mutt-1.5.23/send.c	2014-10-12 16:55:52.104179682 +0200
+@@ -557,7 +557,11 @@
+     if ((flags & SENDGROUPREPLY) && (!in->mail_followup_to || hmfupto != M_YES))
+     {
+       /* if(!mutt_addr_is_user(in->to)) */
+-      rfc822_append (&out->cc, in->to, 1);
++      if (option (OPTKEEPTO)) {
++        rfc822_append (&out->to, in->to, 1);
++      } else {
++        rfc822_append (&out->cc, in->to, 1);
++      }
+       rfc822_append (&out->cc, in->cc, 1);
+     }
+   }
+diff -ur mutt-1.5.23.orig/init.h mutt-1.5.23/init.h
+--- mutt-1.5.23.orig/init.h	2014-10-12 17:17:05.716118306 +0200
++++ mutt-1.5.23/init.h	2014-10-12 17:24:08.119438749 +0200
+@@ -1344,6 +1344,12 @@
+   ** from your spool mailbox to your $$mbox mailbox, or as a result of
+   ** a ``$mbox-hook'' command.
+   */
++  { "keep_to", DT_BOOL, R_NONE, OPTKEEPTO, 0 },
++  /*
++  ** .pp
++  ** Controls where recipients from ``To:'' list go on group-reply. If \fIset\fP
++  ** they are copied to ``To:'' otherwise to ``Cc:''.
++  */
+   { "locale",		DT_STR,  R_BOTH, UL &Locale, UL "C" },
+   /*
+   ** .pp
+diff -ur mutt-1.5.23.orig/mutt.h mutt-1.5.23/mutt.h
+--- mutt-1.5.23.orig/mutt.h	2014-10-12 17:17:05.722784972 +0200
++++ mutt-1.5.23/mutt.h	2014-10-12 17:24:50.006104137 +0200
+@@ -391,6 +391,7 @@
+   OPTIMPLICITAUTOVIEW,
+   OPTINCLUDEONLYFIRST,
+   OPTKEEPFLAGGED,
++  OPTKEEPTO,
+   OPTMAILCAPSANITIZE,
+   OPTMAILCHECKRECENT,
+   OPTMAILDIRTRASH,
