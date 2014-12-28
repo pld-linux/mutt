@@ -79,7 +79,7 @@ BuildRequires:	automake >= 1.6
 BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
 %{?with_gdbm:BuildRequires:	gdbm-devel}
-BuildRequires:	gettext-devel
+BuildRequires:	gettext-tools
 BuildRequires:	gpgme-devel >= 1:1.1.1
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	libidn-devel
