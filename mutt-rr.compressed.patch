@@ -985,9 +985,9 @@ diff -udprP mutt-1.5.19.orig/doc/muttrc.man.head mutt-1.5.19/doc/muttrc.man.head
 --- mutt-1.5.19.orig/doc/muttrc.man.head	2008-11-26 20:48:48.000000000 +0200
 +++ mutt-1.5.19/doc/muttrc.man.head	2009-01-06 19:16:04.000000000 +0200
 @@ -345,6 +345,24 @@ specify the ID of the public key to be u
- to a certain recipient.  The meaning of "key ID" is to be taken
- broadly: This can be a different e-mail address, a numerical key ID,
- or even just an arbitrary search string.
+ \fBcrypt-hook\fPs result in the use of multiple \fIkey-id\fPs for 
+ a recipient.
+ 
 +.PP
 +.nf
 +\fBopen-hook\fP \fIregexp\fP "\fIcommand\fP"

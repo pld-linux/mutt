@@ -7,7 +7,7 @@
 -set smime_is_default
 +# set smime_is_default
  
- # Uncoment this if you don't want to set labels for certificates you add.
+ # Uncomment this if you don't want to set labels for certificates you add.
  # unset smime_ask_cert_label
 @@ -13,30 +13,31 @@
  set smime_timeout=300
@@ -30,7 +30,7 @@
 -set smime_default_key="12345678.0"
 +# set smime_default_key="12345678.0"
  
- # Uncommen to make mutt ask what key to use when trying to decrypt a message.
+ # Uncomment to make mutt ask what key to use when trying to decrypt a message.
  # It will use the default key above (if that was set) else.
  # unset smime_decrypt_use_default_key
  

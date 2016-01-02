@@ -1,5 +1,5 @@
-*** mutt-1.5.23-orig/buffy.c	2014-03-12 11:03:44.000000000 -0500
---- mutt-1.5.23/buffy.c	2014-04-12 15:33:54.000000000 -0500
+*** mutt-1.5.24-orig/buffy.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/buffy.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 161,166 ****
 --- 161,209 ----
@@ -112,82 +112,83 @@
     {
       mailbox->magic = 0;
 ***************
-*** 340,345 ****
---- 393,464 ----
-    return rc;
-  }
+*** 357,362 ****
+--- 410,482 ----
   
-+ /* update message counts for the sidebar */
+    return 0;
+  }
++   
++  /* update message counts for the sidebar */
 + void buffy_maildir_update (BUFFY* mailbox)
 + {
-+   char path[_POSIX_PATH_MAX];
-+   DIR *dirp;
-+   struct dirent *de;
-+   char *p;
++  char path[_POSIX_PATH_MAX];
++  DIR *dirp;
++  struct dirent *de;
++  char *p;
 + 
-+   if(!option(OPTSIDEBAR))
-+       return;
++  if(!option(OPTSIDEBAR))
++      return;
 + 
-+   mailbox->msgcount = 0;
-+   mailbox->msg_unread = 0;
-+   mailbox->msg_flagged = 0;
++  mailbox->msgcount = 0;
++  mailbox->msg_unread = 0;
++  mailbox->msg_flagged = 0;
 + 
-+   snprintf (path, sizeof (path), "%s/new", mailbox->path);
-+         
-+   if ((dirp = opendir (path)) == NULL)
-+   {   
-+     mailbox->magic = 0;
-+     return;
-+   } 
-+       
-+   while ((de = readdir (dirp)) != NULL)
-+   {
-+     if (*de->d_name == '.')
-+       continue;
++  snprintf (path, sizeof (path), "%s/new", mailbox->path);
++        
++  if ((dirp = opendir (path)) == NULL)
++  {   
++    mailbox->magic = 0;
++    return;
++  } 
++        
++  while ((de = readdir (dirp)) != NULL)
++  {
++    if (*de->d_name == '.')
++      continue;
 + 
-+     if (!(p = strstr (de->d_name, ":2,")) || !strchr (p + 3, 'T')) {
-+       mailbox->new = 1;
-+       mailbox->msgcount++;
-+       mailbox->msg_unread++;
-+     }
-+   }
++    if (!(p = strstr (de->d_name, ":2,")) || !strchr (p + 3, 'T')) {
++      mailbox->new = 1;
++      mailbox->msgcount++;
++      mailbox->msg_unread++;
++    }
++  }
 + 
-+   closedir (dirp);
-+   snprintf (path, sizeof (path), "%s/cur", mailbox->path);
-+         
-+   if ((dirp = opendir (path)) == NULL)
-+   {   
-+     mailbox->magic = 0;
-+     return;
-+   } 
-+       
-+   while ((de = readdir (dirp)) != NULL)
-+   {
-+     if (*de->d_name == '.')
-+       continue;
++  closedir (dirp);
++  snprintf (path, sizeof (path), "%s/cur", mailbox->path);
++        
++  if ((dirp = opendir (path)) == NULL)
++  {   
++   mailbox->magic = 0;
++    return;
++  } 
++        
++  while ((de = readdir (dirp)) != NULL)
++  {
++    if (*de->d_name == '.')
++      continue;
 + 
-+     if (!(p = strstr (de->d_name, ":2,")) || !strchr (p + 3, 'T')) {
-+       mailbox->msgcount++;
-+       if ((p = strstr (de->d_name, ":2,"))) {
-+         if (!strchr (p + 3, 'T')) {
-+           if (!strchr (p + 3, 'S'))
-+             mailbox->msg_unread++;
-+           if (strchr(p + 3, 'F'))
-+             mailbox->msg_flagged++;
-+         }
-+       }
-+     }
-+   }
++    if (!(p = strstr (de->d_name, ":2,")) || !strchr (p + 3, 'T')) {
++      mailbox->msgcount++;
++      if ((p = strstr (de->d_name, ":2,"))) {
++        if (!strchr (p + 3, 'T')) {
++          if (!strchr (p + 3, 'S'))
++            mailbox->msg_unread++;
++          if (strchr(p + 3, 'F'))
++            mailbox->msg_flagged++;
++        }
++      }
++    }
++  }
 + 
-+   mailbox->sb_last_checked = time(NULL);
-+   closedir (dirp);
++  mailbox->sb_last_checked = time(NULL);
++  closedir (dirp);
 + }
 + 
   /* returns 1 if mailbox has new mail */ 
   static int buffy_mbox_hasnew (BUFFY* mailbox, struct stat *sb)
   {
 ***************
-*** 351,357 ****
+*** 368,374 ****
     else
       statcheck = sb->st_mtime > sb->st_atime
         || (mailbox->newly_created && sb->st_ctime == sb->st_mtime && sb->st_ctime == sb->st_atime);
@@ -195,7 +196,7 @@
     {
       if (!option(OPTMAILCHECKRECENT) || sb->st_mtime > mailbox->last_visited)
       {
---- 470,476 ----
+--- 488,494 ----
     else
       statcheck = sb->st_mtime > sb->st_atime
         || (mailbox->newly_created && sb->st_ctime == sb->st_mtime && sb->st_ctime == sb->st_atime);
@@ -204,8 +205,8 @@
       if (!option(OPTMAILCHECKRECENT) || sb->st_mtime > mailbox->last_visited)
       {
 ***************
-*** 371,376 ****
---- 490,516 ----
+*** 388,393 ****
+--- 508,534 ----
     return rc;
   }
   
@@ -234,7 +235,7 @@
   {
     BUFFY *tmp;
 ***************
-*** 444,460 ****
+*** 461,477 ****
         {
         case M_MBOX:
         case M_MMDF:
@@ -252,7 +253,7 @@
   	if (tmp->new)
   	  BuffyCount++;
   	break;
---- 584,603 ----
+--- 602,621 ----
         {
         case M_MBOX:
         case M_MMDF:
@@ -273,8 +274,8 @@
   	if (tmp->new)
   	  BuffyCount++;
   	break;
-*** mutt-1.5.23-orig/buffy.h	2014-03-12 11:03:44.000000000 -0500
---- mutt-1.5.23/buffy.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/buffy.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/buffy.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 23,35 ****
 --- 23,41 ----
@@ -297,21 +298,21 @@
   }
   BUFFY;
   
-*** mutt-1.5.23-orig/color.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/color.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/color.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/color.c	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 93,98 ****
---- 93,100 ----
-    { "bold",		MT_COLOR_BOLD },
+*** 94,99 ****
+--- 94,101 ----
     { "underline",	MT_COLOR_UNDERLINE },
     { "index",		MT_COLOR_INDEX },
+    { "prompt",		MT_COLOR_PROMPT },
 +   { "sidebar_new",	MT_COLOR_NEW },
 +   { "sidebar_flagged",	MT_COLOR_FLAGGED },
     { NULL,		0 }
   };
   
-*** mutt-1.5.23-orig/compose.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/compose.c	2014-04-12 12:15:56.000000000 -0500
+*** mutt-1.5.24-orig/compose.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/compose.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 72,78 ****
   
@@ -347,16 +348,16 @@
     if ((WithCrypto & (APPLICATION_PGP | APPLICATION_SMIME)) == 0)
     {
 ***************
-*** 142,148 ****
-    }
+*** 145,151 ****
+        addstr (_(" (OppEnc mode)"));
   
     clrtoeol ();
 !   move (HDR_CRYPTINFO, 0);
     clrtoeol ();
   
     if ((WithCrypto & APPLICATION_PGP)
---- 142,148 ----
-    }
+--- 145,151 ----
+        addstr (_(" (OppEnc mode)"));
   
     clrtoeol ();
 !   move (HDR_CRYPTINFO, SidebarWidth);
@@ -364,7 +365,7 @@
   
     if ((WithCrypto & APPLICATION_PGP)
 ***************
-*** 159,165 ****
+*** 162,168 ****
         && (msg->security & ENCRYPT)
         && SmimeCryptAlg
         && *SmimeCryptAlg) {
@@ -372,7 +373,7 @@
   		NONULL(SmimeCryptAlg));
     }
   }
---- 159,165 ----
+--- 162,168 ----
         && (msg->security & ENCRYPT)
         && SmimeCryptAlg
         && *SmimeCryptAlg) {
@@ -381,7 +382,7 @@
     }
   }
 ***************
-*** 172,178 ****
+*** 175,181 ****
     int c;
     char *t;
   
@@ -389,7 +390,7 @@
   
     if (!chain)
     {
---- 172,178 ----
+--- 175,181 ----
     int c;
     char *t;
   
@@ -398,7 +399,7 @@
     if (!chain)
     {
 ***************
-*** 187,193 ****
+*** 190,196 ****
       if (t && t[0] == '0' && t[1] == '\0')
         t = "<random>";
       
@@ -406,7 +407,7 @@
         break;
   
       addstr (NONULL(t));
---- 187,193 ----
+--- 190,196 ----
       if (t && t[0] == '0' && t[1] == '\0')
         t = "<random>";
       
@@ -415,7 +416,7 @@
   
       addstr (NONULL(t));
 ***************
-*** 239,245 ****
+*** 242,248 ****
   
     buf[0] = 0;
     rfc822_write_address (buf, sizeof (buf), addr, 1);
@@ -423,7 +424,7 @@
     mutt_paddstr (W, buf);
   }
   
---- 239,245 ----
+--- 242,248 ----
   
     buf[0] = 0;
     rfc822_write_address (buf, sizeof (buf), addr, 1);
@@ -432,7 +433,7 @@
   }
   
 ***************
-*** 249,258 ****
+*** 252,261 ****
     draw_envelope_addr (HDR_TO, msg->env->to);
     draw_envelope_addr (HDR_CC, msg->env->cc);
     draw_envelope_addr (HDR_BCC, msg->env->bcc);
@@ -443,7 +444,7 @@
     mutt_paddstr (W, fcc);
   
     if (WithCrypto)
---- 249,258 ----
+--- 252,261 ----
     draw_envelope_addr (HDR_TO, msg->env->to);
     draw_envelope_addr (HDR_CC, msg->env->cc);
     draw_envelope_addr (HDR_BCC, msg->env->bcc);
@@ -455,7 +456,7 @@
   
     if (WithCrypto)
 ***************
-*** 263,269 ****
+*** 266,272 ****
   #endif
   
     SETCOLOR (MT_COLOR_STATUS);
@@ -463,7 +464,7 @@
     clrtoeol ();
   
     NORMAL_COLOR;
---- 263,269 ----
+--- 266,272 ----
   #endif
   
     SETCOLOR (MT_COLOR_STATUS);
@@ -472,7 +473,7 @@
   
     NORMAL_COLOR;
 ***************
-*** 299,305 ****
+*** 302,308 ****
     /* redraw the expanded list so the user can see the result */
     buf[0] = 0;
     rfc822_write_address (buf, sizeof (buf), *addr, 1);
@@ -480,7 +481,7 @@
     mutt_paddstr (W, buf);
     
     return 0;
---- 299,305 ----
+--- 302,308 ----
     /* redraw the expanded list so the user can see the result */
     buf[0] = 0;
     rfc822_write_address (buf, sizeof (buf), *addr, 1);
@@ -489,7 +490,7 @@
     
     return 0;
 ***************
-*** 544,550 ****
+*** 562,568 ****
   	if (mutt_get_field ("Subject: ", buf, sizeof (buf), 0) == 0)
   	{
   	  mutt_str_replace (&msg->env->subject, buf);
@@ -497,7 +498,7 @@
   	  if (msg->env->subject)
   	    mutt_paddstr (W, msg->env->subject);
   	  else
---- 544,550 ----
+--- 562,568 ----
   	if (mutt_get_field ("Subject: ", buf, sizeof (buf), 0) == 0)
   	{
   	  mutt_str_replace (&msg->env->subject, buf);
@@ -506,7 +507,7 @@
   	    mutt_paddstr (W, msg->env->subject);
   	  else
 ***************
-*** 562,568 ****
+*** 580,586 ****
   	{
   	  strfcpy (fcc, buf, fcclen);
   	  mutt_pretty_mailbox (fcc, fcclen);
@@ -514,7 +515,7 @@
   	  mutt_paddstr (W, fcc);
   	  fccSet = 1;
   	}
---- 562,568 ----
+--- 580,586 ----
   	{
   	  strfcpy (fcc, buf, fcclen);
   	  mutt_pretty_mailbox (fcc, fcclen);
@@ -522,11 +523,11 @@
   	  mutt_paddstr (W, fcc);
   	  fccSet = 1;
   	}
-*** mutt-1.5.23-orig/configure.ac	2014-03-12 11:26:40.000000000 -0500
---- mutt-1.5.23/configure.ac	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/configure.ac	2015-08-30 12:24:20.000000000 -0500
+--- mutt-1.5.24/configure.ac	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 1276,1281 ****
---- 1276,1283 ----
+*** 1302,1307 ****
+--- 1302,1309 ----
     AC_DEFINE(HAVE_LANGINFO_YESEXPR,1,[ Define if you have <langinfo.h> and nl_langinfo(YESEXPR). ])
   fi
   
@@ -535,8 +536,8 @@
   dnl Documentation tools
   have_openjade="no"
   AC_PATH_PROG([OSPCAT], [ospcat], [none])
-*** mutt-1.5.23-orig/curs_main.c	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/curs_main.c	2014-04-12 21:45:21.000000000 -0500
+*** mutt-1.5.24-orig/curs_main.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/curs_main.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 26,32 ****
 --- 26,34 ----
@@ -550,7 +551,7 @@
   #ifdef USE_POP
   #include "pop.h"
 ***************
-*** 519,538 ****
+*** 596,615 ****
          menu->redraw |= REDRAW_STATUS;
        if (do_buffy_notify)
        {
@@ -571,7 +572,7 @@
       }
   
       if (menu->menu == MENU_MAIN)
---- 521,551 ----
+--- 598,628 ----
          menu->redraw |= REDRAW_STATUS;
        if (do_buffy_notify)
        {
@@ -604,8 +605,8 @@
   
       if (menu->menu == MENU_MAIN)
 ***************
-*** 554,562 ****
---- 567,578 ----
+*** 631,639 ****
+--- 644,655 ----
   
         if (menu->redraw & REDRAW_STATUS)
         {
@@ -619,7 +620,7 @@
   	NORMAL_COLOR;
   	menu->redraw &= ~REDRAW_STATUS;
 ***************
-*** 569,575 ****
+*** 653,659 ****
   	menu->oldcurrent = -1;
   
         if (option (OPTARROWCURSOR))
@@ -627,7 +628,7 @@
         else if (option (OPTBRAILLEFRIENDLY))
   	move (menu->current - menu->top + menu->offset, 0);
         else
---- 585,591 ----
+--- 669,675 ----
   	menu->oldcurrent = -1;
   
         if (option (OPTARROWCURSOR))
@@ -636,8 +637,8 @@
   	move (menu->current - menu->top + menu->offset, 0);
         else
 ***************
-*** 1011,1016 ****
---- 1027,1033 ----
+*** 1095,1100 ****
+--- 1111,1117 ----
   	  break;
   
   	CHECK_MSGCOUNT;
@@ -646,8 +647,8 @@
   	{
   	  int oldvcount = Context->vcount;
 ***************
-*** 1070,1075 ****
---- 1087,1093 ----
+*** 1154,1159 ****
+--- 1171,1177 ----
   	  menu->redraw = REDRAW_FULL;
   	break;
   
@@ -656,7 +657,7 @@
         case OP_MAIN_NEXT_UNREAD_MAILBOX:
   
 ***************
-*** 1101,1107 ****
+*** 1185,1191 ****
   	{
   	  mutt_buffy (buf, sizeof (buf));
   
@@ -664,7 +665,7 @@
   	  {
   	    if (menu->menu == MENU_PAGER)
   	    {
---- 1119,1129 ----
+--- 1203,1213 ----
   	{
   	  mutt_buffy (buf, sizeof (buf));
   
@@ -677,8 +678,8 @@
   	    if (menu->menu == MENU_PAGER)
   	    {
 ***************
-*** 1119,1124 ****
---- 1141,1147 ----
+*** 1203,1208 ****
+--- 1225,1231 ----
   	}
   
   	mutt_expand_path (buf, sizeof (buf));
@@ -687,8 +688,8 @@
   	{
   	  mutt_error (_("%s is not a mailbox."), buf);
 ***************
-*** 2209,2214 ****
---- 2232,2243 ----
+*** 2293,2298 ****
+--- 2316,2327 ----
   	mutt_what_key();
   	break;
   
@@ -701,8 +702,8 @@
         default:
   	if (menu->menu == MENU_MAIN)
   	  km_error_key (MENU_MAIN);
-*** mutt-1.5.23-orig/flags.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/flags.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/flags.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/flags.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 22,29 ****
 --- 22,31 ----
@@ -726,8 +727,8 @@
   }
   
   void mutt_tag_set_flag (int flag, int bf)
-*** mutt-1.5.23-orig/functions.h	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/functions.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/functions.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/functions.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 169,174 ****
 --- 169,179 ----
@@ -756,11 +757,11 @@
     { NULL,		0,				NULL }
   };
   
-*** mutt-1.5.23-orig/globals.h	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/globals.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/globals.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/globals.h	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 117,122 ****
---- 117,125 ----
+*** 118,123 ****
+--- 118,126 ----
   WHERE char *SendCharset;
   WHERE char *Sendmail;
   WHERE char *Shell;
@@ -771,8 +772,8 @@
   WHERE char *SimpleSearch;
   #if USE_SMTP
 ***************
-*** 208,213 ****
---- 211,219 ----
+*** 213,218 ****
+--- 216,224 ----
   WHERE short ScoreThresholdRead;
   WHERE short ScoreThresholdFlag;
   
@@ -782,89 +783,98 @@
   #ifdef USE_IMAP
   WHERE short ImapKeepalive;
   WHERE short ImapPipelineDepth;
-*** mutt-1.5.23-orig/handler.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/handler.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/handler.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/handler.c	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 1599,1604 ****
---- 1599,1609 ----
-    size_t tmplength = 0;
-    int rc = 0;
+*** 1603,1608 ****
+--- 1603,1613 ----
+  
+    fseeko (s->fpin, b->offset, 0);
   
 + #ifdef HAVE_FMEMOPEN
 +   char *temp;
 +   size_t tempsize;
 + #endif
 + 
-    int oflags = s->flags;
-    
-    /* first determine which handler to use to process this part */
+    /* see if we need to decode this part before processing it */
+    if (b->encoding == ENCBASE64 || b->encoding == ENCQUOTEDPRINTABLE ||
+        b->encoding == ENCUUENCODED || plaintext ||
 ***************
-*** 1711,1716 ****
---- 1716,1729 ----
+*** 1618,1623 ****
+--- 1623,1636 ----
+      {
+        /* decode to a tempfile, saving the original destination */
+        fp = s->fpout;
++ #ifdef HAVE_FMEMOPEN
++      if ((s->fpout = open_memstream(&temp, &tempsize)) == NULL)
++      {
++        mutt_error _("Unable to open memory stream!");
++        dprint (1, (debugfile, "Can't open memory stream.\n"));
++        return -1;
++      }
++ #else
+        mutt_mktemp (tempfile, sizeof (tempfile));
+        if ((s->fpout = safe_fopen (tempfile, "w")) == NULL)
         {
-  	/* decode to a tempfile, saving the original destination */
-  	fp = s->fpout;
-+ #ifdef HAVE_FMEMOPEN
-+ 	if ((s->fpout = open_memstream(&temp, &tempsize)) == NULL)
-+ 	{
-+ 	  mutt_error _("Unable to open memory stream!");
-+ 	  dprint (1, (debugfile, "Can't open memory stream.\n"));
-+ 	  goto bail;
-+ 	}
-+ #else
-  	mutt_mktemp (tempfile, sizeof (tempfile));
-  	if ((s->fpout = safe_fopen (tempfile, "w")) == NULL)
-  	{
 ***************
-*** 1718,1723 ****
---- 1731,1737 ----
-  	  dprint (1, (debugfile, "Can't open %s.\n", tempfile));
-  	  goto bail;
-  	}
-+ #endif
-  	/* decoding the attachment changes the size and offset, so save a copy
-  	 * of the "real" values now, and restore them after processing
-  	 */
-***************
-*** 1746,1753 ****
---- 1760,1778 ----
-  	/* restore final destination and substitute the tempfile for input */
-  	s->fpout = fp;
-  	fp = s->fpin;
-+ #ifdef HAVE_FMEMOPEN
-+ 	if(tempsize)
-+ 		s->fpin = fmemopen(temp, tempsize, "r");
-+ 	else /* fmemopen cannot handle zero-length buffers */
-+ 		s->fpin = safe_fopen ("/dev/null", "r");
-+ 	if(s->fpin == NULL) {
-+ 		mutt_perror("failed to re-open memstream!");
-+ 		return (-1);
-+ 	}
-+ #else
-  	s->fpin = fopen (tempfile, "r");
-  	unlink (tempfile);
-+ #endif
-  
-  	/* restore the prefix */
-  	s->prefix = savePrefix;
-***************
-*** 1773,1778 ****
---- 1798,1807 ----
-  
-  	/* restore the original source stream */
-  	safe_fclose (&s->fpin);
-+ #ifdef HAVE_FMEMOPEN
-+ 	if(tempsize)
-+ 	    FREE(&temp);
-+ #endif
-  	s->fpin = fp;
+*** 1625,1630 ****
+--- 1638,1644 ----
+          dprint (1, (debugfile, "Can't open %s.\n", tempfile));
+          return -1;
         }
-      }
-*** mutt-1.5.23-orig/init.h	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/init.h	2014-04-11 10:14:01.000000000 -0500
++ #endif
+        /* decoding the attachment changes the size and offset, so save a copy
+          * of the "real" values now, and restore them after processing
+          */
 ***************
-*** 1966,1971 ****
---- 1966,2019 ----
+*** 1653,1661 ****
+        /* restore final destination and substitute the tempfile for input */
+        s->fpout = fp;
+        fp = s->fpin;
+        s->fpin = fopen (tempfile, "r");
+        unlink (tempfile);
+! 
+        /* restore the prefix */
+        s->prefix = savePrefix;
+      }
+--- 1667,1685 ----
+        /* restore final destination and substitute the tempfile for input */
+        s->fpout = fp;
+        fp = s->fpin;
++ #ifdef HAVE_FMEMOPEN
++       if(tempsize)
++         s->fpin = fmemopen(temp, tempsize, "r");
++       else /* fmemopen cannot handle zero-length buffers */
++         s->fpin = safe_fopen ("/dev/null", "r");
++       if(s->fpin == NULL) {
++        mutt_perror("failed to re-open memstream!");
++        return (-1);
++       }
++ #else
+        s->fpin = fopen (tempfile, "r");
+        unlink (tempfile);
+! #endif
+        /* restore the prefix */
+        s->prefix = savePrefix;
+      }
+***************
+*** 1680,1685 ****
+--- 1704,1713 ----
+  
+        /* restore the original source stream */
+        safe_fclose (&s->fpin);
++ #ifdef HAVE_FMEMOPEN
++       if(tempsize)
++           FREE(&temp);
++ #endif
+        s->fpin = fp;
+      }
+    }
+*** mutt-1.5.24-orig/init.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/init.h	2015-09-16 23:18:13.000000000 -0500
+***************
+*** 2016,2021 ****
+--- 2016,2069 ----
     ** not used.
     ** (PGP only)
     */
@@ -919,8 +929,8 @@
     { "pgp_use_gpg_agent", DT_BOOL, R_NONE, OPTUSEGPGAGENT, 0},
     /*
     ** .pp
-*** mutt-1.5.23-orig/mailbox.h	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/mailbox.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/mailbox.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mailbox.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 27,32 ****
 --- 27,33 ----
@@ -930,9 +940,9 @@
 + #define M_PEEK		(1<<5) /* revert atime back after taking a look (if applicable) */
   
   /* mx_open_new_message() */
-  #define M_ADD_FROM	1	/* add a From_ line */
-*** mutt-1.5.23-orig/main.c	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/main.c	2014-04-11 10:14:01.000000000 -0500
+  #define M_ADD_FROM	(1<<0)	/* add a From_ line */
+*** mutt-1.5.24-orig/main.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/main.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 50,55 ****
 --- 50,56 ----
@@ -961,8 +971,8 @@
     char *includeFile = NULL;
     char *draftFile = NULL;
 ***************
-*** 1025,1030 ****
---- 1026,1038 ----
+*** 1036,1041 ****
+--- 1037,1049 ----
         strfcpy (folder, NONULL(Spoolfile), sizeof (folder));
       mutt_expand_path (folder, sizeof (folder));
   
@@ -977,8 +987,8 @@
       mutt_str_replace (&LastFolder, folder);
   
 ***************
-*** 1047,1052 ****
---- 1055,1061 ----
+*** 1058,1063 ****
+--- 1066,1072 ----
       if((Context = mx_open_mailbox (folder, ((flags & M_RO) || option (OPTREADONLY)) ? M_READONLY : 0, NULL))
          || !explicit_folder)
       {
@@ -986,11 +996,11 @@
         mutt_index_menu ();
         if (Context)
   	FREE (&Context);
-*** mutt-1.5.23-orig/Makefile.am	2014-03-12 11:03:44.000000000 -0500
---- mutt-1.5.23/Makefile.am	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/Makefile.am	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/Makefile.am	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 32,37 ****
---- 32,38 ----
+*** 33,38 ****
+--- 33,39 ----
   	rfc822.c rfc1524.c rfc2047.c rfc2231.c rfc3676.c \
   	score.c send.c sendlib.c signal.c sort.c \
   	status.c system.c thread.c charset.c history.c lib.c \
@@ -998,63 +1008,75 @@
   	muttlib.c editmsg.c mbyte.c \
   	url.c ascii.c crypt-mod.c crypt-mod.h safe_asprintf.c
   
-*** mutt-1.5.23-orig/Makefile.in	2014-03-12 11:26:44.000000000 -0500
---- mutt-1.5.23/Makefile.in	2014-04-12 12:12:38.000000000 -0500
+*** mutt-1.5.24-orig/Makefile.in	2015-08-30 12:24:26.000000000 -0500
+--- mutt-1.5.24/Makefile.in	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 129,135 ****
+*** 83,92 ****
+  	$(srcdir)/Makefile.am $(top_srcdir)/configure \
+  	$(am__configure_deps) $(srcdir)/config.h.in \
+  	$(top_srcdir)/intl/Makefile.in $(srcdir)/hcachever.sh.in \
+! 	$(srcdir)/muttbug.sh.in strtok_r.c strcasecmp.c regex.c \
+! 	snprintf.c wcscasecmp.c strcasestr.c setenv.c mkdtemp.c \
+! 	strsep.c strdup.c depcomp ABOUT-NLS ChangeLog INSTALL NEWS \
+! 	README TODO compile config.guess config.sub install-sh missing
+  EXTRA_PROGRAMS = mutt_dotlock$(EXEEXT) pgpring$(EXEEXT) \
+  	pgpewrap$(EXEEXT) mutt_md5$(EXEEXT)
+  bin_PROGRAMS = mutt$(EXEEXT) $(DOTLOCK_TARGET) $(PGPAUX_TARGET)
+--- 83,92 ----
+  	$(srcdir)/Makefile.am $(top_srcdir)/configure \
+  	$(am__configure_deps) $(srcdir)/config.h.in \
+  	$(top_srcdir)/intl/Makefile.in $(srcdir)/hcachever.sh.in \
+! 	$(srcdir)/muttbug.sh.in snprintf.c strtok_r.c regex.c strdup.c \
+! 	strcasecmp.c setenv.c strcasestr.c wcscasecmp.c mkdtemp.c \
+! 	strsep.c depcomp ABOUT-NLS ChangeLog INSTALL NEWS README TODO \
+! 	compile config.guess config.sub install-sh missing
+  EXTRA_PROGRAMS = mutt_dotlock$(EXEEXT) pgpring$(EXEEXT) \
+  	pgpewrap$(EXEEXT) mutt_md5$(EXEEXT)
+  bin_PROGRAMS = mutt$(EXEEXT) $(DOTLOCK_TARGET) $(PGPAUX_TARGET)
+***************
+*** 128,136 ****
+  	score.$(OBJEXT) send.$(OBJEXT) sendlib.$(OBJEXT) \
+  	signal.$(OBJEXT) sort.$(OBJEXT) status.$(OBJEXT) \
   	system.$(OBJEXT) thread.$(OBJEXT) charset.$(OBJEXT) \
-  	history.$(OBJEXT) lib.$(OBJEXT) muttlib.$(OBJEXT) \
-  	editmsg.$(OBJEXT) mbyte.$(OBJEXT) url.$(OBJEXT) \
+! 	history.$(OBJEXT) lib.$(OBJEXT) muttlib.$(OBJEXT) \
+! 	editmsg.$(OBJEXT) mbyte.$(OBJEXT) url.$(OBJEXT) \
 ! 	ascii.$(OBJEXT) crypt-mod.$(OBJEXT) safe_asprintf.$(OBJEXT)
   am__objects_1 =
   am__objects_2 = patchlist.$(OBJEXT) conststrings.$(OBJEXT) \
   	$(am__objects_1)
---- 129,136 ----
+--- 128,137 ----
+  	score.$(OBJEXT) send.$(OBJEXT) sendlib.$(OBJEXT) \
+  	signal.$(OBJEXT) sort.$(OBJEXT) status.$(OBJEXT) \
   	system.$(OBJEXT) thread.$(OBJEXT) charset.$(OBJEXT) \
-  	history.$(OBJEXT) lib.$(OBJEXT) muttlib.$(OBJEXT) \
-  	editmsg.$(OBJEXT) mbyte.$(OBJEXT) url.$(OBJEXT) \
-! 	ascii.$(OBJEXT) crypt-mod.$(OBJEXT) safe_asprintf.$(OBJEXT) \
-! 	sidebar.$(OBJEXT)
+! 	history.$(OBJEXT) lib.$(OBJEXT) sidebar.$(OBJEXT) \
+! 	muttlib.$(OBJEXT) editmsg.$(OBJEXT) mbyte.$(OBJEXT) \
+! 	url.$(OBJEXT) ascii.$(OBJEXT) crypt-mod.$(OBJEXT) \
+! 	safe_asprintf.$(OBJEXT)
   am__objects_1 =
   am__objects_2 = patchlist.$(OBJEXT) conststrings.$(OBJEXT) \
   	$(am__objects_1)
 ***************
-*** 468,474 ****
+*** 474,479 ****
+--- 475,481 ----
+  	rfc822.c rfc1524.c rfc2047.c rfc2231.c rfc3676.c \
   	score.c send.c sendlib.c signal.c sort.c \
   	status.c system.c thread.c charset.c history.c lib.c \
++ 	sidebar.c \
   	muttlib.c editmsg.c mbyte.c \
-! 	url.c ascii.c crypt-mod.c crypt-mod.h safe_asprintf.c
+  	url.c ascii.c crypt-mod.c crypt-mod.h safe_asprintf.c
   
-  nodist_mutt_SOURCES = $(BUILT_SOURCES)
-  mutt_LDADD = @MUTT_LIB_OBJECTS@ @LIBOBJS@ $(LIBIMAP) $(MUTTLIBS) \
---- 469,476 ----
-  	score.c send.c sendlib.c signal.c sort.c \
-  	status.c system.c thread.c charset.c history.c lib.c \
-  	muttlib.c editmsg.c mbyte.c \
-! 	url.c ascii.c crypt-mod.c crypt-mod.h safe_asprintf.c \
-! 	sidebar.c
-  
-  nodist_mutt_SOURCES = $(BUILT_SOURCES)
-  mutt_LDADD = @MUTT_LIB_OBJECTS@ @LIBOBJS@ $(LIBIMAP) $(MUTTLIBS) \
 ***************
-*** 500,506 ****
-  	README.SSL smime.h group.h \
-  	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
-  	ChangeLog mkchangelog.sh mutt_idna.h \
-! 	snprintf.c regex.c crypt-gpgme.h hcachever.sh.in \
-  	txt2c.c txt2c.sh version.sh check_sec.sh
-  
-  EXTRA_SCRIPTS = smime_keys
---- 502,508 ----
-  	README.SSL smime.h group.h \
-  	muttbug pgppacket.h depcomp ascii.h BEWARE PATCHES patchlist.sh \
-  	ChangeLog mkchangelog.sh mutt_idna.h \
-! 	snprintf.c regex.c crypt-gpgme.h sidebar.h hcachever.sh.in \
-  	txt2c.c txt2c.sh version.sh check_sec.sh
-  
-  EXTRA_SCRIPTS = smime_keys
-*** mutt-1.5.23-orig/mbox.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/mbox.c	2014-04-11 10:14:01.000000000 -0500
+*** 804,809 ****
+--- 806,812 ----
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/send.Po@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sendlib.Po@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sha1.Po@am__quote@
++ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/sidebar.Po@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/signal.Po@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smime.Po@am__quote@
+  @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/smtp.Po@am__quote@
+*** mutt-1.5.24-orig/mbox.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mbox.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 100,105 ****
 --- 100,106 ----
@@ -1075,8 +1097,8 @@
   
   #ifdef NFS_ATTRIBUTE_HACK
     if (sb.st_mtime > sb.st_atime)
-*** mutt-1.5.23-orig/menu.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/menu.c	2014-04-12 21:31:16.000000000 -0500
+*** mutt-1.5.24-orig/menu.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/menu.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 24,29 ****
 --- 24,30 ----
@@ -1245,8 +1267,8 @@
       else if (option (OPTBRAILLEFRIENDLY))
         move (menu->current - menu->top + menu->offset, 0);
       else
-*** mutt-1.5.23-orig/mh.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/mh.c	2014-04-11 11:04:59.000000000 -0500
+*** mutt-1.5.24-orig/mh.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mh.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 295,300 ****
 --- 295,326 ----
@@ -1282,8 +1304,8 @@
   static int mh_mkstemp (CONTEXT * dest, FILE ** fp, char **tgt)
   {
     int fd;
-*** mutt-1.5.23-orig/mutt_curses.h	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/mutt_curses.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/mutt_curses.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mutt_curses.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 64,69 ****
 --- 64,70 ----
@@ -1295,18 +1317,18 @@
   #define CENTERLINE(x,y) move(y, (COLS-strlen(x))/2), addstr(x)
   #define BEEP() do { if (option (OPTBEEP)) beep(); } while (0)
 ***************
-*** 120,125 ****
---- 121,128 ----
-    MT_COLOR_BOLD,
+*** 121,126 ****
+--- 122,129 ----
     MT_COLOR_UNDERLINE,
     MT_COLOR_INDEX,
+    MT_COLOR_PROMPT,
 +   MT_COLOR_NEW,
 +   MT_COLOR_FLAGGED,
     MT_COLOR_MAX
   };
   
-*** mutt-1.5.23-orig/mutt_menu.h	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/mutt_menu.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/mutt_menu.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mutt_menu.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 34,39 ****
 --- 34,40 ----
@@ -1317,11 +1339,11 @@
   
   #define M_MODEFMT "-- Mutt: %s"
   
-*** mutt-1.5.23-orig/mutt.h	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/mutt.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/mutt.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mutt.h	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 421,426 ****
---- 421,430 ----
+*** 423,428 ****
+--- 423,432 ----
     OPTSAVEEMPTY,
     OPTSAVENAME,
     OPTSCORE,
@@ -1333,8 +1355,8 @@
     OPTSIGONTOP,
     OPTSORTRE,
 ***************
-*** 861,866 ****
---- 865,871 ----
+*** 866,871 ****
+--- 870,876 ----
   {
     char *path;
     FILE *fp;
@@ -1343,8 +1365,8 @@
     off_t size;
     off_t vsize;
 ***************
-*** 895,900 ****
---- 900,906 ----
+*** 900,905 ****
+--- 905,911 ----
     unsigned int quiet : 1;	/* inhibit status messages? */
     unsigned int collapsed : 1;   /* are all threads collapsed? */
     unsigned int closing : 1;	/* mailbox is being closed */
@@ -1352,11 +1374,11 @@
   
     /* driver hooks */
     void *data;			/* driver specific data */
-*** mutt-1.5.23-orig/muttlib.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/muttlib.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/muttlib.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/muttlib.c	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 1281,1286 ****
---- 1281,1288 ----
+*** 1276,1281 ****
+--- 1276,1283 ----
   	  pl = pw = 1;
   
   	/* see if there's room to add content, else ignore */
@@ -1366,8 +1388,8 @@
   	{
   	  int pad;
 ***************
-*** 1324,1329 ****
---- 1326,1377 ----
+*** 1319,1324 ****
+--- 1321,1372 ----
   	  col += wid;
   	  src += pl;
   	}
@@ -1420,8 +1442,8 @@
   	break; /* skip rest of input */
         }
         else if (ch == '|')
-*** mutt-1.5.23-orig/mx.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/mx.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/mx.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mx.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 580,585 ****
 --- 580,586 ----
@@ -1509,8 +1531,8 @@
     }
   
     if (read_msgs && quadoption (OPT_MOVE) != M_NO)
-*** mutt-1.5.23-orig/mx.h	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/mx.h	2014-04-11 11:11:47.000000000 -0500
+*** mutt-1.5.24-orig/mx.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/mx.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 57,62 ****
 --- 57,63 ----
@@ -1521,8 +1543,8 @@
   int mh_check_empty (const char *);
   
   int maildir_read_dir (CONTEXT *);
-*** mutt-1.5.23-orig/OPS	2014-03-12 11:03:44.000000000 -0500
---- mutt-1.5.23/OPS	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/OPS	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/OPS	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 179,181 ****
 --- 179,186 ----
@@ -1534,8 +1556,8 @@
 + OP_SIDEBAR_NEXT "go down to next mailbox"
 + OP_SIDEBAR_PREV "go to previous mailbox"
 + OP_SIDEBAR_OPEN "open hilighted mailbox"
-*** mutt-1.5.23-orig/pager.c	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/pager.c	2014-04-12 21:53:15.000000000 -0500
+*** mutt-1.5.24-orig/pager.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/pager.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 29,34 ****
 --- 29,35 ----
@@ -1632,8 +1654,8 @@
 ! 	mutt_paddstr (COLS, bn);
         }
         NORMAL_COLOR;
-      }
-  
+        if (option(OPTTSENABLED) && TSSupported)
+        {
 --- 1793,1831 ----
         hfi.ctx = Context;
         hfi.pager_progress = pager_progress_str;
@@ -1672,10 +1694,10 @@
 +       if(!option(OPTSTATUSONTOP) || PagerIndexLines == 0)
 +           DrawFullLine = 0; /* reset */
         NORMAL_COLOR;
-      }
-  
+        if (option(OPTTSENABLED) && TSSupported)
+        {
 ***************
-*** 1819,1834 ****
+*** 1826,1841 ****
         /* redraw the pager_index indicator, because the
          * flags for this message might have changed. */
         menu_redraw_current (index);
@@ -1692,7 +1714,7 @@
       redraw = 0;
   
       if (option(OPTBRAILLEFRIENDLY)) {
---- 1834,1855 ----
+--- 1841,1862 ----
         /* redraw the pager_index indicator, because the
          * flags for this message might have changed. */
         menu_redraw_current (index);
@@ -1716,8 +1738,8 @@
   
       if (option(OPTBRAILLEFRIENDLY)) {
 ***************
-*** 2763,2768 ****
---- 2784,2796 ----
+*** 2770,2775 ****
+--- 2791,2803 ----
   	mutt_what_key ();
   	break;
   
@@ -1731,8 +1753,8 @@
         default:
   	ch = -1;
   	break;
-*** mutt-1.5.23-orig/pattern.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/pattern.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/pattern.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/pattern.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 154,159 ****
 --- 154,163 ----
@@ -1829,14 +1851,14 @@
       }
     }
   
-*** mutt-1.5.23-orig/PATCHES	2014-03-12 11:03:44.000000000 -0500
---- mutt-1.5.23/PATCHES	2014-04-12 12:36:35.000000000 -0500
+*** mutt-1.5.24-orig/PATCHES	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/PATCHES	2015-11-11 09:39:02.000000000 -0600
 ***************
 *** 0 ****
 --- 1 ----
-+ patch-1.5.23.sidebar.20140412.txt
-*** mutt-1.5.23-orig/protos.h	2014-03-12 11:06:17.000000000 -0500
---- mutt-1.5.23/protos.h	2014-04-11 10:14:01.000000000 -0500
++ patch-1.5.24.sidebar.20151111.txt
+*** mutt-1.5.24-orig/protos.h	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/protos.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 36,41 ****
 --- 36,48 ----
@@ -1853,11 +1875,11 @@
   void mutt_make_string_info (char *, size_t, const char *, struct hdr_format_info *, format_flag);
   
   int mutt_extract_token (BUFFER *, BUFFER *, int);
-*** mutt-1.5.23-orig/sidebar.c	1969-12-31 18:00:00.000000000 -0600
---- mutt-1.5.23/sidebar.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/sidebar.c	1969-12-31 18:00:00.000000000 -0600
+--- mutt-1.5.24/sidebar.c	2015-11-11 09:38:45.000000000 -0600
 ***************
 *** 0 ****
---- 1,405 ----
+--- 1,410 ----
 + /*
 +  * Copyright (C) ????-2004 Justin Hibbits <jrh29@po.cwru.edu>
 +  * Copyright (C) 2004 Thomer M. Gil <mutt@thomer.com>
@@ -1975,8 +1997,12 @@
 + 		break;
 + 
 + 	case 'S':
-+ 		snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
-+ 		snprintf (dest, destlen, fmt, sbe->size);
++                 if(!optional) {
++ 		    snprintf (fmt, sizeof (fmt), "%%%sd", prefix);
++ 		    snprintf (dest, destlen, fmt, sbe->size);
++                 } else if (sbe->size == 0) {
++                     optional = 0;
++                 }
 + 		break;
 + 
 + 	case 'N':
@@ -2156,8 +2182,9 @@
 + 			SETCOLOR(MT_COLOR_NORMAL);
 + 
 + 		move( lines, 0 );
-+ 		if ( Context && (!strcmp(tmp->path, Context->path)||
-+ 				 !strcmp(tmp->realpath, Context->path)) ) {
++ 		if ( Context && Context->path &&
++                         (!strcmp(tmp->path, Context->path)||
++ 			 !strcmp(tmp->realpath, Context->path)) ) {
 + 			tmp->msg_unread = Context->unread;
 + 			tmp->msgcount = Context->msgcount;
 + 			tmp->msg_flagged = Context->flagged;
@@ -2170,7 +2197,7 @@
 + 		/* calculate depth of current folder and generate its display name with indented spaces */
 + 		int sidebar_folder_depth = 0;
 + 		char *sidebar_folder_name;
-+ 		sidebar_folder_name = option(OPTSIDEBARSHORTPATH) ? mutt_basename(tmp->path) : tmp->path + maildir_is_prefix*(strlen(Maildir) + ((Maildir[strlen(Maildir) - 1] == '/' || Maildir[strlen(Maildir) - 1] == '}') ? 0 : 1));
++ 		sidebar_folder_name = option(OPTSIDEBARSHORTPATH) ? mutt_basename(tmp->path) : tmp->path + maildir_is_prefix*(strlen(Maildir) + 1);
 + 		if ( maildir_is_prefix && option(OPTSIDEBARFOLDERINDENT) ) {
 + 			char *tmp_folder_name;
 + 			int i;
@@ -2263,8 +2290,8 @@
 + 	draw_sidebar(menu);
 + }
 + 
-*** mutt-1.5.23-orig/sidebar.h	1969-12-31 18:00:00.000000000 -0600
---- mutt-1.5.23/sidebar.h	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/sidebar.h	1969-12-31 18:00:00.000000000 -0600
+--- mutt-1.5.24/sidebar.h	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 0 ****
 --- 1,36 ----
@@ -2304,8 +2331,8 @@
 + void set_buffystats(CONTEXT*);
 + 
 + #endif /* SIDEBAR_H */
-*** mutt-1.5.23-orig/doc/Muttrc	2014-03-12 11:27:11.000000000 -0500
---- mutt-1.5.23/doc/Muttrc	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/doc/Muttrc	2015-08-30 12:24:53.000000000 -0500
+--- mutt-1.5.24/doc/Muttrc	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 657,662 ****
 --- 657,682 ----
@@ -2335,10 +2362,10 @@
   # set crypt_autosign=no
   #
   # Name: crypt_autosign
-*** mutt-1.5.23-orig/imap/imap.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/imap/imap.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/imap/imap.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/imap/imap.c	2015-09-16 23:18:13.000000000 -0500
 ***************
-*** 1514,1520 ****
+*** 1523,1529 ****
   
       imap_munge_mbox_name (munged, sizeof (munged), name);
       snprintf (command, sizeof (command),
@@ -2346,7 +2373,7 @@
   
       if (imap_exec (idata, command, IMAP_CMD_QUEUE) < 0)
       {
---- 1514,1520 ----
+--- 1523,1529 ----
   
       imap_munge_mbox_name (munged, sizeof (munged), name);
       snprintf (command, sizeof (command),
@@ -2354,8 +2381,8 @@
   
       if (imap_exec (idata, command, IMAP_CMD_QUEUE) < 0)
       {
-*** mutt-1.5.23-orig/imap/command.c	2014-03-12 11:03:45.000000000 -0500
---- mutt-1.5.23/imap/command.c	2014-04-11 10:14:01.000000000 -0500
+*** mutt-1.5.24-orig/imap/command.c	2015-08-30 12:06:38.000000000 -0500
+--- mutt-1.5.24/imap/command.c	2015-09-16 23:18:13.000000000 -0500
 ***************
 *** 1012,1017 ****
 --- 1012,1024 ----

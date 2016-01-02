@@ -1,5 +1,5 @@
---- mutt-1.5.23/po/pl.po.orig	2014-03-12 17:27:50.000000000 +0100
-+++ mutt-1.5.23/po/pl.po	2014-06-06 17:07:11.026011591 +0200
+--- mutt-1.5.24/po/pl.po.orig	2016-01-02 18:46:16.401449059 +0100
++++ mutt-1.5.24/po/pl.po	2016-01-02 18:47:34.371037304 +0100
 @@ -2,6 +2,8 @@
  # Polskie teksty dla Mutta 1.x
  # 1998-2006 Pawe³ Dziekoñski
@@ -10,7 +10,7 @@
  # get it from http://home.elka.pw.edu.pl/~pkolodz2/pepesza.html
  #
 @@ -12,8 +14,8 @@
- "POT-Creation-Date: 2014-03-12 09:18-0700\n"
+ "POT-Creation-Date: 2016-01-02 18:46+0100\n"
  "PO-Revision-Date: 2007-11-02 11:11+0200\n"
  "Last-Translator: Pawe³ Dziekoñski <dzieko@gmail.com>\n"
 -"Language-Team: POLISH <pl@li.org>\n"
@@ -68,8 +68,8 @@
 -msgstr "-- Za³±czniki"
 +msgstr "---Za³±cznik: %s"
  
- #: attach.c:631 attach.c:663 attach.c:958 attach.c:1016 handler.c:1360
- #: pgpkey.c:570 pgpkey.c:759
+ #: attach.c:631 attach.c:663 attach.c:958 attach.c:1016 handler.c:1362
+ #: pgpkey.c:571 pgpkey.c:760
 @@ -241,7 +241,7 @@
  
  #: browser.c:929
@@ -82,27 +82,25 @@
 @@ -320,9 +320,9 @@
  msgstr "%s: nie ma takiego obiektu"
  
- #: color.c:391
+ #: color.c:392
 -#, fuzzy, c-format
 +#, c-format
  msgid "%s: command valid only for index, body, header objects"
 -msgstr "%s: polecenia mog± dotyczyæ tylko obiektów indeksu"
 +msgstr "%s: polecenie poprawne tylko dla indeksu, cia³a i nag³ówka"
  
- #: color.c:399
+ #: color.c:400
  #, c-format
-@@ -404,9 +404,8 @@
- msgstr "Wprowad¼ polecenie: "
+@@ -405,7 +405,7 @@
  
- #: commands.c:256
--#, fuzzy
- msgid "Warning: message has no From: header"
--msgstr "Ostrze¿enie: fragment tej wiadomo¶ci nie zosta³ podpisany."
-+msgstr "Ostrze¿enie: wiadomo¶æ nie ma nag³ówka From:"
+ #: commands.c:256 commands.c:266 recvcmd.c:148 recvcmd.c:161
+ msgid "Warning: message contains no From: header"
+-msgstr ""
++msgstr "Ostrze¿enie: list nie zawiera nag³ówka From:"
  
  #: commands.c:274 recvcmd.c:171
  msgid "Bounce message to: "
-@@ -593,9 +592,8 @@
+@@ -592,9 +592,8 @@
  msgstr "Opis"
  
  #: compose.c:117
@@ -113,7 +111,7 @@
  
  #: compose.c:122
  msgid "Sign, Encrypt"
-@@ -611,21 +609,19 @@
+@@ -610,21 +609,19 @@
  
  #: compose.c:128
  msgid "None"
@@ -136,56 +134,56 @@
 -msgstr " (PGP/MIME)"
 +msgstr " (S/MIME)"
  
- #: compose.c:150 compose.c:154
- msgid " sign as: "
-@@ -698,11 +694,11 @@
+ #: compose.c:145
+ msgid " (OppEnc mode)"
+@@ -701,11 +698,11 @@
  
- #: compose.c:842
+ #: compose.c:862
  msgid "The current attachment won't be converted."
 -msgstr "Bie¿±cy za³acznik nie zostanie przekonwertowany."
 +msgstr "Bie¿±cy za³±cznik nie zostanie przekonwertowany."
  
- #: compose.c:844
+ #: compose.c:864
  msgid "The current attachment will be converted."
 -msgstr "Bie¿±cy za³acznik zostanie przekonwertowany."
 +msgstr "Bie¿±cy za³±cznik zostanie przekonwertowany."
  
- #: compose.c:919
+ #: compose.c:939
  msgid "Invalid encoding."
-@@ -835,7 +831,7 @@
- 
- #: crypt-gpgme.c:871
+@@ -843,6 +840,8 @@
+ #: crypt-gpgme.c:948
  msgid "$pgp_sign_as unset and no default key specified in ~/.gnupg/gpg.conf"
--msgstr ""
-+msgstr "$pgp_sign_as nie jest ustawione, ani nie podano domy¶lnego klucza w ~/.gnupg/gpg.conf"
+ msgstr ""
++"$pgp_sign_as nie jest ustawione, ani nie podano domy¶lnego klucza w ~/.gnupg/"
++"gpg.conf"
  
- #: crypt-gpgme.c:1066
+ #: crypt-gpgme.c:1144
  msgid "Warning: One of the keys has been revoked\n"
-@@ -906,49 +902,43 @@
+@@ -913,49 +912,43 @@
  
- #: crypt-gpgme.c:1290
+ #: crypt-gpgme.c:1368
  msgid "aka: "
 -msgstr ""
 +msgstr "aka: "
  
- #: crypt-gpgme.c:1300
+ #: crypt-gpgme.c:1378
  msgid "KeyID "
 -msgstr ""
 +msgstr "KeyID "
  
- #: crypt-gpgme.c:1308
+ #: crypt-gpgme.c:1386
 -#, fuzzy
  msgid "created: "
 -msgstr "Utworzyæ %s?"
 +msgstr "utworzony: "
  
- #: crypt-gpgme.c:1378
+ #: crypt-gpgme.c:1456
 -#, fuzzy
  msgid "Error getting key information for KeyID "
 -msgstr "B³±d sprawdzania klucza: "
 +msgstr "B³±d pobierania informacji o kluczu KeyID "
  
- #: crypt-gpgme.c:1380
+ #: crypt-gpgme.c:1458
  msgid ": "
 -msgstr ""
 +msgstr ": "
@@ -194,25 +192,25 @@
  #. signature, so we display what a PGP user expects: The name,
  #. fingerprint and the key validity (which is neither fully or
  #. ultimate).
- #: crypt-gpgme.c:1387 crypt-gpgme.c:1402
+ #: crypt-gpgme.c:1465 crypt-gpgme.c:1480
 -#, fuzzy
  msgid "Good signature from:"
 -msgstr "Poprawny podpis z³o¿ony przez: "
 +msgstr "Poprawny podpis z³o¿ony przez:"
  
- #: crypt-gpgme.c:1394
+ #: crypt-gpgme.c:1472
 -#, fuzzy
  msgid "*BAD* signature from:"
 -msgstr "Poprawny podpis z³o¿ony przez: "
 +msgstr "*Z£Y* podpis z³o¿ony przez:"
  
- #: crypt-gpgme.c:1410
+ #: crypt-gpgme.c:1488
 -#, fuzzy
  msgid "Problem signature from:"
 -msgstr "Poprawny podpis z³o¿ony przez: "
 +msgstr "Problematyczny podpis z³o¿ony przez:"
  
- #: crypt-gpgme.c:1414
+ #: crypt-gpgme.c:1492
 -#, fuzzy
  msgid "               expires: "
 -msgstr "                aka: "
@@ -220,7 +218,7 @@
  
  #. Note: We don't need a current time output because GPGME avoids
  #. such an attack by separating the meta information from the
-@@ -985,13 +975,13 @@
+@@ -992,13 +985,12 @@
  "[-- Error: decryption failed: %s --]\n"
  "\n"
  msgstr ""
@@ -228,52 +226,61 @@
 +"[-- B³±d: odszyfrowanie nie powiod³o siê: %s --]\n"
  "\n"
  
- #: crypt-gpgme.c:2124
--#, fuzzy, c-format
-+#, c-format
+ #: crypt-gpgme.c:2246
+-#, fuzzy
  msgid "Error extracting key data!\n"
 -msgstr "B³±d sprawdzania klucza: "
 +msgstr "B³±d wydobywania danych klucza!\n"
  
- #: crypt-gpgme.c:2304
+ #: crypt-gpgme.c:2431
  #, c-format
-@@ -1207,7 +1197,7 @@
- #: crypt-gpgme.c:3534
+@@ -1202,7 +1194,7 @@
+ #: crypt-gpgme.c:3642
  msgid "Error: certification chain to long - stopping here\n"
  msgstr ""
 -"B³±d: ³±ñcuch certyfikatów zbyt d³ugi - przetwarzanie zatrzymano tutaj\n"
 +"B³±d: ³añcuch certyfikatów zbyt d³ugi - przetwarzanie zatrzymano tutaj\n"
  
- #: crypt-gpgme.c:3545 pgpkey.c:580
+ #: crypt-gpgme.c:3653 pgpkey.c:581
  #, c-format
-@@ -1450,7 +1440,7 @@
+@@ -1316,7 +1308,7 @@
+ #: crypt-gpgme.c:4575
+ #, fuzzy, c-format
+ msgid "Error exporting key: %s\n"
+-msgstr "B³±d sprawdzania klucza: "
++msgstr "B³±d wydobywania danych klucza!\n"
+ 
+ #: crypt-gpgme.c:4591
+ #, fuzzy, c-format
+@@ -1504,8 +1496,7 @@
+ 
  #: cryptglue.c:89
  msgid "\"crypt_use_gpgme\" set but not built with GPGME support."
- msgstr ""
+-msgstr ""
 -"Ustawiono \"crypt_use_gpgme\" ale zbudowano Mutta bez wsparcia dla GPGME."
-+"Ustawiono \"crypt_use_gpgme\" ale zbudowano Mutta bez obs³ugi GPGME."
++msgstr "Ustawiono \"crypt_use_gpgme\" ale zbudowano Mutta bez obs³ugi GPGME."
  
  #: cryptglue.c:112
  msgid "Invoking S/MIME..."
-@@ -1622,7 +1612,7 @@
+@@ -1677,7 +1668,7 @@
  
- #: curs_main.c:1002
+ #: curs_main.c:1086
  msgid "Logged out of IMAP servers."
 -msgstr ""
 +msgstr "Wylogowano z serwerów IMAP."
  
- #: curs_main.c:1084
+ #: curs_main.c:1168
  msgid "Open mailbox in read-only mode"
-@@ -1656,7 +1646,7 @@
+@@ -1711,7 +1702,7 @@
  
- #: curs_main.c:1264
+ #: curs_main.c:1348
  msgid "Thread cannot be broken, message is not part of a thread"
 -msgstr ""
 +msgstr "W±tku nie mo¿na z³amaæ, list nie jest czê¶ci± w±tku"
  
- #: curs_main.c:1273
+ #: curs_main.c:1357
  msgid "link threads"
-@@ -1751,7 +1741,6 @@
+@@ -1806,7 +1797,6 @@
  #. * declared "static" (sigh)
  #.
  #: edit.c:41
@@ -281,7 +288,7 @@
  msgid ""
  "~~\t\tinsert a line beginning with a single ~\n"
  "~b users\tadd users to the Bcc: field\n"
-@@ -1763,8 +1752,8 @@
+@@ -1818,8 +1808,8 @@
  "~M messages\tsame as ~m, except include headers\n"
  "~p\t\tprint the message\n"
  msgstr ""
@@ -292,29 +299,30 @@
  "~c u¿ytkownicy\tdodaj u¿ytkowników do pola Cc:\n"
  "~f listy\tdo³±cz listy\n"
  "~F listy\tto samo co ~f ale do³±cz te¿ nag³ówki\n"
-@@ -1897,9 +1886,8 @@
+@@ -1952,9 +1942,9 @@
  msgstr "[-- Typ: %s/%s, Kodowanie: %s, Wielko¶æ: %s --]\n"
  
- #: handler.c:1279
+ #: handler.c:1281
 -#, fuzzy
  msgid "One or more parts of this message could not be displayed"
 -msgstr "Ostrze¿enie: fragment tej wiadomo¶ci nie zosta³ podpisany."
-+msgstr "Ostrze¿enie: co najmniej jeden fragment wiadomo¶ci nie móg³ byæ wy¶wietlony"
++msgstr ""
++"Ostrze¿enie: co najmniej jeden fragment wiadomo¶ci nie móg³ byæ wy¶wietlony"
  
- #: handler.c:1331
+ #: handler.c:1333
  #, c-format
-@@ -1981,9 +1969,8 @@
- msgstr "Nie mo¿na otworzyæ pliku tymczasowego!"
+@@ -2032,9 +2022,8 @@
+ msgstr "B³±d: multipart/signed nie ma protoko³u."
  
- #: handler.c:1790
+ #: handler.c:1821
 -#, fuzzy
  msgid "[-- This is an attachment "
 -msgstr "[-- Ten za³±cznik typu %s/%s "
 +msgstr "[-- To jest za³±cznik "
  
- #: handler.c:1792
+ #: handler.c:1823
  #, c-format
-@@ -2151,9 +2138,9 @@
+@@ -2210,9 +2199,9 @@
  msgstr "Skrzynka zosta³a zamkniêta"
  
  #: imap/imap.c:125
@@ -326,7 +334,7 @@
  
  #: imap/imap.c:189
  #, c-format
-@@ -2317,14 +2304,14 @@
+@@ -2376,14 +2365,14 @@
  msgstr "NieSpam: brak pasuj±cego wzorca"
  
  #: init.c:861
@@ -345,7 +353,7 @@
  
  #: init.c:1094
  msgid "attachments: no disposition"
-@@ -2396,9 +2383,9 @@
+@@ -2455,9 +2444,9 @@
  msgstr "%s nie jest ustawiony"
  
  #: init.c:1913
@@ -357,7 +365,7 @@
  
  #: init.c:2050
  #, c-format
-@@ -2406,17 +2393,17 @@
+@@ -2465,17 +2454,17 @@
  msgstr "%s: nieprawid³owy typ skrzynki"
  
  #: init.c:2081
@@ -379,7 +387,7 @@
  
  #: init.c:2142
  #, c-format
-@@ -2547,7 +2534,7 @@
+@@ -2606,7 +2595,7 @@
  
  #: lib.c:131
  msgid "Integer overflow -- can't allocate memory!"
@@ -388,7 +396,7 @@
  
  #: lib.c:138 lib.c:153 lib.c:185
  msgid "Out of memory!"
-@@ -2562,22 +2549,19 @@
+@@ -2621,22 +2610,19 @@
  "Aby zg³osiæ b³±d, odwied¼ stronê http://bugs.mutt.org/.\n"
  
  #: main.c:69
@@ -414,7 +422,7 @@
  msgid ""
  "Copyright (C) 1996-2007 Michael R. Elkins <me@mutt.org>\n"
  "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
-@@ -2591,13 +2575,14 @@
+@@ -2650,13 +2636,14 @@
  "Many others not mentioned here contributed code, fixes,\n"
  "and suggestions.\n"
  msgstr ""
@@ -432,7 +440,7 @@
  "\n"
  "Wielu innych twórców, nie wspomnianych tutaj,\n"
  "wnios³o wiele nowego kodu, poprawek i sugestii.\n"
-@@ -2638,7 +2623,6 @@
+@@ -2697,7 +2684,6 @@
  "02110-1301, USA.\n"
  
  #: main.c:115
@@ -440,7 +448,7 @@
  msgid ""
  "usage: mutt [<options>] [-z] [-f <file> | -yZ]\n"
  "       mutt [<options>] [-x] [-Hi <file>] [-s <subj>] [-bc <addr>] [-a "
-@@ -2653,15 +2637,16 @@
+@@ -2712,15 +2698,16 @@
  msgstr ""
  "u¿ycie: mutt [<opcje>]  [-z] [-f <plik> | -yZ]\n"
  "       mutt [<opcje>] [-x] [-Hi <plik>] [-s <temat>] [-bc <adres>] [-a "
@@ -460,7 +468,7 @@
  msgid ""
  "options:\n"
  "  -A <alias>\texpand the given alias\n"
-@@ -2673,10 +2658,11 @@
+@@ -2732,10 +2719,11 @@
  msgstr ""
  "opcje:\n"
  "  -A <alias>\tu¿yj aliasu\n"
@@ -474,7 +482,7 @@
  
  #: main.c:133
  msgid "  -d <level>\tlog debugging output to ~/.muttdebug0"
-@@ -2737,9 +2723,9 @@
+@@ -2796,9 +2784,9 @@
  msgstr "B³±d inicjalizacji terminala."
  
  #: main.c:666
@@ -486,7 +494,7 @@
  
  #: main.c:669
  #, c-format
-@@ -2762,7 +2748,7 @@
+@@ -2821,7 +2809,7 @@
  
  #: main.c:882
  msgid "Failed to parse mailto: link\n"
@@ -495,7 +503,7 @@
  
  #: main.c:894
  msgid "No recipients specified.\n"
-@@ -2909,9 +2895,8 @@
+@@ -2968,9 +2956,8 @@
  msgstr "Sprawdzanie %s..."
  
  #: mh.c:1385 mh.c:1463
@@ -506,86 +514,86 @@
  
  #: mh.c:1430
  msgid "maildir_commit_message(): unable to set time on file"
-@@ -3013,9 +2998,9 @@
+@@ -3072,9 +3059,9 @@
  msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
  
- #: mutt_ssl.c:424
+ #: mutt_ssl.c:435
 -#, fuzzy, c-format
 +#, c-format
  msgid "%s connection using %s (%s)"
 -msgstr "Po³±czenie SSL przy u¿yciu %s (%s)"
 +msgstr "Po³±czenie %s przy u¿yciu %s (%s)"
  
- #: mutt_ssl.c:526
+ #: mutt_ssl.c:537
  msgid "Unknown"
-@@ -3039,24 +3024,22 @@
+@@ -3098,24 +3085,22 @@
  msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
  
- #: mutt_ssl.c:826
+ #: mutt_ssl.c:837
 -#, fuzzy
  msgid "cannot get certificate subject"
 -msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
 +msgstr "nie mo¿na pobraæ tytu³u certyfikatu"
  
- #: mutt_ssl.c:836 mutt_ssl.c:845
+ #: mutt_ssl.c:847 mutt_ssl.c:856
 -#, fuzzy
  msgid "cannot get certificate common name"
 -msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
 +msgstr "nie mo¿na pobraæ ogólnej nazwy certyfikatu"
  
- #: mutt_ssl.c:859
+ #: mutt_ssl.c:870
 -#, fuzzy, c-format
 +#, c-format
  msgid "certificate owner does not match hostname %s"
 -msgstr "W³a¶ciciel certyfikatu nie odpowiada nadawcy."
 +msgstr "w³a¶ciciel certyfikatu nie zgadza siê z hostem %s"
  
- #: mutt_ssl.c:900
+ #: mutt_ssl.c:911
 -#, fuzzy, c-format
 +#, c-format
  msgid "Certificate host check failed: %s"
 -msgstr "Certyfikat zosta³ zapisany"
 +msgstr "Weryfikacja hosta certyfikatu nie powiod³a siê: %s"
  
- #: mutt_ssl.c:978 mutt_ssl_gnutls.c:761
+ #: mutt_ssl.c:989 mutt_ssl_gnutls.c:860
  msgid "This certificate belongs to:"
-@@ -3089,7 +3072,7 @@
- #: mutt_ssl.c:1014 mutt_ssl_gnutls.c:883
+@@ -3148,7 +3133,7 @@
+ #: mutt_ssl.c:1025 mutt_ssl_gnutls.c:982
  #, c-format
  msgid "SSL Certificate check (certificate %d of %d in chain)"
 -msgstr ""
 +msgstr "Weryfikacja certyfikatu SSL (certyfikat %d z %d w ³añcuchu)"
  
- #: mutt_ssl.c:1022 mutt_ssl_gnutls.c:892
+ #: mutt_ssl.c:1033 mutt_ssl_gnutls.c:991
  msgid "(r)eject, accept (o)nce, (a)ccept always"
-@@ -3138,7 +3121,7 @@
- 
- #: mutt_ssl_gnutls.c:732
+@@ -3202,6 +3187,8 @@
+ #: mutt_ssl_gnutls.c:831
  msgid "Warning: Server certificate was signed using an insecure algorithm"
--msgstr ""
-+msgstr "Uwaga: certyfikat serwera zosta³ podpisany z u¿yciem algorytmu, który nie jest bezpieczny"
+ msgstr ""
++"Uwaga: certyfikat serwera zosta³ podpisany z u¿yciem algorytmu, który nie "
++"jest bezpieczny"
  
- #: mutt_ssl_gnutls.c:851
+ #: mutt_ssl_gnutls.c:950
  #, c-format
-@@ -3196,7 +3179,7 @@
+@@ -3259,7 +3246,7 @@
  
- #: muttlib.c:976
+ #: muttlib.c:971
  msgid "File is a directory, save under it? [(y)es, (n)o, (a)ll]"
 -msgstr "Ten plik jest katalogim, zapisaæ w nim? [(t)ak, (n)ie, (w)szystkie]"
 +msgstr "Ten plik jest katalogiem, zapisaæ w nim? [(t)ak, (n)ie, (w)szystkie]"
  
- #: muttlib.c:976
+ #: muttlib.c:971
  msgid "yna"
-@@ -3204,7 +3187,7 @@
+@@ -3267,7 +3254,7 @@
  
- #: muttlib.c:992
+ #: muttlib.c:987
  msgid "File is a directory, save under it?"
 -msgstr "Ten plik jest katalogim, zapisaæ w nim?"
 +msgstr "Ten plik jest katalogiem, zapisaæ w nim?"
  
- #: muttlib.c:996
+ #: muttlib.c:991
  msgid "File under directory: "
-@@ -3268,7 +3251,7 @@
+@@ -3331,7 +3318,7 @@
  #: mx.c:771
  #, c-format
  msgid "Could not synchronize mailbox %s!"
@@ -594,16 +602,16 @@
  
  #: mx.c:835
  #, c-format
-@@ -3328,7 +3311,7 @@
+@@ -3391,7 +3378,7 @@
  
- #: mx.c:1505
+ #: mx.c:1506
  msgid "Integer overflow -- can't allocate memory."
 -msgstr "Przepe³nienie zmiennej ca³kowitej - nie mo¿na zaalokowaæ pamiêci."
 +msgstr "Przepe³nienie zmiennej ca³kowitej - nie mo¿na przydzieliæ pamiêci."
  
  #: pager.c:1532
  msgid "PrevPg"
-@@ -3407,9 +3390,9 @@
+@@ -3470,9 +3457,9 @@
  msgstr "b³±d we wzorcu: %s"
  
  #: pattern.c:830
@@ -615,45 +623,80 @@
  
  #: pattern.c:840
  #, c-format
-@@ -3527,9 +3510,9 @@
- msgstr "Nie mo¿na wywo³aæ PGP"
+@@ -3592,7 +3579,8 @@
+ #: pgp.c:1682
+ #, fuzzy, c-format
+ msgid "PGP (s)ign, sign (a)s, %s format, (c)lear, or (o)ppenc mode off? "
+-msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
++msgstr ""
++"PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP? "
  
- #: pgp.c:1590
+ #: pgp.c:1683 pgp.c:1709 pgp.c:1731
+ msgid "PGP/M(i)ME"
+@@ -3609,7 +3597,7 @@
+ #: pgp.c:1690
+ #, fuzzy
+ msgid "PGP (s)ign, sign (a)s, (c)lear, or (o)ppenc mode off? "
+-msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
++msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, b(e)z PGP? "
+ 
+ #: pgp.c:1691
+ msgid "safco"
+@@ -3620,42 +3608,41 @@
+ msgid ""
+ "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, %s format, (c)lear, or (o)ppenc "
+ "mode? "
+-msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
++msgstr ""
++"PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP? "
+ 
+ #: pgp.c:1711
+ #, fuzzy
+ msgid "esabfcoi"
+-msgstr "zpjoga"
++msgstr "zsabfei"
+ 
+ #: pgp.c:1716
+ #, fuzzy
+ msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, (c)lear, or (o)ppenc mode? "
+-msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
++msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, b(e)z PGP? "
+ 
+ #: pgp.c:1717
+ #, fuzzy
+ msgid "esabfco"
+-msgstr "zpjoga"
++msgstr "zpabfe"
+ 
+ #: pgp.c:1730
 -#, fuzzy, c-format
 +#, c-format
  msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, %s format, or (c)lear? "
 -msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
-+msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP? "
++msgstr ""
++"PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP? "
  
- #: pgp.c:1591
- msgid "PGP/M(i)ME"
-@@ -3544,22 +3527,19 @@
- #. * it.  The 'i' key is appended in this version.
- #.
- #: pgp.c:1597
+ #: pgp.c:1733
 -#, fuzzy
  msgid "esabfci"
 -msgstr "zpjoga"
 +msgstr "zsabfei"
  
- #. The keys accepted *must* be a prefix of the accepted keys in the "if"
- #. * clause above since the switch statement below depends on it.
- #.
- #: pgp.c:1604
+ #: pgp.c:1738
 -#, fuzzy
  msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, or (c)lear? "
 -msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
 +msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, b(e)z PGP? "
  
- #: pgp.c:1605
+ #: pgp.c:1739
 -#, fuzzy
  msgid "esabfc"
 -msgstr "zpjoga"
 +msgstr "zpabfe"
  
- #: pgpinvoke.c:308
+ #: pgpinvoke.c:309
  msgid "Fetching PGP key..."
-@@ -3607,9 +3587,9 @@
+@@ -3699,9 +3686,9 @@
  msgstr "Polecenie UIDL nie jest obs³ugiwane przez serwer."
  
  #: pop.c:296
@@ -665,7 +708,7 @@
  
  #: pop.c:411 pop.c:801
  #, c-format
-@@ -3668,7 +3648,7 @@
+@@ -3760,7 +3747,7 @@
  
  #: pop_auth.c:188
  msgid "POP timestamp is invalid!"
@@ -674,28 +717,19 @@
  
  #: pop_auth.c:193
  msgid "Authenticating (APOP)..."
-@@ -3684,9 +3664,9 @@
+@@ -3776,9 +3763,9 @@
  msgstr "Polecenie USER nie jest obs³ugiwane przez serwer."
  
- #: pop_lib.c:56
+ #: pop_lib.c:57
 -#, fuzzy, c-format
 +#, c-format
  msgid "Invalid POP URL: %s\n"
 -msgstr "B³êdny URL SMTP: %s"
 +msgstr "B³êdny URL POP: %s\n"
  
- #: pop_lib.c:207
+ #: pop_lib.c:208
  msgid "Unable to leave messages on server."
-@@ -3844,7 +3824,7 @@
- 
- #: recvcmd.c:148 recvcmd.c:161
- msgid "Warning: message contains no From: header"
--msgstr ""
-+msgstr "Ostrze¿enie: list nie zawiera nag³ówka From:"
- 
- #: recvcmd.c:241
- msgid "Error bouncing message!"
-@@ -3978,7 +3958,7 @@
+@@ -4072,7 +4059,7 @@
  
  #: score.c:122
  msgid "Error: score: invalid number"
@@ -704,36 +738,27 @@
  
  #: send.c:251
  msgid "No subject, abort?"
-@@ -4075,9 +4055,8 @@
+@@ -4169,9 +4156,8 @@
  
  #. check to see if the user wants copies of all attachments
- #: send.c:1706
+ #: send.c:1769
 -#, fuzzy
  msgid "Save attachments in Fcc?"
 -msgstr "obejrzyj za³±cznik jako tekst"
 +msgstr "Zapisaæ za³±czniki w Fcc?"
  
- #: send.c:1815
+ #: send.c:1878
  msgid "Could not send the message."
-@@ -4112,7 +4091,7 @@
+@@ -4206,7 +4192,7 @@
  
- #: sendlib.c:2350
+ #: sendlib.c:2357
  msgid "$sendmail must be set in order to send mail."
 -msgstr ""
 +msgstr "Do wysy³ania poczty musi byæ ustawiony $sendmail."
  
- #: sendlib.c:2421
+ #: sendlib.c:2428
  #, c-format
-@@ -4203,7 +4182,7 @@
- #, c-format
- msgid "Warning: You have not yet decided to trust ID %s. (any key to continue)"
- msgstr ""
--"Ostrze¿enie: nie oke¶lono poziomu zaufania dla %s (dow. klawisz by "
-+"Ostrze¿enie: nie okre¶lono poziomu zaufania dla %s (dow. klawisz by "
- "kontynuowaæ)."
- 
- #: smime.c:781
-@@ -4335,7 +4314,7 @@
+@@ -4428,7 +4414,7 @@
  
  #: smtp.c:258
  msgid "No from address given"
@@ -742,7 +767,7 @@
  
  #: smtp.c:314
  msgid "SMTP session failed: read error"
-@@ -4347,7 +4326,7 @@
+@@ -4440,7 +4426,7 @@
  
  #: smtp.c:318
  msgid "Invalid server response"
@@ -751,7 +776,7 @@
  
  #: smtp.c:341
  #, c-format
-@@ -4363,9 +4342,9 @@
+@@ -4456,9 +4442,9 @@
  msgstr "Uwierzytelnianie SMTP wymaga SASL"
  
  #: smtp.c:493
@@ -763,7 +788,7 @@
  
  #: smtp.c:510
  msgid "SASL authentication failed"
-@@ -4619,7 +4598,7 @@
+@@ -4712,7 +4698,7 @@
  
  #: ../keymap_alldefs.h:61
  msgid "display message and toggle header weeding"
@@ -772,7 +797,7 @@
  
  #: ../keymap_alldefs.h:62
  msgid "display a message"
-@@ -4627,7 +4606,7 @@
+@@ -4720,7 +4706,7 @@
  
  #: ../keymap_alldefs.h:63
  msgid "edit the raw message"
@@ -781,7 +806,7 @@
  
  #: ../keymap_alldefs.h:64
  msgid "delete the char in front of the cursor"
-@@ -4707,7 +4686,7 @@
+@@ -4800,7 +4786,7 @@
  
  #: ../keymap_alldefs.h:83
  msgid "capitalize the word"
@@ -790,7 +815,7 @@
  
  #: ../keymap_alldefs.h:84
  msgid "convert the word to lower case"
-@@ -4811,7 +4790,7 @@
+@@ -4904,7 +4890,7 @@
  
  #: ../keymap_alldefs.h:109
  msgid "logout from all IMAP servers"
@@ -799,7 +824,7 @@
  
  #: ../keymap_alldefs.h:110
  msgid "retrieve mail from POP server"
-@@ -5006,9 +4985,8 @@
+@@ -5099,9 +5085,8 @@
  msgstr "u¿yj bie¿±cego listu jako wzorca dla nowych wiadomo¶ci"
  
  #: ../keymap_alldefs.h:158
@@ -810,7 +835,7 @@
  
  #: ../keymap_alldefs.h:159
  msgid "search for a regular expression"
-@@ -5152,7 +5130,7 @@
+@@ -5245,7 +5230,7 @@
  
  #: ../keymap_alldefs.h:194
  msgid "Insert a remailer into the chain"
@@ -819,7 +844,7 @@
  
  #: ../keymap_alldefs.h:195
  msgid "Delete a remailer from the chain"
-@@ -5164,15 +5142,15 @@
+@@ -5257,15 +5242,15 @@
  
  #: ../keymap_alldefs.h:197
  msgid "Select the next element of the chain"
@@ -838,3 +863,23 @@
  
  #: ../keymap_alldefs.h:200
  msgid "make decrypted copy"
+@@ -5283,9 +5268,8 @@
+ msgid "show S/MIME options"
+ msgstr "poka¿ opcje S/MIME"
+ 
+-#, fuzzy
+ #~ msgid "Warning: message has no From: header"
+-#~ msgstr "Ostrze¿enie: fragment tej wiadomo¶ci nie zosta³ podpisany."
++#~ msgstr "Ostrze¿enie: wiadomo¶æ nie ma nag³ówka From:"
+ 
+ #~ msgid ""
+ #~ "[-- Error: malformed PGP/MIME message! --]\n"
+@@ -5316,7 +5300,7 @@
+ #~ msgid ""
+ #~ "Warning: You have not yet decided to trust ID %s. (any key to continue)"
+ #~ msgstr ""
+-#~ "Ostrze¿enie: nie oke¶lono poziomu zaufania dla %s (dow. klawisz by "
++#~ "Ostrze¿enie: nie okre¶lono poziomu zaufania dla %s (dow. klawisz by "
+ #~ "kontynuowaæ)."
+ 
+ #~ msgid "No output from OpenSSL.."

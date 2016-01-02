@@ -98,9 +98,9 @@ To sum up, it's more integrated and transparent to the user.
  WHERE char *Tempdir;
  WHERE char *Tochars;
 +WHERE char *TrashPath;
- WHERE char *Username;
- WHERE char *Visual;
- WHERE char *XtermTitle;
+ WHERE char *TSStatusFormat;
+ WHERE char *TSIconFormat;
+ WHERE short TSSupported;
 --- a/imap/message.c
 +++ b/imap/message.c
 @@ -876,6 +876,7 @@
