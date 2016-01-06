@@ -1,16 +1,16 @@
---- mutt-1.5.24/po/pl.po.orig	2016-01-02 18:46:16.401449059 +0100
-+++ mutt-1.5.24/po/pl.po	2016-01-02 18:47:34.371037304 +0100
+--- mutt-1.5.24/po/pl.po.orig	2015-08-30 19:25:32.000000000 +0200
++++ mutt-1.5.24/po/pl.po	2016-01-06 09:51:36.951360593 +0100
 @@ -2,6 +2,8 @@
  # Polskie teksty dla Mutta 1.x
  # 1998-2006 Pawe³ Dziekoñski
  # 1998-2002 Sergiusz Paw³owicz
-+# 2005-2013 Jakub Bogusz
++# 2005-2015 Jakub Bogusz
 +# 2007-2009 Adam Go³êbiowski
  # Pre-translation has bean done using PePeSza,
  # get it from http://home.elka.pw.edu.pl/~pkolodz2/pepesza.html
  #
 @@ -12,8 +14,8 @@
- "POT-Creation-Date: 2016-01-02 18:46+0100\n"
+ "POT-Creation-Date: 2015-08-30 10:25-0700\n"
  "PO-Revision-Date: 2007-11-02 11:11+0200\n"
  "Last-Translator: Pawe³ Dziekoñski <dzieko@gmail.com>\n"
 -"Language-Team: POLISH <pl@li.org>\n"
@@ -111,7 +111,7 @@
  
  #: compose.c:122
  msgid "Sign, Encrypt"
-@@ -610,21 +609,19 @@
+@@ -610,25 +609,23 @@
  
  #: compose.c:128
  msgid "None"
@@ -136,6 +136,11 @@
  
  #: compose.c:145
  msgid " (OppEnc mode)"
+-msgstr ""
++msgstr " (tryb OppEnc)"
+ 
+ #: compose.c:153 compose.c:157
+ msgid " sign as: "
 @@ -701,11 +698,11 @@
  
  #: compose.c:862
@@ -243,16 +248,114 @@
  
  #: crypt-gpgme.c:3653 pgpkey.c:581
  #, c-format
-@@ -1316,7 +1308,7 @@
+@@ -1314,88 +1306,76 @@
+ msgstr "Podaj identyfikator klucza: "
+ 
  #: crypt-gpgme.c:4575
- #, fuzzy, c-format
+-#, fuzzy, c-format
++#, c-format
  msgid "Error exporting key: %s\n"
 -msgstr "B³±d sprawdzania klucza: "
-+msgstr "B³±d wydobywania danych klucza!\n"
++msgstr "B³±d wydobywania klucza: %s\n"
  
  #: crypt-gpgme.c:4591
- #, fuzzy, c-format
-@@ -1504,8 +1496,7 @@
+-#, fuzzy, c-format
++#, c-format
+ msgid "PGP Key 0x%s."
+-msgstr "Klucz PGP %s."
++msgstr "Klucz PGP 0x%s."
+ 
+ #: crypt-gpgme.c:4633
+ msgid "GPGME: OpenPGP protocol not available"
+-msgstr ""
++msgstr "GPGME: protokó³ OpenPGP niedostêpny"
+ 
+ #: crypt-gpgme.c:4641
+ msgid "GPGME: CMS protocol not available"
+-msgstr ""
++msgstr "GPGME: protokó³ CMS niedostêpny"
+ 
+ #: crypt-gpgme.c:4678
+-#, fuzzy
+ msgid "S/MIME (s)ign, sign (a)s, (p)gp, (c)lear, or (o)ppenc mode off? "
+-msgstr ""
+-"S/MIME: (z)aszyfruj, (p)odpisz, podpisz (j)ako, (o)ba, p(g)p, (a)nuluj?"
++msgstr "S/MIME: (p)odpisz, podpisz (j)ako, p(g)p, (a)nuluj, wy³. tryb (o)oppenc? "
+ 
+ #: crypt-gpgme.c:4679
+ msgid "sapfco"
+-msgstr ""
++msgstr "pjgfao"
+ 
+ #: crypt-gpgme.c:4684
+-#, fuzzy
+ msgid "PGP (s)ign, sign (a)s, s/(m)ime, (c)lear, or (o)ppenc mode off? "
+-msgstr ""
+-"PGP: (z)aszyfruj, (p)odpisz, podpisz (j)ako, (o)ba, (s)/mime, (a)nuluj?"
++msgstr "PGP: (p)odpisz, podpisz (j)ako, (s)/mime, (a)nuluj, wy³. tryb (o)ppenc? "
+ 
+ #: crypt-gpgme.c:4685
+ msgid "samfco"
+-msgstr ""
++msgstr "pjsfao"
+ 
+ #: crypt-gpgme.c:4697
+-#, fuzzy
+ msgid ""
+ "S/MIME (e)ncrypt, (s)ign, sign (a)s, (b)oth, (p)gp, (c)lear, or (o)ppenc "
+ "mode? "
+ msgstr ""
+-"S/MIME: (z)aszyfruj, (p)odpisz, podpisz (j)ako, (o)ba, p(g)p, (a)nuluj?"
++"S/MIME: (z)aszyfruj, (p)odpisz, podpisz (j)ako, o(b)a, p(g)p, (a)nuluj, tryb (o)ppenc? "
+ 
+ #: crypt-gpgme.c:4698
+-#, fuzzy
+ msgid "esabpfco"
+-msgstr "zpjoga"
++msgstr "zpjbgfao"
+ 
+ #: crypt-gpgme.c:4703
+-#, fuzzy
+ msgid ""
+ "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, s/(m)ime, (c)lear, or (o)ppenc "
+ "mode? "
+ msgstr ""
+-"PGP: (z)aszyfruj, (p)odpisz, podpisz (j)ako, (o)ba, (s)/mime, (a)nuluj?"
++"PGP: (z)aszyfruj, (p)odpisz, podpisz (j)ako, o(b)a, (s)/mime, (a)nuluj, tryb (o)ppenc? "
+ 
+ #: crypt-gpgme.c:4704
+-#, fuzzy
+ msgid "esabmfco"
+-msgstr "zpjosa"
++msgstr "zpjbsfao"
+ 
+ #: crypt-gpgme.c:4715
+-#, fuzzy
+ msgid "S/MIME (e)ncrypt, (s)ign, sign (a)s, (b)oth, (p)gp or (c)lear? "
+-msgstr ""
+-"S/MIME: (z)aszyfruj, (p)odpisz, podpisz (j)ako, (o)ba, p(g)p, (a)nuluj?"
++msgstr "S/MIME: (z)aszyfruj, (p)odpisz, podpisz (j)ako, o(b)a, p(g)p, (a)nuluj? "
+ 
+ #: crypt-gpgme.c:4716
+ msgid "esabpfc"
+-msgstr "zpjoga"
++msgstr "zpjbgfa"
+ 
+ #: crypt-gpgme.c:4721
+-#, fuzzy
+ msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, s/(m)ime or (c)lear? "
+-msgstr ""
+-"PGP: (z)aszyfruj, (p)odpisz, podpisz (j)ako, (o)ba, (s)/mime, (a)nuluj?"
++msgstr "PGP: (z)aszyfruj, (p)odpisz, podpisz (j)ako, o(b)a, (s)/mime, (a)nuluj? "
+ 
+ #: crypt-gpgme.c:4722
+ msgid "esabmfc"
+-msgstr "zpjosa"
++msgstr "zpjbsfa"
+ 
+ #. sign (a)s
+ #: crypt-gpgme.c:4747 pgp.c:1766 smime.c:2162 smime.c:2177
+@@ -1504,8 +1484,7 @@
  
  #: cryptglue.c:89
  msgid "\"crypt_use_gpgme\" set but not built with GPGME support."
@@ -262,7 +365,7 @@
  
  #: cryptglue.c:112
  msgid "Invoking S/MIME..."
-@@ -1677,7 +1668,7 @@
+@@ -1677,7 +1656,7 @@
  
  #: curs_main.c:1086
  msgid "Logged out of IMAP servers."
@@ -271,7 +374,7 @@
  
  #: curs_main.c:1168
  msgid "Open mailbox in read-only mode"
-@@ -1711,7 +1702,7 @@
+@@ -1711,7 +1690,7 @@
  
  #: curs_main.c:1348
  msgid "Thread cannot be broken, message is not part of a thread"
@@ -280,7 +383,7 @@
  
  #: curs_main.c:1357
  msgid "link threads"
-@@ -1806,7 +1797,6 @@
+@@ -1806,7 +1785,6 @@
  #. * declared "static" (sigh)
  #.
  #: edit.c:41
@@ -288,7 +391,7 @@
  msgid ""
  "~~\t\tinsert a line beginning with a single ~\n"
  "~b users\tadd users to the Bcc: field\n"
-@@ -1818,8 +1808,8 @@
+@@ -1818,8 +1796,8 @@
  "~M messages\tsame as ~m, except include headers\n"
  "~p\t\tprint the message\n"
  msgstr ""
@@ -299,7 +402,7 @@
  "~c u¿ytkownicy\tdodaj u¿ytkowników do pola Cc:\n"
  "~f listy\tdo³±cz listy\n"
  "~F listy\tto samo co ~f ale do³±cz te¿ nag³ówki\n"
-@@ -1952,9 +1942,9 @@
+@@ -1952,9 +1930,9 @@
  msgstr "[-- Typ: %s/%s, Kodowanie: %s, Wielko¶æ: %s --]\n"
  
  #: handler.c:1281
@@ -311,7 +414,7 @@
  
  #: handler.c:1333
  #, c-format
-@@ -2032,9 +2022,8 @@
+@@ -2032,9 +2010,8 @@
  msgstr "B³±d: multipart/signed nie ma protoko³u."
  
  #: handler.c:1821
@@ -322,7 +425,21 @@
  
  #: handler.c:1823
  #, c-format
-@@ -2210,9 +2199,9 @@
+@@ -2095,11 +2072,11 @@
+ 
+ #: hook.c:93
+ msgid "current mailbox shortcut '^' is unset"
+-msgstr ""
++msgstr "skrót do bie¿±cej skrzynki '^' nie jest ustawiony"
+ 
+ #: hook.c:104
+ msgid "mailbox shortcut expanded to empty regexp"
+-msgstr ""
++msgstr "skrót do skrzynki rozwin±³ siê do wyra¿enia pustego"
+ 
+ #: hook.c:267
+ #, c-format
+@@ -2210,9 +2187,9 @@
  msgstr "Skrzynka zosta³a zamkniêta"
  
  #: imap/imap.c:125
@@ -334,7 +451,7 @@
  
  #: imap/imap.c:189
  #, c-format
-@@ -2376,14 +2365,14 @@
+@@ -2376,14 +2353,14 @@
  msgstr "NieSpam: brak pasuj±cego wzorca"
  
  #: init.c:861
@@ -353,7 +470,7 @@
  
  #: init.c:1094
  msgid "attachments: no disposition"
-@@ -2455,9 +2444,9 @@
+@@ -2455,9 +2432,9 @@
  msgstr "%s nie jest ustawiony"
  
  #: init.c:1913
@@ -365,7 +482,7 @@
  
  #: init.c:2050
  #, c-format
-@@ -2465,17 +2454,17 @@
+@@ -2465,17 +2442,17 @@
  msgstr "%s: nieprawid³owy typ skrzynki"
  
  #: init.c:2081
@@ -387,7 +504,7 @@
  
  #: init.c:2142
  #, c-format
-@@ -2606,7 +2595,7 @@
+@@ -2606,7 +2583,7 @@
  
  #: lib.c:131
  msgid "Integer overflow -- can't allocate memory!"
@@ -396,7 +513,7 @@
  
  #: lib.c:138 lib.c:153 lib.c:185
  msgid "Out of memory!"
-@@ -2621,22 +2610,19 @@
+@@ -2621,22 +2598,19 @@
  "Aby zg³osiæ b³±d, odwied¼ stronê http://bugs.mutt.org/.\n"
  
  #: main.c:69
@@ -422,7 +539,7 @@
  msgid ""
  "Copyright (C) 1996-2007 Michael R. Elkins <me@mutt.org>\n"
  "Copyright (C) 1996-2002 Brandon Long <blong@fiction.net>\n"
-@@ -2650,13 +2636,14 @@
+@@ -2650,13 +2624,14 @@
  "Many others not mentioned here contributed code, fixes,\n"
  "and suggestions.\n"
  msgstr ""
@@ -440,7 +557,7 @@
  "\n"
  "Wielu innych twórców, nie wspomnianych tutaj,\n"
  "wnios³o wiele nowego kodu, poprawek i sugestii.\n"
-@@ -2697,7 +2684,6 @@
+@@ -2697,7 +2672,6 @@
  "02110-1301, USA.\n"
  
  #: main.c:115
@@ -448,7 +565,7 @@
  msgid ""
  "usage: mutt [<options>] [-z] [-f <file> | -yZ]\n"
  "       mutt [<options>] [-x] [-Hi <file>] [-s <subj>] [-bc <addr>] [-a "
-@@ -2712,15 +2698,16 @@
+@@ -2712,15 +2686,16 @@
  msgstr ""
  "u¿ycie: mutt [<opcje>]  [-z] [-f <plik> | -yZ]\n"
  "       mutt [<opcje>] [-x] [-Hi <plik>] [-s <temat>] [-bc <adres>] [-a "
@@ -468,7 +585,7 @@
  msgid ""
  "options:\n"
  "  -A <alias>\texpand the given alias\n"
-@@ -2732,10 +2719,11 @@
+@@ -2732,10 +2707,11 @@
  msgstr ""
  "opcje:\n"
  "  -A <alias>\tu¿yj aliasu\n"
@@ -482,7 +599,7 @@
  
  #: main.c:133
  msgid "  -d <level>\tlog debugging output to ~/.muttdebug0"
-@@ -2796,9 +2784,9 @@
+@@ -2796,9 +2772,9 @@
  msgstr "B³±d inicjalizacji terminala."
  
  #: main.c:666
@@ -494,7 +611,7 @@
  
  #: main.c:669
  #, c-format
-@@ -2821,7 +2809,7 @@
+@@ -2821,7 +2797,7 @@
  
  #: main.c:882
  msgid "Failed to parse mailto: link\n"
@@ -503,7 +620,7 @@
  
  #: main.c:894
  msgid "No recipients specified.\n"
-@@ -2968,9 +2956,8 @@
+@@ -2968,9 +2944,8 @@
  msgstr "Sprawdzanie %s..."
  
  #: mh.c:1385 mh.c:1463
@@ -514,7 +631,7 @@
  
  #: mh.c:1430
  msgid "maildir_commit_message(): unable to set time on file"
-@@ -3072,9 +3059,9 @@
+@@ -3072,9 +3047,9 @@
  msgstr "Nie mo¿na pobraæ certyfikatu z docelowego hosta"
  
  #: mutt_ssl.c:435
@@ -526,7 +643,7 @@
  
  #: mutt_ssl.c:537
  msgid "Unknown"
-@@ -3098,24 +3085,22 @@
+@@ -3098,24 +3073,22 @@
  msgstr "Certyfikat serwera utraci³ wa¿no¶æ"
  
  #: mutt_ssl.c:837
@@ -557,7 +674,7 @@
  
  #: mutt_ssl.c:989 mutt_ssl_gnutls.c:860
  msgid "This certificate belongs to:"
-@@ -3148,7 +3133,7 @@
+@@ -3148,7 +3121,7 @@
  #: mutt_ssl.c:1025 mutt_ssl_gnutls.c:982
  #, c-format
  msgid "SSL Certificate check (certificate %d of %d in chain)"
@@ -566,7 +683,16 @@
  
  #: mutt_ssl.c:1033 mutt_ssl_gnutls.c:991
  msgid "(r)eject, accept (o)nce, (a)ccept always"
-@@ -3202,6 +3187,8 @@
+@@ -3184,7 +3157,7 @@
+ 
+ #: mutt_ssl_gnutls.c:357
+ msgid "Explicit ciphersuite selection via $ssl_ciphers not supported"
+-msgstr ""
++msgstr "Bezpo¶redni wybór szyfrów poprzez $ssl_ciphers nie jest obs³ugiwany"
+ 
+ #: mutt_ssl_gnutls.c:465
+ #, c-format
+@@ -3202,6 +3175,8 @@
  #: mutt_ssl_gnutls.c:831
  msgid "Warning: Server certificate was signed using an insecure algorithm"
  msgstr ""
@@ -575,7 +701,7 @@
  
  #: mutt_ssl_gnutls.c:950
  #, c-format
-@@ -3259,7 +3246,7 @@
+@@ -3259,7 +3234,7 @@
  
  #: muttlib.c:971
  msgid "File is a directory, save under it? [(y)es, (n)o, (a)ll]"
@@ -584,7 +710,7 @@
  
  #: muttlib.c:971
  msgid "yna"
-@@ -3267,7 +3254,7 @@
+@@ -3267,7 +3242,7 @@
  
  #: muttlib.c:987
  msgid "File is a directory, save under it?"
@@ -593,7 +719,7 @@
  
  #: muttlib.c:991
  msgid "File under directory: "
-@@ -3331,7 +3318,7 @@
+@@ -3331,7 +3306,7 @@
  #: mx.c:771
  #, c-format
  msgid "Could not synchronize mailbox %s!"
@@ -602,7 +728,7 @@
  
  #: mx.c:835
  #, c-format
-@@ -3391,7 +3378,7 @@
+@@ -3391,7 +3366,7 @@
  
  #: mx.c:1506
  msgid "Integer overflow -- can't allocate memory."
@@ -611,7 +737,7 @@
  
  #: pager.c:1532
  msgid "PrevPg"
-@@ -3470,9 +3457,9 @@
+@@ -3470,9 +3445,9 @@
  msgstr "b³±d we wzorcu: %s"
  
  #: pattern.c:830
@@ -623,50 +749,63 @@
  
  #: pattern.c:840
  #, c-format
-@@ -3592,7 +3579,8 @@
+@@ -3590,9 +3565,9 @@
+ msgstr "Nie mo¿na wywo³aæ PGP"
+ 
  #: pgp.c:1682
- #, fuzzy, c-format
+-#, fuzzy, c-format
++#, c-format
  msgid "PGP (s)ign, sign (a)s, %s format, (c)lear, or (o)ppenc mode off? "
 -msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
-+msgstr ""
-+"PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP? "
++msgstr "PGP: podpi(s)z, podpisz j(a)ko, format %s, b(e)z PGP, wy³. tryb (o)ppenc? "
  
  #: pgp.c:1683 pgp.c:1709 pgp.c:1731
  msgid "PGP/M(i)ME"
-@@ -3609,7 +3597,7 @@
+@@ -3604,58 +3579,53 @@
+ 
+ #: pgp.c:1685
+ msgid "safcoi"
+-msgstr ""
++msgstr "safeoi"
+ 
  #: pgp.c:1690
- #, fuzzy
+-#, fuzzy
  msgid "PGP (s)ign, sign (a)s, (c)lear, or (o)ppenc mode off? "
 -msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
-+msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, b(e)z PGP? "
++msgstr "PGP: podpi(s)z, podpisz j(a)ko, b(e)z PGP, wy³. tryb (o)ppenc? "
  
  #: pgp.c:1691
  msgid "safco"
-@@ -3620,42 +3608,41 @@
+-msgstr ""
++msgstr "safeo"
+ 
+ #: pgp.c:1708
+-#, fuzzy, c-format
++#, c-format
  msgid ""
  "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, %s format, (c)lear, or (o)ppenc "
  "mode? "
 -msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
 +msgstr ""
-+"PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP? "
++"PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, format %s, b(e)z PGP, tryb (o)ppenc? "
  
  #: pgp.c:1711
- #, fuzzy
+-#, fuzzy
  msgid "esabfcoi"
 -msgstr "zpjoga"
-+msgstr "zsabfei"
++msgstr "zsabfeoi"
  
  #: pgp.c:1716
- #, fuzzy
+-#, fuzzy
  msgid "PGP (e)ncrypt, (s)ign, sign (a)s, (b)oth, (c)lear, or (o)ppenc mode? "
 -msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, %s , b(e)z PGP? "
-+msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, b(e)z PGP? "
++msgstr "PGP: (z)aszyfruj, podpi(s)z, podpisz j(a)ko, o(b)a, b(e)z PGP, tryb (o)ppenc? "
  
  #: pgp.c:1717
- #, fuzzy
+-#, fuzzy
  msgid "esabfco"
 -msgstr "zpjoga"
-+msgstr "zpabfe"
++msgstr "zpabfeo"
  
  #: pgp.c:1730
 -#, fuzzy, c-format
@@ -696,7 +835,7 @@
  
  #: pgpinvoke.c:309
  msgid "Fetching PGP key..."
-@@ -3699,9 +3686,9 @@
+@@ -3699,9 +3669,9 @@
  msgstr "Polecenie UIDL nie jest obs³ugiwane przez serwer."
  
  #: pop.c:296
@@ -708,7 +847,7 @@
  
  #: pop.c:411 pop.c:801
  #, c-format
-@@ -3760,7 +3747,7 @@
+@@ -3760,7 +3730,7 @@
  
  #: pop_auth.c:188
  msgid "POP timestamp is invalid!"
@@ -717,7 +856,7 @@
  
  #: pop_auth.c:193
  msgid "Authenticating (APOP)..."
-@@ -3776,9 +3763,9 @@
+@@ -3776,9 +3746,9 @@
  msgstr "Polecenie USER nie jest obs³ugiwane przez serwer."
  
  #: pop_lib.c:57
@@ -729,7 +868,19 @@
  
  #: pop_lib.c:208
  msgid "Unable to leave messages on server."
-@@ -4072,7 +4059,7 @@
+@@ -3927,10 +3897,9 @@
+ msgstr "Usuwanie za³±czników z zaszyfrowanych listów jest niemo¿liwe."
+ 
+ #: recvattach.c:1132
+-#, fuzzy
+ msgid ""
+ "Deletion of attachments from signed messages may invalidate the signature."
+-msgstr "Usuwanie za³±czników z zaszyfrowanych listów jest niemo¿liwe."
++msgstr "Usuwanie za³±czników z podpisanych listów mo¿e uniewa¿niæ podpis."
+ 
+ #: recvattach.c:1149 recvattach.c:1166
+ msgid "Only deletion of multipart attachments is supported."
+@@ -4072,7 +4041,7 @@
  
  #: score.c:122
  msgid "Error: score: invalid number"
@@ -738,7 +889,7 @@
  
  #: send.c:251
  msgid "No subject, abort?"
-@@ -4169,9 +4156,8 @@
+@@ -4169,9 +4138,8 @@
  
  #. check to see if the user wants copies of all attachments
  #: send.c:1769
@@ -749,7 +900,7 @@
  
  #: send.c:1878
  msgid "Could not send the message."
-@@ -4206,7 +4192,7 @@
+@@ -4206,7 +4174,7 @@
  
  #: sendlib.c:2357
  msgid "$sendmail must be set in order to send mail."
@@ -758,7 +909,63 @@
  
  #: sendlib.c:2428
  #, c-format
-@@ -4428,7 +4414,7 @@
+@@ -4275,9 +4243,8 @@
+ msgstr "Certyfikat S/MIME dla \"%s\"."
+ 
+ #: smime.c:458
+-#, fuzzy
+ msgid "ID is not trusted."
+-msgstr "Nieprawid³owy identyfikator."
++msgstr "Identyfikator nie jest zaufany."
+ 
+ #: smime.c:742
+ msgid "Enter keyID: "
+@@ -4350,38 +4317,35 @@
+ "[-- Koniec danych podpisanych S/MIME. --]\n"
+ 
+ #: smime.c:2054
+-#, fuzzy
+ msgid ""
+ "S/MIME (s)ign, encrypt (w)ith, sign (a)s, (c)lear, or (o)ppenc mode off? "
+ msgstr ""
+-"S/MIME: (z)aszyfruj, (p)odpisz, (m)etoda, podp. (j)ako, (o)ba, (a)nuluj?"
++"S/MIME: (p)odpisz, (m)etoda, podpisz (j)ako, (a)nuluj, wy³. tryb (o)ppenc? "
+ 
+ #: smime.c:2055
+ msgid "swafco"
+-msgstr ""
++msgstr "pmjfao"
+ 
+ #: smime.c:2064
+-#, fuzzy
+ msgid ""
+ "S/MIME (e)ncrypt, (s)ign, encrypt (w)ith, sign (a)s, (b)oth, (c)lear, or "
+ "(o)ppenc mode? "
+ msgstr ""
+-"S/MIME: (z)aszyfruj, (p)odpisz, (m)etoda, podp. (j)ako, (o)ba, (a)nuluj?"
++"S/MIME: (z)aszyfruj, (p)odpisz, (m)etoda, podpisz (j)ako, o(b)a, (a)nuluj, tryb (o)ppenc?"
+ 
+ #: smime.c:2065
+-#, fuzzy
+ msgid "eswabfco"
+-msgstr "zpmjoa"
++msgstr "zpmjbfao"
+ 
+ #: smime.c:2073
+ msgid ""
+ "S/MIME (e)ncrypt, (s)ign, encrypt (w)ith, sign (a)s, (b)oth, or (c)lear? "
+ msgstr ""
+-"S/MIME: (z)aszyfruj, (p)odpisz, (m)etoda, podp. (j)ako, (o)ba, (a)nuluj?"
++"S/MIME: (z)aszyfruj, (p)odpisz, (m)etoda, podpisz (j)ako, o(b)a, (a)nuluj? "
+ 
+ #: smime.c:2074
+ msgid "eswabfc"
+-msgstr "zpmjoa"
++msgstr "zpmjbfa"
+ 
+ #. I use "dra" because "123" is recognized anyway
+ #: smime.c:2095
+@@ -4428,7 +4392,7 @@
  
  #: smtp.c:258
  msgid "No from address given"
@@ -767,7 +974,7 @@
  
  #: smtp.c:314
  msgid "SMTP session failed: read error"
-@@ -4440,7 +4426,7 @@
+@@ -4440,7 +4404,7 @@
  
  #: smtp.c:318
  msgid "Invalid server response"
@@ -776,7 +983,7 @@
  
  #: smtp.c:341
  #, c-format
-@@ -4456,9 +4442,9 @@
+@@ -4456,9 +4420,9 @@
  msgstr "Uwierzytelnianie SMTP wymaga SASL"
  
  #: smtp.c:493
@@ -788,7 +995,7 @@
  
  #: smtp.c:510
  msgid "SASL authentication failed"
-@@ -4712,7 +4698,7 @@
+@@ -4712,7 +4676,7 @@
  
  #: ../keymap_alldefs.h:61
  msgid "display message and toggle header weeding"
@@ -797,7 +1004,7 @@
  
  #: ../keymap_alldefs.h:62
  msgid "display a message"
-@@ -4720,7 +4706,7 @@
+@@ -4720,7 +4684,7 @@
  
  #: ../keymap_alldefs.h:63
  msgid "edit the raw message"
@@ -806,7 +1013,7 @@
  
  #: ../keymap_alldefs.h:64
  msgid "delete the char in front of the cursor"
-@@ -4800,7 +4786,7 @@
+@@ -4800,7 +4764,7 @@
  
  #: ../keymap_alldefs.h:83
  msgid "capitalize the word"
@@ -815,7 +1022,7 @@
  
  #: ../keymap_alldefs.h:84
  msgid "convert the word to lower case"
-@@ -4904,7 +4890,7 @@
+@@ -4904,7 +4868,7 @@
  
  #: ../keymap_alldefs.h:109
  msgid "logout from all IMAP servers"
@@ -824,7 +1031,7 @@
  
  #: ../keymap_alldefs.h:110
  msgid "retrieve mail from POP server"
-@@ -5099,9 +5085,8 @@
+@@ -5099,9 +5063,8 @@
  msgstr "u¿yj bie¿±cego listu jako wzorca dla nowych wiadomo¶ci"
  
  #: ../keymap_alldefs.h:158
@@ -835,7 +1042,7 @@
  
  #: ../keymap_alldefs.h:159
  msgid "search for a regular expression"
-@@ -5245,7 +5230,7 @@
+@@ -5245,7 +5208,7 @@
  
  #: ../keymap_alldefs.h:194
  msgid "Insert a remailer into the chain"
@@ -844,7 +1051,7 @@
  
  #: ../keymap_alldefs.h:195
  msgid "Delete a remailer from the chain"
-@@ -5257,15 +5242,15 @@
+@@ -5257,15 +5220,15 @@
  
  #: ../keymap_alldefs.h:197
  msgid "Select the next element of the chain"
@@ -863,7 +1070,7 @@
  
  #: ../keymap_alldefs.h:200
  msgid "make decrypted copy"
-@@ -5283,9 +5268,8 @@
+@@ -5283,9 +5246,8 @@
  msgid "show S/MIME options"
  msgstr "poka¿ opcje S/MIME"
  
@@ -874,7 +1081,7 @@
  
  #~ msgid ""
  #~ "[-- Error: malformed PGP/MIME message! --]\n"
-@@ -5316,7 +5300,7 @@
+@@ -5316,7 +5278,7 @@
  #~ msgid ""
  #~ "Warning: You have not yet decided to trust ID %s. (any key to continue)"
  #~ msgstr ""
