@@ -29,7 +29,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.5.24
-Release:	1
+Release:	2
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
