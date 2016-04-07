@@ -174,7 +174,7 @@ Mutt - це невеликий, але потужний повноекранни
 %patch19 -p1
 %patch20 -p1
 %patch21 -p1
-#%%patch22 -p1
+%patch22 -p1
 %patch23 -p1
 %{?with_nntp:%patch24 -p1}
 %patch25 -p1

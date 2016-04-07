@@ -41,7 +41,7 @@ by Paul Miller (jettero)
 +                imap_fix_path (idata, mx.mbox, mbox, sizeof (mbox));
 +                if (!*mbox)
 +                    strfcpy (mbox, "INBOX", sizeof (mbox));
-+                imap_munge_mbox_name (mmbox, sizeof (mmbox), mbox);
++                imap_munge_mbox_name (idata, mmbox, sizeof (mmbox), mbox);
 +
 +                rc = imap_exec_msgset (idata, "UID COPY", mmbox, M_EXPIRED, 0, 0);
 +                if (!rc) {
