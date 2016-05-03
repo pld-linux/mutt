@@ -1005,7 +1005,7 @@
   	score.c send.c sendlib.c signal.c signature.c sort.c \
   	status.c system.c thread.c charset.c history.c lib.c \
 + 	sidebar.c \
-  	muttlib.c editmsg.c mbyte.c mutt_idna.c \
+  	muttlib.c editmsg.c mbyte.c \
   	url.c ascii.c crypt-mod.c crypt-mod.h safe_asprintf.c
   
 *** mutt-1.5.24-orig/mbox.c	2015-08-30 12:06:38.000000000 -0500
