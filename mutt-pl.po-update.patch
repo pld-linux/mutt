@@ -882,13 +882,13 @@
 @@ -4231,9 +4214,8 @@
  msgstr "Wysy³anie listu..."
  
- #: send.c:1788
+ #: send.c:1789
 -#, fuzzy
  msgid "Save attachments in Fcc?"
 -msgstr "obejrzyj za³±cznik jako tekst"
 +msgstr "Zapisaæ za³±czniki w Fcc?"
  
- #: send.c:1897
+ #: send.c:1899
  msgid "Could not send the message."
 @@ -4268,7 +4250,7 @@
  
