@@ -1,0 +1,53 @@
+From 7d69f2a2822621ca3018ed7296bdb165a356c71a Mon Sep 17 00:00:00 2001
+From: Vincent Lefevre <vincent@vinc17.net>
+Date: Sat, 26 Nov 2016 00:57:42 +0100
+Subject: [PATCH] Fix build failure with GPGME 1.8: do not steal the gpgme_
+ prefix.
+
+Upstream commit.
+
+Fixes: #257
+---
+ crypt-gpgme.c         | 2 +-
+ crypt-gpgme.h         | 2 +-
+ crypt-mod-pgp-gpgme.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/crypt-gpgme.c b/crypt-gpgme.c
+index b5a0990d5..2a325e6d7 100644
+--- a/crypt-gpgme.c
++++ b/crypt-gpgme.c
+@@ -4959,7 +4959,7 @@ int smime_gpgme_verify_sender (HEADER *h)
+   return verify_sender (h, GPGME_PROTOCOL_CMS);
+ }
+ 
+-void gpgme_set_sender (const char *sender)
++void mutt_gpgme_set_sender (const char *sender)
+ {
+   mutt_error ("[setting sender] mailbox: %s\n", sender);
+   FREE (&current_sender);
+diff --git a/crypt-gpgme.h b/crypt-gpgme.h
+index 11ca6a60f..7f5ecda37 100644
+--- a/crypt-gpgme.h
++++ b/crypt-gpgme.h
+@@ -53,6 +53,6 @@ int smime_gpgme_send_menu (HEADER *msg, int *redraw);
+ 
+ int smime_gpgme_verify_sender (HEADER *h);
+ 
+-void gpgme_set_sender (const char *sender);
++void mutt_gpgme_set_sender (const char *sender);
+ 
+ #endif
+diff --git a/crypt-mod-pgp-gpgme.c b/crypt-mod-pgp-gpgme.c
+index 948585c45..183f4eeec 100644
+--- a/crypt-mod-pgp-gpgme.c
++++ b/crypt-mod-pgp-gpgme.c
+@@ -104,7 +104,7 @@ static BODY *crypt_mod_pgp_make_key_attachment (char *tempf)
+ 
+ static void crypt_mod_pgp_set_sender (const char *sender)
+ {
+-  gpgme_set_sender (sender);
++  mutt_gpgme_set_sender (sender);
+ }
+ 
+ struct crypt_module_specs crypt_mod_pgp_gpgme =
