@@ -154,35 +154,37 @@ Mutt - це невеликий, але потужний повноекранни
 
 %prep
 %setup -q
-%patch0 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%{?with_home_etc:%patch14 -p1}
-%patch15 -p1
-%patch16 -p1
+# pl.poupdate
+#%patch0 -p1
+# compressed patch applied upstream
+#%patch2 -p1
+#%patch3 -p1
+#%patch4 -p1
+#%patch5 -p1
+#%patch6 -p1
+#%patch7 -p1
+#%patch8 -p1
+#%patch9 -p1
+#%patch10 -p1
+#%patch11 -p1
+#%patch12 -p1
+#%patch13 -p1
+#%{?with_home_etc:%patch14 -p1}
+#%patch15 -p1
+#%patch16 -p1
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch17 -p1}
-%{?with_imap_recent:%patch18 -p1}
-%patch19 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p1
-%patch23 -p1
-%{?with_nntp:%patch24 -p1}
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
+#%{?with_folder_column:%patch17 -p1}
+#%{?with_imap_recent:%patch18 -p1}
+#%patch19 -p1
+#%patch20 -p1
+#%patch21 -p1
+#%patch22 -p1
+#%patch23 -p1
+#%{?with_nntp:%patch24 -p1}
+#%patch25 -p1
+#%patch26 -p1
+#%patch27 -p1
+#%patch28 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}
@@ -262,13 +264,20 @@ EOF
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post	-p /sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
+
+%postun	-p /sbin/postshell
+-/usr/sbin/fix-info-dir -c %{_infodir}
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL README.xface
+%doc contrib/{*rc*,*cap*} ChangeLog README TODO NEWS README.SECURITY README.SSL
 %dir %{_sysconfdir}/Muttrc.d
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/Muttrc
 %config(noreplace,missingok) %verify(not md5 mtime size) %{_sysconfdir}/Muttrc.d/*.rc
 %attr(755,root,root) %{_bindir}/mutt
+%attr(755,root,root) %{_bindir}/mutt_pgpring
 %attr(755,root,root) %{_bindir}/mutt_source-muttrc.d
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
@@ -279,10 +288,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/%{name}
 %{_desktopdir}/mutt.desktop
 %{_pixmapsdir}/mutt.png
-%{_mandir}/man1/flea.1*
+#%{_mandir}/man1/flea.1*
 %{_mandir}/man1/mutt*.1*
 %{_mandir}/man1/pgp*.1*
 %{_mandir}/man1/smime_keys.1*
 %{_mandir}/man5/mmdf.5*
 %{_mandir}/man5/muttrc.5*
 %lang(pl) %{_mandir}/pl/man1/*
+%{_infodir}/mutt.info*
