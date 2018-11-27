@@ -60,6 +60,7 @@ Patch11:	%{name}-smime.rc.patch
 Patch12:	%{name}-db.patch
 Patch13:	format-security.patch
 Patch14:	%{name}-keep_to.patch
+Patch15:	%{name}-vvv.initials.patch
 # applied during %%install
 Patch50:	%{name}-Muttrc.patch
 # bcond-related patches
@@ -167,6 +168,7 @@ Mutt - це невеликий, але потужний повноекранни
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
+%patch15 -p1
 
 %{?with_home_etc:%patch101 -p1}
 %{?with_nntp:%patch102 -p1}

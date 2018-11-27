@@ -1,0 +1,48 @@
+diff -udprP mutt-1.10.0.orig/hdrline.c mutt-1.10.0/hdrline.c
+--- mutt-1.10.0.orig/hdrline.c	2018-05-15 00:51:53.000000000 +0300
++++ mutt-1.10.0/hdrline.c	2018-06-16 17:17:07.682610173 +0300
+@@ -228,6 +228,7 @@ static char *apply_subject_mods (ENVELOP
+  * %f = entire from line
+  * %F = like %n, unless from self
+  * %i = message-id
++ * %I = initials of author
+  * %l = number of lines in the message
+  * %L = like %F, except `lists' are displayed first
+  * %m = number of messages in the mailbox
+@@ -478,6 +479,31 @@ hdr_format_str (char *dest,
+       mutt_format_s (dest, destlen, prefix, hdr->env->message_id ? hdr->env->message_id : "<no.id>");
+       break;
+ 
++    case 'I':
++      {
++	int iflag = FALSE;
++	int j = 0;
++
++	for (i = 0; hdr->env->from && hdr->env->from->personal &&
++		    hdr->env->from->personal[i] && j < SHORT_STRING - 1; i++)
++	{
++	  if (isalpha ((int)hdr->env->from->personal[i]))
++	  {
++	    if (!iflag)
++	    {
++	      buf2[j++] = hdr->env->from->personal[i];
++	      iflag = TRUE;
++	    }
++	  }
++	  else
++	    iflag = FALSE;
++	}
++
++	buf2[j] = '\0';
++      }
++      mutt_format_s (dest, destlen, prefix, buf2);
++      break;
++
+     case 'l':
+       if (!optional)
+       {
+diff -udprP mutt-1.10.0.orig/PATCHES mutt-1.10.0/PATCHES
+--- mutt-1.10.0.orig/PATCHES	2017-12-03 05:10:17.000000000 +0200
++++ mutt-1.10.0/PATCHES	2018-06-16 17:17:07.683610157 +0300
+@@ -0,0 +1 @@
++vvv.initials
