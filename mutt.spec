@@ -5,7 +5,6 @@
 # - update/drop -home_etc.patch
 # - update/drop -nntp.patch
 # - update/drop -imap_recent.patch
-# - update -pl.po-update.patch
 #
 # Conditional build:
 %bcond_with	slang		# use slang library instead of ncurses
@@ -33,7 +32,7 @@ Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
 Version:	1.11.0
-Release:	0.0.1
+Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
@@ -153,7 +152,7 @@ Mutt - це невеликий, але потужний повноекранни
 %prep
 %setup -q
 # pl.poupdate
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
