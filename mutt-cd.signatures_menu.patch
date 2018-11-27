@@ -28,7 +28,7 @@ diff -pruN2 mutt-1.3.27.orig/OPS mutt-1.3.27/OPS
  OP_PREV_PAGE "move to the previous page"
 +OP_PREV_SIG "move to the previous signature"
  OP_PRINT "print the current entry"
- OP_PURGE_MESSAGE "really delete the current entry, bypassing the trash folder"
+ OP_PURGE_MESSAGE "delete the current entry, bypassing the trash folder"
  OP_QUERY "query external program for addresses"
  OP_QUERY_APPEND "append new query results to current results"
  OP_QUIT "save changes to mailbox and quit"
@@ -44,12 +44,11 @@ diff -pruN2 mutt-1.3.27.orig/OPS mutt-1.3.27/OPS
 diff -pruN2 mutt-1.3.27.orig/compose.c mutt-1.3.27/compose.c
 --- mutt-1.3.27.orig/compose.c	Mon Dec  3 11:17:57 2001
 +++ mutt-1.3.27/compose.c	Wed Jan 23 22:35:32 2002
-@@ -1103,4 +1103,10 @@ int mutt_compose_menu (HEADER *msg,   /*
+@@ -1103,4 +1103,9 @@ int mutt_compose_menu (HEADER *msg,   /*
  	break;
  
 +      case OP_COMPOSE_SIG:
 +	mutt_signature(msg->content->filename);
-+	MAYBE_REDRAW (menu->redraw);
 +	mutt_update_encoding (msg->content);
 +	break;
 +
@@ -179,7 +178,7 @@ diff -pruN2 mutt-1.3.27.orig/protos.h mutt-1.3.27/protos.h
 diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 --- mutt-1.3.27.orig/signature.c	Thu Jan  1 01:00:00 1970
 +++ mutt-1.3.27/signature.c	Wed Jan 23 22:35:32 2002
-@@ -0,0 +1,504 @@
+@@ -0,0 +1,499 @@
 +/*
 + * Copyright (C) 2001 Cedric Duval <cedricduval@free.fr>
 + * 
@@ -451,7 +450,6 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +	break;
 +
 +      case OP_EXIT:
-+	set_option (OPTNEEDREDRAW);
 +        done = 1;
 +        break;
 +    }
@@ -475,7 +473,7 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  snprintf (buf, sizeof(buf), searchBuf ? searchBuf : "");
 +  if (mutt_get_field (_("Search for: "), buf,
-+		      sizeof (buf), M_CLEAR) != 0 || !buf[0])
++		      sizeof (buf), MUTT_CLEAR) != 0 || !buf[0])
 +    return (NULL);
 +  if (menu->menu >= 0 && menu->menu < MENU_MAX)
 +  {
@@ -629,7 +627,6 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +	    done = 1;
 +	  }
 +
-+	  MAYBE_REDRAW (menu->redraw);
 +	  free_sig_list (&sigl);
 +	}
 +	break;
@@ -648,7 +645,6 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +	    done = 1;
 +	  }
 +
-+	  MAYBE_REDRAW (menu->redraw);
 +	  free_sig_list (&sigl);
 +      	}
 +	break;
@@ -681,8 +677,6 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +
 +  if (sig_dir_menu (SigDirectory, msg_file) == -1)
 +    mutt_error (_("%s: no files in this directory"), SigDirectory);
-+  else
-+    set_option (OPTNEEDREDRAW);
 +}
 diff -pruN mutt-1.3.27.orig/PATCHES mutt-1.3.27/PATCHES
 --- mutt-1.3.27.orig/PATCHES    Mon Nov 26 20:16:52 2001

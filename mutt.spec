@@ -9,7 +9,7 @@
 %bcond_with	folder_column	# build with folder_column patch
 %bcond_with	imap_recent	# show IMAP RECENT messages as new (instead of UNSEEN)
 %bcond_without	sasl		# don't use sasl
-%bcond_without	home_etc	# don't use home_etc
+%bcond_with	home_etc	# use home_etc
 %bcond_with	gdbm		# use GDBM instead of BerkeleyDB
 %bcond_with	qdbm		# use QDBM instead of BerkeleyDB
 %bcond_with	tokyocabinet	# use TokyoCabinet instead of BerkeleyDB
@@ -160,31 +160,51 @@ Mutt - це невеликий, але потужний повноекранни
 #%patch2 -p1
 %patch3 -p1
 %patch4 -p1
-#%patch5 -p1
+%patch5 -p1
+# trash folder patch applied upstream
 #%patch6 -p1
+# purge patch applied upstream
 #%patch7 -p1
-#%patch8 -p1
-#%patch9 -p1
-#%patch10 -p1
-#%patch11 -p1
-#%patch12 -p1
-#%patch13 -p1
-#%{?with_home_etc:%patch14 -p1}
-#%patch15 -p1
+# cd.signatures
+%patch8 -p1
+# crypt-autosolect
+%patch9 -p1
+# manual
+%patch10 -p1
+# xface
+%patch11 -p1
+# muttrc_mbox_path
+%patch12 -p1
+# po
+%patch13 -p1
+%{?with_home_etc:%patch14 -p1}
+# muttrc
+%patch15 -p1
+# muttbug-tmp - idea dropped, issues to be reported via gitlab
 #%patch16 -p1
 # breaks display if arrow_cursor is set
-#%{?with_folder_column:%patch17 -p1}
-#%{?with_imap_recent:%patch18 -p1}
-#%patch19 -p1
-#%patch20 -p1
-#%patch21 -p1
-#%patch22 -p1
-#%patch23 -p1
-#%{?with_nntp:%patch24 -p1}
-#%patch25 -p1
-#%patch26 -p1
-#%patch27 -p1
-#%patch28 -p1
+%{?with_folder_column:%patch17 -p1}
+%{?with_imap_recent:%patch18 -p1}
+# muttr.head
+%patch19 -p1
+# smime.rc
+%patch20 -p1
+# sidebar.patch - applied upstream
+# %patch21 -p1
+# imap_fast_trash - applied upstream
+# %patch22 -p1
+# db
+%patch23 -p1
+# nntp
+%{?with_nntp:%patch24 -p1}
+# formats-ecurity
+%patch25 -p1
+# keep-to
+%patch26 -p1
+# mutt-gpgme - applied upstream
+# %patch27 -p1
+# openssl - applied upstream
+# %patch28 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}

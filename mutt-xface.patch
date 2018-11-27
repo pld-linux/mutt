@@ -119,11 +119,10 @@ diff -urp ../MUTT/mutt/init.c mutt/init.c
  #include <sys/wait.h>
  
  void toggle_quadoption (int opt)
-@@ -2356,3 +2358,131 @@ int mutt_get_hook_type (const char *name
-       return c->data;
-   return 0;
+@@ -2356,3 +2358,130 @@ int mutt_get_hook_type (const char *name
+   return 1;
  }
-+
+ 
 +void mutt_start_slrnface(void)
 +{
 +  char *fifo;
@@ -276,18 +275,18 @@ diff -urp ../MUTT/mutt/main.c mutt/main.c
  
 +    mutt_start_slrnface();
 +
-     if((Context = mx_open_mailbox (folder, ((flags & M_RO) || option (OPTREADONLY)) ? M_READONLY : 0, NULL))
+     if((Context = mx_open_mailbox (folder, ((flags & MUTT_RO) || option (OPTREADONLY)) ? MUTT_READONLY : 0, NULL))
         || !explicit_folder)
      {
 @@ -913,6 +915,8 @@ int main (int argc, char **argv)
- 	FREE (&Context);
      }
-     mutt_endwin (Errorbuf);
+ 
+     exit_endwin_msg = Errorbuf;
 +
 +    mutt_stop_slrnface();
    }
  
-   exit (0);
+   exit_code = 0;
 diff -urp ../MUTT/mutt/mutt.h mutt/mutt.h
 --- ../MUTT/mutt/mutt.h	2004-07-21 13:33:02.000000000 +0200
 +++ mutt/mutt.h	2004-07-21 13:33:47.000000000 +0200
@@ -405,17 +404,17 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
 +	  mutt_suppress_xface ();
  	  mutt_help (MENU_PAGER);
 +	  mutt_show_xface ();
- 	  redraw = REDRAW_FULL;
+ 	  pager_menu->redraw = REDRAW_FULL;
  	  InHelp = 0;
  	}
-@@ -2383,59 +2448,71 @@ CHECK_IMAP_ACL(IMAP_ACL_WRITE);
+@@ -2383,58 +2448,70 @@ CHECK_IMAP_ACL(IMAP_ACL_WRITE);
        case OP_MAIL:
  	CHECK_MODE(IsHeader (extra) && !IsAttach (extra));
          CHECK_ATTACH;      
 +	mutt_suppress_xface ();
  	ci_send_message (0, NULL, NULL, extra->ctx, NULL);
 +	mutt_show_xface ();
- 	redraw = REDRAW_FULL;
+ 	pager_menu->redraw = REDRAW_FULL;
  	break;
  
        case OP_REPLY:
@@ -423,13 +422,12 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
          CHECK_ATTACH;      
 +	mutt_suppress_xface();
          if (IsMsgAttach (extra)) 
- 	  mutt_attach_reply (extra->fp, extra->hdr, extra->idx,
- 			     extra->idxlen, extra->bdy,
- 			     SENDREPLY);
+ 	  mutt_attach_reply (extra->fp, extra->hdr, extra->actx,
+ 			     extra->bdy, SENDREPLY);
  	else
  	  ci_send_message (SENDREPLY, NULL, NULL, extra->ctx, extra->hdr);
 +	mutt_show_xface ();
- 	redraw = REDRAW_FULL;
+ 	pager_menu->redraw = REDRAW_FULL;
  	break;
  
        case OP_RECALL_MESSAGE:
@@ -438,7 +436,7 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
 +	mutt_suppress_xface();
  	ci_send_message (SENDPOSTPONED, NULL, NULL, extra->ctx, extra->hdr);
 +	mutt_show_xface ();
- 	redraw = REDRAW_FULL;
+ 	pager_menu->redraw = REDRAW_FULL;
  	break;
  
        case OP_GROUP_REPLY:
@@ -446,12 +444,12 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
          CHECK_ATTACH;
 +	mutt_suppress_xface();
          if (IsMsgAttach (extra))
- 	  mutt_attach_reply (extra->fp, extra->hdr, extra->idx,
- 			     extra->idxlen, extra->bdy, SENDREPLY|SENDGROUPREPLY);
+ 	  mutt_attach_reply (extra->fp, extra->hdr, extra->actx,
+ 			     extra->bdy, SENDREPLY|SENDGROUPREPLY);
          else
  	  ci_send_message (SENDREPLY | SENDGROUPREPLY, NULL, NULL, extra->ctx, extra->hdr);
 +	mutt_suppress_xface ();
- 	redraw = REDRAW_FULL;
+ 	pager_menu->redraw = REDRAW_FULL;
  	break;
  
        case OP_LIST_REPLY:
@@ -459,12 +457,12 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
          CHECK_ATTACH;        
 +	mutt_suppress_xface();
          if (IsMsgAttach (extra))
- 	  mutt_attach_reply (extra->fp, extra->hdr, extra->idx,
- 			     extra->idxlen, extra->bdy, SENDREPLY|SENDLISTREPLY);
+ 	  mutt_attach_reply (extra->fp, extra->hdr, extra->actx,
+ 			     extra->bdy, SENDREPLY|SENDLISTREPLY);
          else
  	  ci_send_message (SENDREPLY | SENDLISTREPLY, NULL, NULL, extra->ctx, extra->hdr);
 +	mutt_show_xface ();
- 	redraw = REDRAW_FULL;
+ 	pager_menu->redraw = REDRAW_FULL;
  	break;
  
        case OP_FORWARD_MESSAGE:
@@ -472,12 +470,12 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
          CHECK_ATTACH;
 +	mutt_suppress_xface();
          if (IsMsgAttach (extra))
- 	  mutt_attach_forward (extra->fp, extra->hdr, extra->idx,
- 			       extra->idxlen, extra->bdy);
+ 	  mutt_attach_forward (extra->fp, extra->hdr, extra->actx,
+ 			       extra->bdy);
          else
  	  ci_send_message (SENDFORWARD, NULL, NULL, extra->ctx, extra->hdr);
 +	mutt_show_xface ();
- 	redraw = REDRAW_FULL;
+ 	pager_menu->redraw = REDRAW_FULL;
  	break;
  
 @@ -2485,7 +2562,9 @@ CHECK_IMAP_ACL(IMAP_ACL_WRITE);
@@ -487,13 +485,13 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
 +	mutt_suppress_xface ();
  	mutt_shell_escape ();
 +	mutt_show_xface ();
- 	MAYBE_REDRAW (redraw);
  	break;
  
+       case OP_TAG:
 @@ -2644,5 +2723,6 @@ CHECK_IMAP_ACL(IMAP_ACL_DELETE);
-   FREE (&lineInfo);
-   if (index)
-     mutt_menuDestroy(&index);
+   FREE (&rd.pager_status_window);
+   FREE (&rd.pager_window);
+ 
 +  mutt_clear_xface ();
    return (rc != -1 ? rc : 0);
  }
