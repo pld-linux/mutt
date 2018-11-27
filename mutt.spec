@@ -53,7 +53,6 @@ Patch12:	%{name}-Muttrc_mbox_path.patch
 Patch13:	%{name}-po.patch
 Patch14:	%{name}-home_etc.patch
 Patch15:	%{name}-Muttrc.patch
-Patch16:	%{name}-muttbug-tmp.patch
 Patch17:	%{name}-folder_columns.patch
 Patch18:	%{name}-imap_recent.patch
 Patch19:	%{name}-Muttrc.head.patch
@@ -166,8 +165,6 @@ Mutt - це невеликий, але потужний повноекранни
 %{?with_home_etc:%patch14 -p1}
 # muttrc
 %patch15 -p1
-# muttbug-tmp - idea dropped, issues to be reported via gitlab
-#%patch16 -p1
 # breaks display if arrow_cursor is set
 %{?with_folder_column:%patch17 -p1}
 %{?with_imap_recent:%patch18 -p1}
