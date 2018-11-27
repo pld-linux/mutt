@@ -23,13 +23,12 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/curs_main.c mutt-1.5.10/curs_main
 diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/init.h mutt-1.5.10/init.h
 --- mutt-1.5.10.orig/init.h	2005-10-07 09:28:10.000000000 +0200
 +++ mutt-1.5.10/init.h	2005-10-07 09:28:24.000000000 +0200
-@@ -2626,6 +2626,9 @@
+@@ -2626,6 +2626,8 @@
    ** .dt %u  .dd number of unread messages *
    ** .dt %v  .dd Mutt version string
    ** .dt %V  .dd currently active limit pattern, if any *
 +  ** .dt %[fmt] .dd the current date and time. ``fmt'' is
 +  **                expanded by the system call ``strftime'';
-+  **                a leading bang disables locales 
    ** .dt %>X .dd right justify the rest of the string and pad with ``X''
    ** .dt %|X .dd pad to the end of the line with ``X''
    ** .dt %*X .dd soft-fill with character ``X'' as pad
@@ -101,31 +100,19 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/pager.c mutt-1.5.10/pager.c
 diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/status.c mutt-1.5.10/status.c
 --- mutt-1.5.10.orig/status.c	2005-10-07 09:28:10.000000000 +0200
 +++ mutt-1.5.10/status.c	2005-10-07 09:28:24.000000000 +0200
-@@ -30,6 +30,7 @@
- #include <string.h>
- #include <ctype.h>
- #include <unistd.h>
-+#include <locale.h>
- 
- static char *get_sort_str (char *buf, size_t buflen, int method)
- {
-@@ -288,6 +289,61 @@
+@@ -303,6 +304,47 @@
        *buf = 0;
        return (src);
  
 +    case '[':
 +      {
-+	int do_locales;
 +	int len = sizeof (fmt) - 1;
 +
 +	cp = fmt;
 +	if (*src == '!')
 +	{
-+	  do_locales = 0;
 +	  src++;
 +	}
-+	else
-+	  do_locales = 1;
 +
 +	while (len > 0 && *src != ']')
 +	{
@@ -150,18 +137,8 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/status.c mutt-1.5.10/status.c
 +	}
 +	*cp = 0;
 +	src++;
-+
-+	if (do_locales && Locale)
-+	  setlocale (LC_TIME, Locale);
-+
-+	{
-+	  time_t now = time (NULL);
-+
-+	  strftime (tmp, sizeof (tmp), fmt, localtime (&now));
-+	}
-+
-+	if (do_locales && Locale)
-+	  setlocale (LC_TIME, "C");
++	time_t now = time (NULL);
++	strftime (tmp, sizeof (tmp), fmt, localtime (&now));
 +
 +	snprintf (fmt, sizeof (fmt), "%%%ss", prefix);
 +	snprintf (buf, buflen, fmt, tmp);
