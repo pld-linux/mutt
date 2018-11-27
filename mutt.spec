@@ -40,14 +40,10 @@ Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
 Patch0:		%{name}-pl.po-update.patch
-# http://mutt.org.ua/download/
-Patch2:		%{name}-rr.compressed.patch
 Patch3:		%{name}-bj.status-time.patch
 # http://mutt.org.ua/download/
 Patch4:		%{name}-vvv.quote.patch
 Patch5:		%{name}-null_name.patch
-Patch6:		%{name}-cd.trash_folder.patch
-Patch7:		%{name}-cd.purge_message.patch
 Patch8:		%{name}-cd.signatures_menu.patch
 # http://www.mutt.ca/patches/ (dw.crypt-autoselectkey)
 Patch9:		%{name}-crypt-autoselectkey.patch
@@ -62,15 +58,11 @@ Patch17:	%{name}-folder_columns.patch
 Patch18:	%{name}-imap_recent.patch
 Patch19:	%{name}-Muttrc.head.patch
 Patch20:	%{name}-smime.rc.patch
-Patch21:	%{name}-sidebar.patch
-Patch22:	%{name}-imap_fast_trash.patch
 Patch23:	%{name}-db.patch
 # http://mutt.org.ua/download/
 Patch24:	%{name}-vvv.nntp.patch
 Patch25:	format-security.patch
 Patch26:	%{name}-keep_to.patch
-Patch27:	mutt-gpgme.patch
-Patch28:	openssl.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1.6
@@ -156,15 +148,9 @@ Mutt - це невеликий, але потужний повноекранни
 %setup -q
 # pl.poupdate
 #%patch0 -p1
-# compressed patch applied upstream
-#%patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-# trash folder patch applied upstream
-#%patch6 -p1
-# purge patch applied upstream
-#%patch7 -p1
 # cd.signatures
 %patch8 -p1
 # crypt-autosolect
@@ -189,10 +175,6 @@ Mutt - це невеликий, але потужний повноекранни
 %patch19 -p1
 # smime.rc
 %patch20 -p1
-# sidebar.patch - applied upstream
-# %patch21 -p1
-# imap_fast_trash - applied upstream
-# %patch22 -p1
 # db
 %patch23 -p1
 # nntp
@@ -201,10 +183,6 @@ Mutt - це невеликий, але потужний повноекранни
 %patch25 -p1
 # keep-to
 %patch26 -p1
-# mutt-gpgme - applied upstream
-# %patch27 -p1
-# openssl - applied upstream
-# %patch28 -p1
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}
