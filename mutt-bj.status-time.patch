@@ -94,7 +94,7 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/pager.c mutt-1.5.10/pager.c
    }
  
 -  if ((pager_menu->redraw & REDRAW_INDEX) && rd->index)
-+  if ((p (ager_menu->redraw & REDRAW_INDEX) || update_status_time()) && rd->index)
++  if (( (pager_menu->redraw & REDRAW_INDEX) || update_status_time()) && rd->index)
    {
      /* redraw the pager_index indicator, because the
       * flags for this message might have changed. */
