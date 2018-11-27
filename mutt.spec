@@ -2,6 +2,10 @@
 # TODO:
 # - gss/heimdal
 # - finish -folder_columns.patch
+# - update/drop -home_etc.patch
+# - update/drop -nntp.patch
+# - update/drop -imap_recent.patch
+# - update -pl.po-update.patch
 #
 # Conditional build:
 %bcond_with	slang		# use slang library instead of ncurses
@@ -40,28 +44,30 @@ Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
 Patch0:		%{name}-pl.po-update.patch
-Patch3:		%{name}-bj.status-time.patch
+Patch1:		%{name}-bj.status-time.patch
 # http://mutt.org.ua/download/
-Patch4:		%{name}-vvv.quote.patch
-Patch5:		%{name}-null_name.patch
-Patch8:		%{name}-cd.signatures_menu.patch
+Patch2:		%{name}-vvv.quote.patch
+Patch3:		%{name}-null_name.patch
+Patch4:		%{name}-cd.signatures_menu.patch
 # http://www.mutt.ca/patches/ (dw.crypt-autoselectkey)
-Patch9:		%{name}-crypt-autoselectkey.patch
-Patch10:	%{name}-manual.patch
-Patch11:	%{name}-xface.patch
-Patch12:	%{name}-Muttrc_mbox_path.patch
-Patch13:	%{name}-po.patch
-Patch14:	%{name}-home_etc.patch
-Patch15:	%{name}-Muttrc.patch
-Patch17:	%{name}-folder_columns.patch
-Patch18:	%{name}-imap_recent.patch
-Patch19:	%{name}-Muttrc.head.patch
-Patch20:	%{name}-smime.rc.patch
-Patch23:	%{name}-db.patch
+Patch5:		%{name}-crypt-autoselectkey.patch
+Patch6:		%{name}-manual.patch
+Patch7:		%{name}-xface.patch
+Patch8:		%{name}-Muttrc_mbox_path.patch
+Patch9:		%{name}-po.patch
+Patch10:	%{name}-Muttrc.head.patch
+Patch11:	%{name}-smime.rc.patch
+Patch12:	%{name}-db.patch
+Patch13:	format-security.patch
+Patch14:	%{name}-keep_to.patch
+# applied during %%install
+Patch50:	%{name}-Muttrc.patch
+# bcond-related patches
+Patch101:	%{name}-home_etc.patch
 # http://mutt.org.ua/download/
-Patch24:	%{name}-vvv.nntp.patch
-Patch25:	format-security.patch
-Patch26:	%{name}-keep_to.patch
+Patch102:	%{name}-vvv.nntp.patch
+Patch103:	%{name}-folder_columns.patch
+Patch104:	%{name}-imap_recent.patch
 URL:		http://www.mutt.org/
 BuildRequires:	autoconf >= 2.54
 BuildRequires:	automake >= 1.6
@@ -147,39 +153,26 @@ Mutt - це невеликий, але потужний повноекранни
 %setup -q
 # pl.poupdate
 #%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-# cd.signatures
+%patch6 -p1
+%patch7 -p1
 %patch8 -p1
-# crypt-autosolect
 %patch9 -p1
-# manual
 %patch10 -p1
-# xface
 %patch11 -p1
-# muttrc_mbox_path
 %patch12 -p1
-# po
 %patch13 -p1
-%{?with_home_etc:%patch14 -p1}
-# muttrc
-%patch15 -p1
+%patch14 -p1
+
+%{?with_home_etc:%patch101 -p1}
+%{?with_nntp:%patch102 -p1}
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch17 -p1}
-%{?with_imap_recent:%patch18 -p1}
-# muttr.head
-%patch19 -p1
-# smime.rc
-%patch20 -p1
-# db
-%patch23 -p1
-# nntp
-%{?with_nntp:%patch24 -p1}
-# formats-ecurity
-%patch25 -p1
-# keep-to
-%patch26 -p1
+%{?with_folder_column:%patch103 -p1}
+%{?with_imap_recent:%patch1043 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}
@@ -229,7 +222,7 @@ install -d $RPM_BUILD_ROOT{%{_desktopdir},%{_pixmapsdir},%{_mandir}/pl/man1} \
 	DESTDIR=$RPM_BUILD_ROOT \
 	DOTLOCK_GROUP=
 
-%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH15}
+%{__patch} -p2 -d $RPM_BUILD_ROOT%{_sysconfdir} < %{PATCH50}
 
 install contrib/gpg.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
 install contrib/smime.rc $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.d
