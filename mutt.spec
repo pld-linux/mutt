@@ -31,14 +31,14 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	1.11.0
+Version:	1.11.1
 Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 # temporarily dead? (Jun 2014)
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
-# Source0-md5:	b58fdddf76a880c6314c9d4df2c32efb
+# Source0-md5:	92827071664e8c8bfadcc2a100e25715
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -152,7 +152,7 @@ Mutt - це невеликий, але потужний повноекранни
 %prep
 %setup -q
 # pl.poupdate
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -196,6 +196,7 @@ Mutt - це невеликий, але потужний повноекранни
 	--enable-mailtool \
 	%{?with_nntp:--enable-nntp} \
 	--enable-pop \
+	--enable-sidebar \
 	--enable-smtp \
 	%{?with_bdb:--with-bdb=/usr} \
 	%{!?with_slang:--with-curses} \
