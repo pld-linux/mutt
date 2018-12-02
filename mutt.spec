@@ -3,7 +3,6 @@
 # - gss/heimdal
 # - finish -folder_columns.patch
 # - update/drop -home_etc.patch
-# - update/drop -nntp.patch
 # - update/drop -imap_recent.patch
 #
 # Conditional build:

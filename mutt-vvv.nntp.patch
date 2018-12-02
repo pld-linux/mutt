@@ -3033,9 +3033,9 @@ diff -udprP mutt-1.10.0.orig/main.c mutt-1.10.0/main.c
 +      }
 +      else
 +#endif
-       if (!Incoming) {
- 	mutt_endwin _("No incoming mailboxes defined.");
- 	exit (1);
+       if (!Incoming)
+       {
+         exit_endwin_msg = _("No incoming mailboxes defined.");
 @@ -1244,6 +1287,15 @@ int main (int argc, char **argv, char **
  
      if (!folder[0])
@@ -3078,10 +3078,10 @@ diff -udprP mutt-1.10.0.orig/mutt.h mutt-1.10.0/mutt.h
    /* THIS MUST BE THE LAST VALUE. */
    OPT_MAX
 @@ -329,6 +337,7 @@ enum
- #define SENDPOSTPONEDFCC	(1<<9) /* used by mutt_get_postponed() to signal that the x-mutt-fcc header field was present */
  #define SENDNOFREEHEADER	(1<<10)   /* Used by the -E flag */
  #define SENDDRAFTFILE		(1<<11)   /* Used by the -H flag */
-+#define SENDNEWS	(1<<12)
+ #define SENDTOSENDER    (1<<12)
++#define SENDNEWS	(1<<13)
  
  /* flags for mutt_compose_menu() */
  #define MUTT_COMPOSE_NOFREEHEADER (1<<0)
@@ -7594,9 +7594,9 @@ diff -udprP mutt-1.10.0.orig/recvattach.c mutt-1.10.0/recvattach.c
 +	}
 +#endif
 +
-       case OP_REPLY:
-       case OP_GROUP_REPLY:
-       case OP_LIST_REPLY:
+       case OP_COMPOSE_TO_SENDER:
+         CHECK_ATTACH;
+         mutt_attach_mail_sender (CURATTACH->fp, hdr, actx,
 diff -udprP mutt-1.10.0.orig/recvcmd.c mutt-1.10.0/recvcmd.c
 --- mutt-1.10.0.orig/recvcmd.c	2017-12-18 22:31:37.000000000 +0200
 +++ mutt-1.10.0/recvcmd.c	2018-06-16 17:22:30.202469604 +0300
@@ -8249,14 +8249,14 @@ diff -udprP mutt-1.10.0.orig/Makefile.in mutt-1.10.0/Makefile.in
  	mbyte.h lib.h extlib.c pgpewrap.c smime_keys.pl pgplib.h \
  	README.SSL smime.h group.h \
 @@ -784,6 +786,8 @@ distclean-compile:
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutt_tunnel.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muttlib.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mx.Po@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newsrc.Po@am__quote@
-+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nntp.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pager.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse.Po@am__quote@
- @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/patchlist.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mutt_tunnel.Po@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/muttlib.Po@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mx.Po@am__quote@ # am--include-marker
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/newsrc.Po@am__quote@ # am--include-marker
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/nntp.Po@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pager.Po@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parse.Po@am__quote@ # am--include-marker
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/patchlist.Po@am__quote@ # am--include-marker
 diff -udprP mutt-1.10.0.orig/configure mutt-1.10.0/configure
 --- mutt-1.10.0.orig/configure	2018-05-19 20:34:20.000000000 +0300
 +++ mutt-1.10.0/configure	2018-06-16 17:22:30.205469557 +0300
