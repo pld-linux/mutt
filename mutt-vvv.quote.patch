@@ -34,7 +34,7 @@ diff -udprP mutt-1.5.19.orig/handler.c mutt-1.5.19/handler.c
 @@ -1617,7 +1621,7 @@ int mutt_body_handler (BODY *b, STATE *s
         */
        if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp (b))
- 	handler = crypt_pgp_application_pgp_handler;
+ 	encrypted_handler = handler = crypt_pgp_application_pgp_handler;
 -      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0)
 +      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0 && !s->prefix)
  	handler = rfc3676_handler;

@@ -120,9 +120,9 @@ diff -urp ../MUTT/mutt/init.c mutt/init.c
  
  void toggle_quadoption (int opt)
 @@ -2356,3 +2358,130 @@ int mutt_get_hook_type (const char *name
+ 
    return 1;
  }
- 
 +void mutt_start_slrnface(void)
 +{
 +  char *fifo;
@@ -275,9 +275,9 @@ diff -urp ../MUTT/mutt/main.c mutt/main.c
  
 +    mutt_start_slrnface();
 +
-     if((Context = mx_open_mailbox (folder, ((flags & MUTT_RO) || option (OPTREADONLY)) ? MUTT_READONLY : 0, NULL))
-        || !explicit_folder)
-     {
+     Context = mx_open_mailbox (mutt_b2s (folder),
+                                ((flags & MUTT_RO) || option (OPTREADONLY)) ? MUTT_READONLY : 0,
+                                NULL);
 @@ -913,6 +915,8 @@ int main (int argc, char **argv)
      }
  
@@ -407,61 +407,39 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
  	  pager_menu->redraw = REDRAW_FULL;
  	  InHelp = 0;
  	}
-@@ -2383,58 +2448,70 @@ CHECK_IMAP_ACL(IMAP_ACL_WRITE);
+@@ -2649,7 +2649,9 @@
        case OP_MAIL:
  	CHECK_MODE(IsHeader (extra) && !IsAttach (extra));
-         CHECK_ATTACH;      
-+	mutt_suppress_xface ();
- 	ci_send_message (0, NULL, NULL, extra->ctx, NULL);
-+	mutt_show_xface ();
- 	pager_menu->redraw = REDRAW_FULL;
- 	break;
- 
-       case OP_REPLY:
- 	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
-         CHECK_ATTACH;      
+         CHECK_ATTACH;
 +	mutt_suppress_xface();
-         if (IsMsgAttach (extra)) 
- 	  mutt_attach_reply (extra->fp, extra->hdr, extra->actx,
- 			     extra->bdy, SENDREPLY);
- 	else
- 	  ci_send_message (SENDREPLY, NULL, NULL, extra->ctx, extra->hdr);
-+	mutt_show_xface ();
+ 	ci_send_message (0, NULL, NULL, extra->ctx, NULL);
++	mutt_show_xface();
  	pager_menu->redraw = REDRAW_FULL;
  	break;
  
+@@ -2662,6 +2664,7 @@
+ 
+ 	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
+         CHECK_ATTACH;
++	mutt_suppress_xface();
+ 
+         replyflags = SENDREPLY |
+ 	  (ch == OP_GROUP_REPLY ? SENDGROUPREPLY : 0) |
+@@ -2673,6 +2676,7 @@
+ 			     extra->bdy, replyflags);
+ 	else
+ 	  ci_send_message (replyflags, NULL, NULL, extra->ctx, extra->hdr);
++	mutt_show_xface();
+ 	pager_menu->redraw = REDRAW_FULL;
+ 	break;
+       }
+@@ -2680,19 +2684,23 @@
        case OP_RECALL_MESSAGE:
  	CHECK_MODE(IsHeader (extra) && !IsAttach(extra));
          CHECK_ATTACH;
 +	mutt_suppress_xface();
  	ci_send_message (SENDPOSTPONED, NULL, NULL, extra->ctx, extra->hdr);
-+	mutt_show_xface ();
- 	pager_menu->redraw = REDRAW_FULL;
- 	break;
- 
-       case OP_GROUP_REPLY:
- 	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
-         CHECK_ATTACH;
-+	mutt_suppress_xface();
-         if (IsMsgAttach (extra))
- 	  mutt_attach_reply (extra->fp, extra->hdr, extra->actx,
- 			     extra->bdy, SENDREPLY|SENDGROUPREPLY);
-         else
- 	  ci_send_message (SENDREPLY | SENDGROUPREPLY, NULL, NULL, extra->ctx, extra->hdr);
-+	mutt_suppress_xface ();
- 	pager_menu->redraw = REDRAW_FULL;
- 	break;
- 
-       case OP_LIST_REPLY:
- 	CHECK_MODE(IsHeader (extra) || IsMsgAttach (extra));
-         CHECK_ATTACH;        
-+	mutt_suppress_xface();
-         if (IsMsgAttach (extra))
- 	  mutt_attach_reply (extra->fp, extra->hdr, extra->actx,
- 			     extra->bdy, SENDREPLY|SENDLISTREPLY);
-         else
- 	  ci_send_message (SENDREPLY | SENDLISTREPLY, NULL, NULL, extra->ctx, extra->hdr);
-+	mutt_show_xface ();
++	mutt_show_xface();
  	pager_menu->redraw = REDRAW_FULL;
  	break;
  
@@ -474,10 +452,11 @@ diff -urp ../MUTT/mutt/pager.c mutt/pager.c
  			       extra->bdy);
          else
  	  ci_send_message (SENDFORWARD, NULL, NULL, extra->ctx, extra->hdr);
-+	mutt_show_xface ();
  	pager_menu->redraw = REDRAW_FULL;
++	mutt_show_xface();
  	break;
  
+       case OP_DECRYPT_SAVE:
 @@ -2485,7 +2562,9 @@ CHECK_IMAP_ACL(IMAP_ACL_WRITE);
  	break;
  
@@ -527,17 +506,17 @@ diff -urp ../MUTT/mutt/parse.c mutt/parse.c
  {
    LIST *t, *lst = NULL;
 @@ -1231,6 +1252,11 @@ int mutt_parse_rfc822_line (ENVELOPE *e,
-       e->x_label = safe_strdup(p);
-       matched = 1;
-     }
+         e->x_label = safe_strdup(p);
+         matched = 1;
+       }
 +    else if (ascii_strcasecmp (line+1, "-face") == 0)
 +    {
 +      e->x_face = mutt_add_x_face (e->x_face, p);
 +      matched = 1;
 +    }
-     
+ 
      default:
-     break;
+       break;
 diff -urp ../MUTT/mutt/sendlib.c mutt/sendlib.c
 --- ../MUTT/mutt/sendlib.c	2004-07-21 13:33:02.000000000 +0200
 +++ mutt/sendlib.c	2004-07-21 13:37:16.000000000 +0200
@@ -554,6 +533,6 @@ diff -urp ../MUTT/mutt/sendlib.c mutt/sendlib.c
 +      fprintf (fp, "X-Face: %s\n", face->data);
 +  }
 +
-   if (mode == 0 && !privacy && option (OPTXMAILER) && !has_agent)
+   if (mode == MUTT_WRITE_HEADER_NORMAL && !privacy &&
+       option (OPTXMAILER) && !has_agent)
    {
-     /* Add a vanity header */

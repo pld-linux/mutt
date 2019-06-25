@@ -63,9 +63,9 @@
 +  }
  
 @@ -599,5 +621,3 @@ static pgp_key_t pgp_select_key (pgp_key
-       
--      if (option (OPTPGPCHECKTRUST) &&
--	  (!pgp_id_is_valid (KeyTable[menu->current])
--	   || !pgp_id_is_strong (KeyTable[menu->current])))
+
+-        if (option (OPTPGPCHECKTRUST) &&
+-            (!pgp_id_is_valid (KeyTable[menu->current])
+-             || !pgp_id_is_strong (KeyTable[menu->current])))
 +      if (!pgp_trusted_id(KeyTable[menu->current]))
-       {
+         {
