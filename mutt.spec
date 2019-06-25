@@ -76,7 +76,7 @@ BuildRequires:	docbook-dtd42-xml
 BuildRequires:	docbook-style-xsl
 %{?with_gdbm:BuildRequires:	gdbm-devel}
 BuildRequires:	gettext-tools
-BuildRequires:	gpgme-devel >= 1:1.1.1
+BuildRequires:	gpgme-devel >= 1:1.4.0
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	libidn-devel
 BuildRequires:	libxslt-progs
