@@ -35,7 +35,6 @@ Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
-# temporarily dead? (Jun 2014)
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
 # Source0-md5:	f77586a895f12d19de9c5250a4dfd034
 Source1:	%{name}.desktop
@@ -175,7 +174,7 @@ Mutt - це невеликий, але потужний повноекранни
 %{?with_nntp:%patch102 -p1}
 # breaks display if arrow_cursor is set
 %{?with_folder_column:%patch103 -p1}
-%{?with_imap_recent:%patch1043 -p1}
+%{?with_imap_recent:%patch104 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/{manual*.html,manual.txt}
@@ -273,7 +272,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/mutt_source-muttrc.d
 %attr(755,root,root) %{_bindir}/flea
 %attr(755,root,root) %{_bindir}/muttbug
-%attr(755,root,root) %{_bindir}/pgp*
+%attr(755,root,root) %{_bindir}/pgpewrap
 %attr(755,root,root) %{_bindir}/smime_keys
 %attr(2755,root,mail) %{_bindir}/mutt_dotlock
 
@@ -282,7 +281,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_pixmapsdir}/mutt.png
 #%{_mandir}/man1/flea.1*
 %{_mandir}/man1/mutt*.1*
-%{_mandir}/man1/pgp*.1*
+%{_mandir}/man1/pgpewrap.1*
 %{_mandir}/man1/smime_keys.1*
 %{_mandir}/man5/mmdf.5*
 %{_mandir}/man5/muttrc.5*
