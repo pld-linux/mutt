@@ -78,6 +78,7 @@ BuildRequires:	docbook-style-xsl
 BuildRequires:	gettext-tools
 BuildRequires:	gpgme-devel >= 1:1.4.0
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
+BuildRequires:	libgpg-error-devel >= 1.33
 BuildRequires:	libidn-devel
 BuildRequires:	libxslt-progs
 BuildRequires:	lynx
@@ -86,8 +87,10 @@ BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
+Requires:	gpgme >= 1:1.4.0
 %{?with_home_etc:Requires:	home-etc-lib >= 1.0.8}
 Requires:	iconv
+Requires:	libgpg-error >= 1.33
 Suggests:	mailcap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
