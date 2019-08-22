@@ -1,37 +1,45 @@
-diff -udprP mutt-1.5.19.orig/globals.h mutt-1.5.19/globals.h
---- mutt-1.5.19.orig/globals.h	2009-01-04 01:27:10.000000000 +0200
-+++ mutt-1.5.19/globals.h	2009-01-06 19:40:35.000000000 +0200
-@@ -24,6 +24,8 @@ WHERE CONTEXT *Context;
- WHERE char Errorbuf[STRING];
- WHERE char AttachmentMarker[STRING];
- 
-+WHERE char Quotebuf[SHORT_STRING];
-+
- #if defined(DL_STANDALONE) && defined(USE_DOTLOCK)
- WHERE char *MuttDotlock;
- #endif
-diff -udprP mutt-1.5.19.orig/handler.c mutt-1.5.19/handler.c
---- mutt-1.5.19.orig/handler.c	2009-01-05 21:20:53.000000000 +0200
-+++ mutt-1.5.19/handler.c	2009-01-06 19:40:35.000000000 +0200
-@@ -90,6 +90,8 @@ static void mutt_convert_to_state(iconv_
-       if (ob != bufo)
- 	state_prefix_put (bufo, ob - bufo, s);
+diff -udprP mutt-1.12.1.orig/PATCHES mutt-1.12.1/PATCHES
+--- mutt-1.12.1.orig/PATCHES	2017-12-03 05:10:17.000000000 +0200
++++ mutt-1.12.1/PATCHES	2019-08-11 19:32:51.176165992 +0300
+@@ -0,0 +1 @@
++vvv.quote
+diff -udprP mutt-1.12.1.orig/handler.c mutt-1.12.1/handler.c
+--- mutt-1.12.1.orig/handler.c	2019-05-31 19:21:33.000000000 +0300
++++ mutt-1.12.1/handler.c	2019-08-11 19:32:51.177165977 +0300
+@@ -1593,7 +1593,31 @@ static int text_plain_handler (BODY *b,
+ 	buf[--l] = 0;
      }
-+    if (Quotebuf[0] != '\0')
-+      state_prefix_putc ('\n', s);
-     return;
-   }
- 
-@@ -1473,6 +1475,8 @@ void mutt_decode_attachment (BODY *b, ST
-   int istext = mutt_is_text_part (b);
-   iconv_t cd = (iconv_t)(-1);
- 
-+  Quotebuf[0] = '\0';
+     if (s->prefix)
+-      state_puts (s->prefix, s);
++    {
++      int i;
++      char qbuf[2 * LONG_STRING];
++      int j = 0, offset = 0;
++      regmatch_t pmatch[1];
 +
-   if (istext && s->flags & MUTT_CHARCONV)
-   {
-     char *charset = mutt_get_parameter ("charset", b->parameter);
-@@ -1617,7 +1621,7 @@ int mutt_body_handler (BODY *b, STATE *s
++      while (regexec ((regex_t *) QuoteRegexp.rx, &buf[offset], 1, pmatch, 0) == 0)
++	offset += pmatch->rm_eo;
++
++      if (!option (OPTQUOTEEMPTY) && !*buf)
++	strcpy (qbuf, buf);
++      else if (option (OPTQUOTEQUOTED) && offset)
++      {
++	for (i = 0; i < offset; i++)
++	  if (buf[i] != ' ')
++	    j = i;
++	strncpy (qbuf, buf, j + 1);
++	strcpy (qbuf + j + 1, buf + j);
++      }
++      else
++	snprintf (qbuf, sizeof (qbuf), "%s%s", NONULL(s->prefix), buf);
++
++      state_puts (qbuf, s);
++    }
++    else
+     state_puts (buf, s);
+     state_putc ('\n', s);
+   }
+@@ -1779,7 +1803,7 @@ int mutt_body_handler (BODY *b, STATE *s
         */
        if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp (b))
  	encrypted_handler = handler = crypt_pgp_application_pgp_handler;
@@ -40,10 +48,10 @@ diff -udprP mutt-1.5.19.orig/handler.c mutt-1.5.19/handler.c
  	handler = rfc3676_handler;
        else
  	handler = text_plain_handler;
-diff -udprP mutt-1.5.19.orig/init.h mutt-1.5.19/init.h
---- mutt-1.5.19.orig/init.h	2009-01-05 21:20:53.000000000 +0200
-+++ mutt-1.5.19/init.h	2009-01-06 19:40:35.000000000 +0200
-@@ -2451,6 +2451,19 @@ struct option_t MuttVars[] = {
+diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
+--- mutt-1.12.1.orig/init.h	2019-06-15 18:57:01.000000000 +0300
++++ mutt-1.12.1/init.h	2019-08-11 19:32:51.179165947 +0300
+@@ -2745,6 +2745,19 @@ struct option_t MuttVars[] = {
    ** have no effect, and if it is set to \fIask-yes\fP or \fIask-no\fP, you are
    ** prompted for confirmation when you try to quit.
    */
@@ -63,74 +71,15 @@ diff -udprP mutt-1.5.19.orig/init.h mutt-1.5.19/init.h
    { "quote_regexp",	DT_RX,	 R_PAGER, UL &QuoteRegexp, UL "^([ \t]*[|>:}#])+" },
    /*
    ** .pp
-diff -udprP mutt-1.5.19.orig/mutt.h mutt-1.5.19/mutt.h
---- mutt-1.5.19.orig/mutt.h	2008-09-26 01:00:03.000000000 +0300
-+++ mutt-1.5.19/mutt.h	2009-01-06 19:40:35.000000000 +0200
-@@ -398,6 +398,8 @@ enum
+diff -udprP mutt-1.12.1.orig/mutt.h mutt-1.12.1/mutt.h
+--- mutt-1.12.1.orig/mutt.h	2019-06-14 04:29:29.000000000 +0300
++++ mutt-1.12.1/mutt.h	2019-08-11 19:32:51.179165947 +0300
+@@ -479,6 +479,8 @@ enum
    OPTPRINTDECODE,
    OPTPRINTSPLIT,
    OPTPROMPTAFTER,
 +  OPTQUOTEEMPTY,
 +  OPTQUOTEQUOTED,
    OPTREADONLY,
-   OPTREPLYSELF,
-   OPTRESOLVE,
-diff -udprP mutt-1.5.19.orig/muttlib.c mutt-1.5.19/muttlib.c
---- mutt-1.5.19.orig/muttlib.c	2009-01-05 21:20:53.000000000 +0200
-+++ mutt-1.5.19/muttlib.c	2009-01-06 19:40:35.000000000 +0200
-@@ -1497,15 +1497,45 @@ void state_prefix_putc (char c, STATE *s
- {
-   if (s->flags & M_PENDINGPREFIX)
-   {
--    state_reset_prefix (s);
--    if (s->prefix)
--      state_puts (s->prefix, s);
--  }
-+    int i;
- 
--  state_putc (c, s);
-+    i = strlen (Quotebuf);
-+    Quotebuf[i++] = c;
-+    Quotebuf[i] = '\0';
-+    if (i == sizeof (Quotebuf) - 1 || c == '\n')
-+    {
-+      char buf[2 * SHORT_STRING];
-+      int j = 0, offset = 0;
-+      regmatch_t pmatch[1];
-+
-+      state_reset_prefix (s);
-+      while (regexec ((regex_t *) QuoteRegexp.rx, &Quotebuf[offset], 1, pmatch, 0) == 0)
-+	offset += pmatch->rm_eo;
-+
-+      if (!option (OPTQUOTEEMPTY) && Quotebuf[0] == '\n')
-+	strcpy (buf, Quotebuf);
-+      else if (option (OPTQUOTEQUOTED) && offset)
-+      {
-+	for (i = 0; i < offset; i++)
-+	  if (Quotebuf[i] != ' ')
-+	    j = i;
-+	strncpy (buf, Quotebuf, j + 1);
-+	strcpy (buf + j + 1, Quotebuf + j);
-+      }
-+      else
-+	snprintf (buf, sizeof (buf), "%s%s", NONULL(s->prefix), Quotebuf);
-+
-+      state_puts (buf, s);
-+    }
-+  }
-+  else
-+    state_putc (c, s);
- 
-   if (c == '\n')
-+  {
-     state_set_prefix (s);
-+    Quotebuf[0] = '\0';
-+  }
- }
- 
- int state_printf (STATE *s, const char *fmt, ...)
-diff -udprP mutt-1.5.19.orig/PATCHES mutt-1.5.19/PATCHES
---- mutt-1.5.19.orig/PATCHES	2008-03-19 22:07:06.000000000 +0200
-+++ mutt-1.5.19/PATCHES	2009-01-06 19:40:35.000000000 +0200
-@@ -0,0 +1 @@
-+vvv.quote
+   OPTREFLOWSPACEQUOTES,
+   OPTREFLOWTEXT,
