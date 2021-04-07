@@ -8,7 +8,7 @@
    */
 +  
 +
-+  { "pgp_autoselectkey",	DT_SYN,  R_NONE, UL "crypt_autoselectkey", 0 },
++  { "pgp_autoselectkey",	DT_SYN,  R_NONE, {.p="crypt_autoselectkey"}, {.l=0} },
 +  { "crypt_autoselectkey",	DT_BOOL, R_NONE, OPTCRYPTAUTOSELECT, 0 },
 +  /*
 +  ** .pp

@@ -48,27 +48,26 @@ diff -udprP mutt-1.12.1.orig/handler.c mutt-1.12.1/handler.c
  	handler = rfc3676_handler;
        else
  	handler = text_plain_handler;
-diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
---- mutt-1.12.1.orig/init.h	2019-06-15 18:57:01.000000000 +0300
-+++ mutt-1.12.1/init.h	2019-08-11 19:32:51.179165947 +0300
-@@ -2745,6 +2745,19 @@ struct option_t MuttVars[] = {
+--- mutt-2.0.6/init.h.orig	2021-04-07 17:27:35.690778943 +0000
++++ mutt-2.0.6/init.h	2021-04-07 17:29:10.704113619 +0000
+@@ -2966,6 +2966,19 @@
    ** have no effect, and if it is set to \fIask-yes\fP or \fIask-no\fP, you are
    ** prompted for confirmation when you try to quit.
    */
-+  { "quote_empty",	DT_BOOL, R_NONE, OPTQUOTEEMPTY, 1 },
++  { "quote_empty",     DT_BOOL, R_NONE, OPTQUOTEEMPTY, 1 },
 +  /*
 +  ** .pp
 +  ** Controls whether or not empty lines will be quoted using
 +  ** ``$indent_string''.
 +  */
-+  { "quote_quoted",	DT_BOOL, R_NONE, OPTQUOTEQUOTED, 0 },
++  { "quote_quoted",    DT_BOOL, R_NONE, OPTQUOTEQUOTED, 0 },
 +  /*
 +  ** .pp
 +  ** Controls how quoted lines will be quoted. If set, one quote
 +  ** character will be added to the end of existing prefix.  Otherwise,
 +  ** quoted lines will be prepended by ``$indent_string''.
 +  */
-   { "quote_regexp",	DT_RX,	 R_PAGER, UL &QuoteRegexp, UL "^([ \t]*[|>:}#])+" },
+   { "quote_regexp",	DT_RX,	 R_PAGER, {.p=&QuoteRegexp}, {.p="^([ \t]*[|>:}#])+"} },
    /*
    ** .pp
 diff -udprP mutt-1.12.1.orig/mutt.h mutt-1.12.1/mutt.h

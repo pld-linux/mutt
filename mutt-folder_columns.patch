@@ -14,7 +14,7 @@
    ** you use `+' or `=' for any other variables since expansion takes place
    ** during the `set' command.
    */
-+  { "folder_columns",   DT_NUM, R_NONE, UL &FolderColumns, UL 1 },
++  { "folder_columns",   DT_NUM, R_NONE, {.p=&FolderColumns}, {.l=1} },
 +  /*
 +  ** .pp
 +  ** Specifies the number of folder columns in folder browser.

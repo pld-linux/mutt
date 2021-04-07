@@ -1,11 +1,6 @@
---- mutt-1.5.21/configure.ac.orig	2012-04-06 17:33:23.905605556 +0200
-+++ mutt-1.5.21/configure.ac	2012-04-07 07:42:20.793977750 +0200
-@@ -985,20 +985,20 @@
-                 bdbpfx="$bdbpfx $d/$v"
-             done
-         done
--        BDB_VERSIONS="db-4 db4 db-5 db5 db-5.2 db5.2 db52 db-5.1 db5.1 db51 db-5.0 db5.0 db50 db-4.8 db4.8 db48 db-4.7 db4.7 db47 db-4.6 db4.6 db46 db-4.5 db4.5 db45 db-4.4 db4.4 db44 db-4.3 db4.3 db43 db-4.2 db4.2 db42 db-4.1 db4.1 db41 db ''"
-+        BDB_VERSIONS="db-6.1 db-6.0 db-5.3 db-5.2 db5.2 db52 db-5.1 db5.1 db51 db-5.0 db5.0 db50 db-5 db5 db-4.8 db4.8 db48 db-4.7 db4.7 db47 db-4.6 db4.6 db46 db-4.5 db4.5 db45 db-4.4 db4.4 db44 db-4.3 db4.3 db43 db-4.2 db4.2 db42 db-4.1 db4.1 db41 db-4 db4 db ''"
+--- mutt-2.0.6/configure.ac.orig	2021-03-06 19:06:37.000000000 +0000
++++ mutt-2.0.6/configure.ac	2021-04-07 17:45:51.050794394 +0000
+@@ -1180,16 +1180,16 @@
          AC_MSG_CHECKING([for BerkeleyDB > 4.0])
          for d in $bdbpfx; do
              BDB_INCLUDE_DIR=""
@@ -18,16 +13,16 @@
 -                        test -d "$bdblibdir" || continue
 -                        BDB_LIB_DIR="$bdblibdir"
 +                    for bdblibdir in '' "$d/lib/$v" "$d/lib"; do
-+                        test -z "$bdblibdir" -o -d "$bdblibdir" || continue
-+                        BDB_LIB_L="${bdblibdir:+-L$bdblibdir}"
++			test -z "$bdblibdir" -o -d "$bdblibdir" || continue
++			BDB_LIB_L="${bdblibdir:+-L$bdblibdir}"
                          for l in `echo $BDB_VERSIONS`; do
                              CPPFLAGS="$OLDCPPFLAGS -I$BDB_INCLUDE_DIR"
 -                            LIBS="$OLDLIBS -L$BDB_LIB_DIR -l$l"
-+                            LIBS="$OLDLIBS $BDB_LIB_L -l$l"
++			    LIBS="$OLDLIBS $BDB_LIB_L -l$l"
                              AC_LINK_IFELSE([AC_LANG_PROGRAM([[
                                  #include <stdlib.h>
                                  #include <db.h>
-@@ -1021,7 +1021,7 @@
+@@ -1212,7 +1212,7 @@
          then
              AC_MSG_RESULT(yes)
              CPPFLAGS="$OLDCPPFLAGS -I$BDB_INCLUDE_DIR"

@@ -1,11 +1,13 @@
---- mutt-1.5.18.orig/doc/Muttrc	2004-03-04 18:10:37.000000000 +0100
-+++ mutt-1.5.18/doc/Muttrc	2004-03-04 18:17:10.000000000 +0100
-@@ -1360,7 +1360,7 @@
- # will be shown. The match is always case-sensitive.
- # 
- # 
--# set mbox="~/mbox"
-+set mbox="~/Mail/mbox"
- #
- # Name: mbox
- # Type: path
+--- mutt-2.0.6/contrib/sample.muttrc~	2020-05-02 21:08:56.000000000 +0000
++++ mutt-2.0.6/contrib/sample.muttrc	2021-04-07 17:41:06.290790494 +0000
+@@ -12,8 +12,8 @@
+ 
+ # Note: $folder should be set _before_ any other path vars where `+' or `='
+ # is used because paths are expanded when parsed
+-#
+-#set folder=~/Mail		# where i keep my mailboxes
++
++set folder=~/Mail		# where i keep my mailboxes
+ 
+ #set abort_unmodified=yes	# automatically abort replies if I don't
+ 				# change the message

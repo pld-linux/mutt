@@ -3214,7 +3214,7 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
    ** ``Franklin'' to ``Franklin, Steve''.
    */
 +#ifdef USE_NNTP
-+  { "group_index_format", DT_STR, R_BOTH, UL &GroupFormat, UL "%4C %M%N %5s  %-45.45f %d" },
++  { "group_index_format", DT_STR, R_BOTH, {.p=&GroupFormat}, {.p="%4C %M%N %5s  %-45.45f %d"} },
 +  /*
 +  ** .pp
 +  ** This variable allows you to customize the newsgroup browser display to
@@ -3258,7 +3258,7 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
    ** and $$post_indent_string.
    */
 +#ifdef USE_NNTP
-+  { "inews",		DT_PATH, R_NONE, UL &Inews, UL "" },
++  { "inews",		DT_PATH, R_NONE, {.p={&Inews}, {.p=""} },
 +  /*
 +  ** .pp
 +  ** If set, specifies the program and arguments used to deliver news posted
@@ -3300,14 +3300,14 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
    ** into this command.
    */
 +#ifdef USE_NNTP
-+  { "news_cache_dir",	DT_PATH, R_NONE, UL &NewsCacheDir, UL "~/.mutt" },
++  { "news_cache_dir",	DT_PATH, R_NONE, {.p=&NewsCacheDir}, {.p="~/.mutt"} },
 +  /*
 +  ** .pp
 +  ** This variable pointing to directory where Mutt will save cached news
 +  ** articles and headers in. If \fIunset\fP, articles and headers will not be
 +  ** saved at all and will be reloaded from the server each time.
 +  */
-+  { "news_server",	DT_STR, R_NONE, UL &NewsServer, 0 },
++  { "news_server",	DT_STR, R_NONE, {.p=&NewsServer}, {.l=0} },
 +  /*
 +  ** .pp
 +  ** This variable specifies domain name or address of NNTP server. It
@@ -3317,12 +3317,12 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
 +  ** .pp
 +  ** [[s]news://][username[:password]@]server[:port]
 +  */
-+  { "newsgroups_charset", DT_STR, R_NONE, UL &NewsgroupsCharset, UL "utf-8" },
++  { "newsgroups_charset", DT_STR, R_NONE, &{.p=NewsgroupsCharset}, "{.p=utf-8"} },
 +  /*
 +  ** .pp
 +  ** Character set of newsgroups descriptions.
 +  */
-+  { "newsrc",		DT_PATH, R_NONE, UL &NewsRc, UL "~/.newsrc" },
++  { "newsrc",		DT_PATH, R_NONE, &{.p=NewsRc}, "{.p=~/.newsrc"} },
 +  /*
 +  ** .pp
 +  ** The file, containing info about subscribed newsgroups - names and
@@ -3337,7 +3337,7 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
 +  ** .dt %u .dd username
 +  ** .de
 +  */
-+  { "nntp_authenticators", DT_STR, R_NONE, UL &NntpAuthenticators, UL 0 },
++  { "nntp_authenticators", DT_STR, R_NONE, &{.p=NntpAuthenticators}, {.l=0} },
 +  /*
 +  ** .pp
 +  ** This is a colon-delimited list of authentication methods mutt may
@@ -3357,7 +3357,7 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
 +  ** the previous methods are unavailable. If a method is available but
 +  ** authentication fails, mutt will not connect to the IMAP server.
 +  */
-+  { "nntp_context",	DT_NUM, R_NONE, UL &NntpContext, 1000 },
++  { "nntp_context",	DT_NUM, R_NONE, &{.p=NntpContext}, {.l=1000} },
 +  /*
 +  ** .pp
 +  ** This variable defines number of articles which will be in index when
@@ -3378,19 +3378,19 @@ diff -udprP mutt-1.12.1.orig/init.h mutt-1.12.1/init.h
 +  ** must be loaded when newsgroup is added to list (first time list
 +  ** loading or new newsgroup adding).
 +  */
-+  { "nntp_user",	DT_STR, R_NONE, UL &NntpUser, UL "" },
++  { "nntp_user",	DT_STR, R_NONE, {.p=&NntpUser}, {.p=""} },
 +  /*
 +  ** .pp
 +  ** Your login name on the NNTP server.  If \fIunset\fP and NNTP server requires
 +  ** authentification, Mutt will prompt you for your account name when you
 +  ** connect to news server.
 +  */
-+  { "nntp_pass",	DT_STR, R_NONE, UL &NntpPass, UL "" },
++  { "nntp_pass",	DT_STR, R_NONE, &{.p=NntpPass}, {.p=""} },
 +  /*
 +  ** .pp
 +  ** Your password for NNTP account.
 +  */
-+  { "nntp_poll",	DT_NUM, R_NONE, UL &NewsPollTimeout, 60 },
++  { "nntp_poll",	DT_NUM, R_NONE, &{.p=NewsPollTimeout}, {.l=60} },
 +  /*
 +  ** .pp
 +  ** The time in seconds until any operations on newsgroup except post new

@@ -30,13 +30,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	1.12.2
+Version:	2.0.6
 Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
-# Source0-md5:	abf850465e7793d91ce9d39a9de61816
+# Source0-md5:	585072c134ac5cd9e264187685dcd4ae
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -49,15 +49,14 @@ Patch4:		%{name}-cd.signatures_menu.patch
 # http://www.mutt.ca/patches/ (dw.crypt-autoselectkey)
 Patch5:		%{name}-crypt-autoselectkey.patch
 Patch6:		%{name}-manual.patch
-Patch7:		%{name}-xface.patch
-Patch8:		%{name}-Muttrc_mbox_path.patch
-Patch9:		%{name}-po.patch
-Patch10:	%{name}-Muttrc.head.patch
-Patch11:	%{name}-smime.rc.patch
-Patch12:	%{name}-db.patch
-Patch13:	format-security.patch
-Patch14:	%{name}-keep_to.patch
-Patch15:	%{name}-vvv.initials.patch
+Patch7:		%{name}-Muttrc_mbox_path.patch
+Patch8:		%{name}-po.patch
+Patch9:	%{name}-Muttrc.head.patch
+Patch10:	%{name}-smime.rc.patch
+Patch11:	%{name}-db.patch
+Patch12:	format-security.patch
+Patch13:	%{name}-keep_to.patch
+Patch14:	%{name}-vvv.initials.patch
 # applied during %%install
 Patch50:	%{name}-Muttrc.patch
 # bcond-related patches
@@ -168,7 +167,6 @@ Mutt - це невеликий, але потужний повноекранни
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
 
 %{?with_home_etc:%patch101 -p1}
 %{?with_nntp:%patch102 -p1}
@@ -177,7 +175,7 @@ Mutt - це невеликий, але потужний повноекранни
 %{?with_imap_recent:%patch104 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
-%{__rm} doc/{manual*.html,manual.txt}
+%{__rm} doc/manual*.html
 
 %build
 %{__aclocal} -I m4
@@ -249,6 +247,10 @@ EOF
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man5/mbox.5*
 # belongs to mailcap
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
+# don't litter
+%{__rm} -r $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.dist
+%{__rm} -r $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.orig
+%{__rm} -r $RPM_BUILD_ROOT%{_sysconfdir}/mime.types.dist
 
 %find_lang %{name}
 

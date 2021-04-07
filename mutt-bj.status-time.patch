@@ -20,10 +20,9 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/curs_main.c mutt-1.5.10/curs_main
  WHERE short TimeInc;
  WHERE short Timeout;
  WHERE short Wrap;
-diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/init.h mutt-1.5.10/init.h
---- mutt-1.5.10.orig/init.h	2005-10-07 09:28:10.000000000 +0200
-+++ mutt-1.5.10/init.h	2005-10-07 09:28:24.000000000 +0200
-@@ -2626,6 +2626,8 @@
+--- mutt-2.0.6/init.h.orig	2021-03-06 19:06:37.000000000 +0000
++++ mutt-2.0.6/init.h	2021-04-07 17:25:21.720777040 +0000
+@@ -4197,6 +4197,8 @@
    ** .dt %u  .dd number of unread messages *
    ** .dt %v  .dd Mutt version string
    ** .dt %V  .dd currently active limit pattern, if any *
@@ -32,11 +31,11 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/init.h mutt-1.5.10/init.h
    ** .dt %>X .dd right justify the rest of the string and pad with ``X''
    ** .dt %|X .dd pad to the end of the line with ``X''
    ** .dt %*X .dd soft-fill with character ``X'' as pad
-@@ -2671,6 +2674,16 @@
-   ** Setting this variable causes the ``status bar'' to be displayed on
-   ** the first line of the screen rather than near the bottom.
+@@ -4248,6 +4250,16 @@
+   ** the first line of the screen rather than near the bottom. If $$help
+   ** is \fIset\fP, too it'll be placed at the bottom.
    */
-+  { "status_update",  DT_NUM, R_NONE, UL &StatusUpdate, -1 },
++  { "status_update",  DT_NUM, R_NONE, {.p=&StatusUpdate}, {.l=-1} },
 +  /*
 +  ** .pp
 +  ** This variable controls, if positive, the maximum interval in seconds
@@ -46,7 +45,7 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/init.h mutt-1.5.10/init.h
 +  ** If it is negative, the status time will only be updated
 +  ** if it necessary to update to the status line for some other reason.
 +  */
-   { "strict_threads",	DT_BOOL, R_RESORT|R_RESORT_INIT|R_INDEX, OPTSTRICTTHREADS, 0 },
+   { "strict_threads",	DT_BOOL, R_RESORT|R_RESORT_INIT|R_INDEX, {.l=OPTSTRICTTHREADS}, {.l=0} },
    /*
    ** .pp
 diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/menu.c mutt-1.5.10/menu.c

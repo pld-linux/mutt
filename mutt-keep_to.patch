@@ -14,10 +14,9 @@ diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
          rfc822_append (&out->cc, in->to, 1);
        else
          rfc822_append (&out->to, in->to, 1);
-diff -ur mutt-1.5.23.orig/init.h mutt-1.5.23/init.h
---- mutt-1.5.23.orig/init.h	2014-10-12 17:17:05.716118306 +0200
-+++ mutt-1.5.23/init.h	2014-10-12 17:24:08.119438749 +0200
-@@ -1344,6 +1344,12 @@
+--- mutt-2.0.6/init.h.orig	2021-04-07 17:47:28.950795784 +0000
++++ mutt-2.0.6/init.h	2021-04-07 17:48:57.734130406 +0000
+@@ -1874,6 +1874,12 @@
    ** from your spool mailbox to your $$mbox mailbox, or as a result of
    ** a ``$mbox-hook'' command.
    */
@@ -27,17 +26,16 @@ diff -ur mutt-1.5.23.orig/init.h mutt-1.5.23/init.h
 +  ** Controls where recipients from ``To:'' list go on group-reply. If \fIset\fP
 +  ** they are copied to ``To:'' otherwise to ``Cc:''.
 +  */
-   { "mail_check",	DT_NUM,  R_NONE, UL &BuffyTimeout, 5 },
+   { "mail_check",	DT_NUM,  R_NONE, {.p=&BuffyTimeout}, {.l=5} },
    /*
    ** .pp
-diff -ur mutt-1.5.23.orig/mutt.h mutt-1.5.23/mutt.h
---- mutt-1.5.23.orig/mutt.h	2014-10-12 17:17:05.722784972 +0200
-+++ mutt-1.5.23/mutt.h	2014-10-12 17:24:50.006104137 +0200
-@@ -391,6 +391,7 @@
-   OPTIMPLICITAUTOVIEW,
+--- mutt-2.0.6/mutt.h.orig	2021-04-07 17:47:28.950795784 +0000
++++ mutt-2.0.6/mutt.h	2021-04-07 17:50:34.977465090 +0000
+@@ -479,6 +479,7 @@
+   OPTINCLUDEENCRYPTED,
    OPTINCLUDEONLYFIRST,
    OPTKEEPFLAGGED,
 +  OPTKEEPTO,
+   OPTMUTTLISPINLINEEVAL,
    OPTMAILCAPSANITIZE,
    OPTMAILCHECKRECENT,
-   OPTMAILDIRTRASH,
