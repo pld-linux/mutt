@@ -1,11 +1,12 @@
---- mutt-1.5.9/po/pt_BR.po.orig	2005-03-13 17:38:40.000000000 +0100
-+++ mutt-1.5.9/po/pt_BR.po	2005-03-31 16:54:59.167047152 +0200
-@@ -9,7 +9,7 @@
- "Language-Team: LIE-BR (http://lie-br.conectiva.com.br)\n"
+diff -urNp -x '*.orig' mutt-2.0.6.org/po/pt_BR.po mutt-2.0.6/po/pt_BR.po
+--- mutt-2.0.6.org/po/pt_BR.po	2021-02-08 03:27:00.000000000 +0100
++++ mutt-2.0.6/po/pt_BR.po	2021-04-18 19:23:39.643363160 +0200
+@@ -10,7 +10,7 @@ msgstr ""
+ "Language: pt_BR\n"
  "MIME-Version: 1.0\n"
  "Content-Type: text/plain; charset=iso-8859-1\n"
 -"Content-Transfer-Encoding:\n"
 +"Content-Transfer-Encoding: 8bit\n"
  
- #: account.c:148
+ #: account.c:163
  #, fuzzy, c-format

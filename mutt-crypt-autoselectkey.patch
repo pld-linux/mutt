@@ -1,10 +1,16 @@
---- crypt-autoselectkey/PATCHES Dec 2002 17:44:54 -0000	3.6
-+++ crypt-autoselectkey/PATCHES Feb 2004 13:19:46 -0000
-@@ -0,0 +1 @@
+diff -urNp -x '*.orig' mutt-2.0.6.org/PATCHES mutt-2.0.6/PATCHES
+--- mutt-2.0.6.org/PATCHES	2021-04-18 19:23:38.550015388 +0200
++++ mutt-2.0.6/PATCHES	2021-04-18 19:23:38.680017105 +0200
+@@ -1,2 +1,3 @@
 +patch-1.5.6.dw.crypt-autoselectkey.1
---- crypt-autoselectkey/init.h Feb 2004 17:10:43 -0000	3.43
-+++ crypt-autoselectkey/init.h Feb 2004 13:19:46 -0000
-@@ -1205,2 +1205,12 @@ struct option_t MuttVars[] = {
+ vvv.quote
+ patch-1.3.27.cd.signatures_menu.2.1
+diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
+--- mutt-2.0.6.org/init.h	2021-04-18 19:23:38.550015388 +0200
++++ mutt-2.0.6/init.h	2021-04-18 19:23:38.680017105 +0200
+@@ -1203,6 +1203,16 @@ struct option_t MuttVars[] = {
+   ** For a full listing of defined \fCprintf(3)\fP-like sequences see
+   ** the section on $$index_format.  See also $$attribution_locale.
    */
 +  
 +
@@ -16,16 +22,26 @@
 +  ** one matching key is available.  This may be useful in conjunction with
 +  ** the \fIcrypt-hook\fP command.
 +  */
-   { "pgp_autosign", 	DT_SYN,  R_NONE, UL "crypt_autosign", 0 },
---- crypt-autoselectkey/mutt.h Feb 2004 17:10:43 -0000	3.23
-+++ crypt-autoselectkey/mutt.h Feb 2004 13:19:46 -0000
-@@ -431,2 +431,3 @@ enum
-   
+   /* L10N:
+      $forward_attribution_trailer default value
+   */
+diff -urNp -x '*.orig' mutt-2.0.6.org/mutt.h mutt-2.0.6/mutt.h
+--- mutt-2.0.6.org/mutt.h	2021-04-18 19:23:38.546682010 +0200
++++ mutt-2.0.6/mutt.h	2021-04-18 19:23:38.680017105 +0200
+@@ -429,6 +429,7 @@ enum
+ #if defined(HAVE_QDBM) || defined(HAVE_TC) || defined(HAVE_KC)
+   OPTHCACHECOMPRESS,
+ #endif /* HAVE_QDBM */
 +  OPTCRYPTAUTOSELECT,
-   OPTCRYPTAUTOSIGN,
---- crypt-autoselectkey/pgpkey.c Oct 2003 19:55:39 -0000	3.8
-+++ crypt-autoselectkey/pgpkey.c Feb 2004 13:19:46 -0000
-@@ -437,4 +437,9 @@ static int pgp_id_matches_addr (ADDRESS 
+ #endif
+   OPTHDRS,
+   OPTHEADER,
+diff -urNp -x '*.orig' mutt-2.0.6.org/pgpkey.c mutt-2.0.6/pgpkey.c
+--- mutt-2.0.6.org/pgpkey.c	2020-07-25 20:22:53.000000000 +0200
++++ mutt-2.0.6/pgpkey.c	2021-04-18 19:23:38.680017105 +0200
+@@ -440,8 +440,13 @@ static int pgp_id_matches_addr (ADDRESS
+   return rv;
+ }
  
 +
 +#define pgp_trusted_id(uid) (!option(OPTPGPCHECKTRUST) \
@@ -36,15 +52,27 @@
 -                                 ADDRESS * p, const char *s)
 +				  ADDRESS * p, const char *s)
  {
-@@ -452,2 +457,3 @@ static pgp_key_t pgp_select_key (pgp_key
+   int keymax;
+   pgp_uid_t **KeyTable;
+@@ -456,6 +461,7 @@ static pgp_key_t pgp_select_key (pgp_key
+   pgp_uid_t *a;
+   int (*f) (const void *, const void *);
  
 +  int keymatch = 0;		/* count matching keys */
    int unusable = 0;
-@@ -481,2 +487,3 @@ static pgp_key_t pgp_select_key (pgp_key
+ 
+   keymax = 0;
+@@ -485,6 +491,7 @@ static pgp_key_t pgp_select_key (pgp_key
+ 
+       KeyTable[i++] = a;
      }
 +    keymatch++;
    }
-@@ -489,2 +496,17 @@ static pgp_key_t pgp_select_key (pgp_key
+ 
+   if (!i && unusable)
+@@ -493,6 +500,21 @@ static pgp_key_t pgp_select_key (pgp_key
+     mutt_sleep (1);
+     return NULL;
    }
 +  else if (keymatch == 1 && option(OPTCRYPTAUTOSELECT))
 +  {
@@ -62,10 +90,16 @@
 +    }
 +  }
  
-@@ -599,5 +621,3 @@ static pgp_key_t pgp_select_key (pgp_key
-
+   switch (PgpSortKeys & SORT_MASK)
+   {
+@@ -609,9 +631,7 @@ static pgp_key_t pgp_select_key (pgp_key
+             break;
+           }
+ 
 -        if (option (OPTPGPCHECKTRUST) &&
 -            (!pgp_id_is_valid (KeyTable[menu->current])
 -             || !pgp_id_is_strong (KeyTable[menu->current])))
 +      if (!pgp_trusted_id(KeyTable[menu->current]))
          {
+           char *s = "";
+           char buff[LONG_STRING];

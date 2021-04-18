@@ -1,11 +1,12 @@
---- mutt-1.5.21/signature.c~	2012-12-07 08:23:16.427880553 +0100
-+++ mutt-1.5.21/signature.c	2012-12-07 08:24:37.171211039 +0100
-@@ -292,7 +292,7 @@
+diff -urNp -x '*.orig' mutt-2.0.6.org/signature.c mutt-2.0.6/signature.c
+--- mutt-2.0.6.org/signature.c	2021-04-18 19:23:40.820045368 +0200
++++ mutt-2.0.6/signature.c	2021-04-18 19:23:40.966713972 +0200
+@@ -290,7 +290,7 @@ static SIG_LIST *sig_search_filter (MUTT
    char* searchBuf = menu->menu >= 0 && menu->menu < MENU_MAX ?
                      SearchBuffers[menu->menu] : NULL;
  
 -  snprintf (buf, sizeof(buf), searchBuf ? searchBuf : "");
 +  snprintf (buf, sizeof(buf), "%s", searchBuf ? searchBuf : "");
    if (mutt_get_field (_("Search for: "), buf,
- 		      sizeof (buf), M_CLEAR) != 0 || !buf[0])
+ 		      sizeof (buf), MUTT_CLEAR) != 0 || !buf[0])
      return (NULL);

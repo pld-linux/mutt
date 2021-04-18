@@ -1,29 +1,36 @@
-diff -pruN2 mutt-1.3.27.orig/Makefile.am mutt-1.3.27/Makefile.am
---- mutt-1.3.27.orig/Makefile.am	Fri Nov  9 01:18:28 2001
-+++ mutt-1.3.27/Makefile.am	Wed Jan 23 22:35:32 2002
-@@ -25,5 +25,5 @@ mutt_SOURCES = $(BUILT_SOURCES) \
+diff -urNp -x '*.orig' mutt-2.0.6.org/Makefile.am mutt-2.0.6/Makefile.am
+--- mutt-2.0.6.org/Makefile.am	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/Makefile.am	2021-04-18 19:23:38.363346256 +0200
+@@ -36,7 +36,7 @@ mutt_SOURCES = \
+ 	main.c mbox.c menu.c mh.c mx.c pager.c parse.c pattern.c \
  	postpone.c query.c recvattach.c recvcmd.c \
- 	rfc822.c rfc1524.c rfc2047.c rfc2231.c \
+ 	rfc822.c rfc1524.c rfc2047.c rfc2231.c rfc3676.c \
 -	score.c send.c sendlib.c signal.c sort.c \
 +	score.c send.c sendlib.c signal.c signature.c sort.c \
  	status.c system.c thread.c charset.c history.c lib.c \
- 	muttlib.c editmsg.c utf8.c mbyte.c wcwidth.c \
-diff -pruN2 mutt-1.3.27.orig/OPS mutt-1.3.27/OPS
---- mutt-1.3.27.orig/OPS	Tue Sep 11 12:50:50 2001
-+++ mutt-1.3.27/OPS	Wed Jan 23 22:35:32 2002
-@@ -37,4 +37,5 @@ OP_COMPOSE_POSTPONE_MESSAGE "save this m
- OP_COMPOSE_RENAME_FILE "rename/move an attached file"
- OP_COMPOSE_SEND_MESSAGE "send the message"
+ 	mutt_lisp.c muttlib.c editmsg.c mbyte.c \
+ 	url.c ascii.c crypt-mod.c crypt-mod.h safe_asprintf.c \
+diff -urNp -x '*.orig' mutt-2.0.6.org/OPS mutt-2.0.6/OPS
+--- mutt-2.0.6.org/OPS	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/OPS	2021-04-18 19:23:38.363346256 +0200
+@@ -36,6 +36,7 @@ OP_COMPOSE_EDIT_MIME "edit attachment us
+ OP_COMPOSE_EDIT_REPLY_TO "edit the Reply-To field"
+ OP_COMPOSE_EDIT_SUBJECT "edit the subject of this message"
+ OP_COMPOSE_EDIT_TO "edit the TO list"
 +OP_COMPOSE_SIG "choose a signature"
- OP_COMPOSE_TOGGLE_DISPOSITION "toggle disposition between inline/attachment"
- OP_COMPOSE_TOGGLE_UNLINK "toggle whether to delete file after sending it"
-@@ -126,4 +127,5 @@ OP_NEXT_ENTRY "move to the next entry"
+ OP_CREATE_MAILBOX "create a new mailbox (IMAP only)"
+ OP_EDIT_TYPE "edit attachment content type"
+ OP_COMPOSE_GET_ATTACHMENT "get a temporary copy of an attachment"
+@@ -153,6 +154,7 @@ OP_MIDDLE_PAGE "move to the middle of th
+ OP_NEXT_ENTRY "move to the next entry"
  OP_NEXT_LINE "scroll down one line"
  OP_NEXT_PAGE "move to the next page"
 +OP_NEXT_SIG "move to the next signature"
  OP_PAGER_BOTTOM "jump to the bottom of the message"
  OP_PAGER_HIDE_QUOTED "toggle display of quoted text"
-@@ -134,9 +136,11 @@ OP_PREV_ENTRY "move to the previous entr
+ OP_PAGER_SKIP_QUOTED "skip beyond quoted text"
+@@ -161,11 +163,13 @@ OP_PIPE "pipe message/attachment to a sh
+ OP_PREV_ENTRY "move to the previous entry"
  OP_PREV_LINE "scroll up one line"
  OP_PREV_PAGE "move to the previous page"
 +OP_PREV_SIG "move to the previous signature"
@@ -35,16 +42,26 @@ diff -pruN2 mutt-1.3.27.orig/OPS mutt-1.3.27/OPS
 +OP_RANDOM_SIG "pick a signature at random"
  OP_RECALL_MESSAGE "recall a postponed message"
  OP_REDRAW "clear and redraw the screen"
-@@ -150,4 +154,5 @@ OP_SEARCH_OPPOSITE "search for next matc
+ OP_REFORMAT_WINCH "{internal}"
+@@ -179,6 +183,7 @@ OP_SEARCH_NEXT "search for next match"
+ OP_SEARCH_OPPOSITE "search for next match in opposite direction"
  OP_SEARCH_TOGGLE "toggle search pattern coloring"
  OP_SHELL_ESCAPE "invoke a command in a subshell"
 +OP_SIG_SEARCH "search signatures matching a pattern"
  OP_SORT "sort messages"
  OP_SORT_REVERSE "sort messages in reverse order"
-diff -pruN2 mutt-1.3.27.orig/compose.c mutt-1.3.27/compose.c
---- mutt-1.3.27.orig/compose.c	Mon Dec  3 11:17:57 2001
-+++ mutt-1.3.27/compose.c	Wed Jan 23 22:35:32 2002
-@@ -1103,4 +1103,9 @@ int mutt_compose_menu (HEADER *msg,   /*
+ OP_TAG "tag the current entry"
+diff -urNp -x '*.orig' mutt-2.0.6.org/PATCHES mutt-2.0.6/PATCHES
+--- mutt-2.0.6.org/PATCHES	2021-04-18 19:23:38.230011162 +0200
++++ mutt-2.0.6/PATCHES	2021-04-18 19:23:38.366679633 +0200
+@@ -1 +1,2 @@
+ vvv.quote
++patch-1.3.27.cd.signatures_menu.2.1
+diff -urNp -x '*.orig' mutt-2.0.6.org/compose.c mutt-2.0.6/compose.c
+--- mutt-2.0.6.org/compose.c	2020-12-01 04:05:21.000000000 +0100
++++ mutt-2.0.6/compose.c	2021-04-18 19:23:38.363346256 +0200
+@@ -1747,6 +1747,11 @@ int mutt_compose_menu (SEND_CONTEXT *sct
+         /* no send2hook, since this doesn't modify the message */
  	break;
  
 +      case OP_COMPOSE_SIG:
@@ -54,30 +71,33 @@ diff -pruN2 mutt-1.3.27.orig/compose.c mutt-1.3.27/compose.c
 +
        case OP_PIPE:
        case OP_FILTER:
-diff -pruN2 mutt-1.3.27.orig/doc/manual.sgml.head mutt-1.3.27/doc/manual.sgml.head
---- mutt-1.3.27.orig/doc/manual.xml.head	Sat Jan 12 12:35:43 2002
-+++ mutt-1.3.27/doc/manual.xml.head	Wed Jan 23 22:35:32 2002
-@@ -526,4 +526,5 @@ c       edit-cc                 edit the
- b       edit-bcc                edit the Bcc field
- y       send-message            send the message
+         CHECK_COUNT;
+diff -urNp -x '*.orig' mutt-2.0.6.org/doc/manual.xml.head mutt-2.0.6/doc/manual.xml.head
+--- mutt-2.0.6.org/doc/manual.xml.head	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/doc/manual.xml.head	2021-04-18 19:23:38.363346256 +0200
+@@ -525,6 +525,7 @@ linkend="tab-keys-nav-page"/> for page-b
+ </tbody>
+ </tgroup>
+ </table>
 +ESC s	signature-menu		select a signature and append it to your mail
- s       edit-subject            edit the Subject
- f       edit-fcc                specify an ``Fcc'' mailbox
-diff -pruN2 mutt-1.3.27.orig/functions.h mutt-1.3.27/functions.h
---- mutt-1.3.27.orig/functions.h	Tue Sep 11 12:51:39 2001
-+++ mutt-1.3.27/functions.h	Wed Jan 23 22:35:32 2002
-@@ -309,4 +309,5 @@ struct binding_t OpCompose[] = {
-   { "send-message",	OP_COMPOSE_SEND_MESSAGE,	"y" },
-   { "pipe-entry",	OP_PIPE,			"|" },
+ 
+ </sect1>
+ 
+diff -urNp -x '*.orig' mutt-2.0.6.org/functions.h mutt-2.0.6/functions.h
+--- mutt-2.0.6.org/functions.h	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/functions.h	2021-04-18 19:23:38.363346256 +0200
+@@ -308,6 +308,7 @@ const struct binding_t OpPager[] = { /*
+ 
+   { "what-key",		OP_WHAT_KEY,		NULL },
+   { "check-stats",	OP_CHECK_STATS,		NULL },
 +  { "signature-menu",	OP_COMPOSE_SIG,			"\033s" },
  
- #ifdef HAVE_PGP
-@@ -363,4 +364,17 @@ struct binding_t OpQuery[] = {
-   { "query",		OP_QUERY,		"Q" },
-   { "query-append",	OP_QUERY_APPEND,	"A" },
-+  { NULL,		0,			NULL }
-+};
-+
+ #ifdef USE_SIDEBAR
+   { "sidebar-first",		OP_SIDEBAR_FIRST,		NULL },
+@@ -458,6 +459,19 @@ const struct binding_t OpQuery[] = { /*
+   { NULL,		0,			NULL }
+ };
+ 
 +/* Signature Menu */
 +struct binding_t OpSig[] = {
 +  { "next-sig",		OP_NEXT_SIG,		"j" },
@@ -88,22 +108,29 @@ diff -pruN2 mutt-1.3.27.orig/functions.h mutt-1.3.27/functions.h
 +
 +struct binding_t OpSigDir[] = {
 +  { "search-sig",	OP_SIG_SEARCH,		"/" },
-   { NULL,		0,			NULL }
- };
-diff -pruN2 mutt-1.3.27.orig/globals.h mutt-1.3.27/globals.h
---- mutt-1.3.27.orig/globals.h	Thu Jan  3 21:56:46 2002
-+++ mutt-1.3.27/globals.h	Wed Jan 23 22:35:32 2002
-@@ -100,4 +100,5 @@ WHERE char *Sendmail;
- WHERE char *Shell;
++  { NULL,		0,			NULL }
++};
++
+ const struct binding_t OpEditor[] = { /* map: editor */
+   { "bol",		OP_EDITOR_BOL,			"\001" },
+   { "backward-char",	OP_EDITOR_BACKWARD_CHAR,	"\002" },
+diff -urNp -x '*.orig' mutt-2.0.6.org/globals.h mutt-2.0.6/globals.h
+--- mutt-2.0.6.org/globals.h	2021-04-18 19:23:38.230011162 +0200
++++ mutt-2.0.6/globals.h	2021-04-18 19:23:38.363346256 +0200
+@@ -145,6 +145,7 @@ WHERE char *SidebarFormat;
+ WHERE char *SidebarIndentString;
+ #endif
  WHERE char *Signature;
 +WHERE char *SigDirectory;
  WHERE char *SimpleSearch;
- WHERE char *Spoolfile;
-diff -pruN2 mutt-1.3.27.orig/init.h mutt-1.3.27/init.h
---- mutt-1.3.27.orig/init.h	Mon Dec 10 11:09:03 2001
-+++ mutt-1.3.27/init.h	Wed Jan 23 22:35:32 2002
-@@ -1954,4 +1954,12 @@ struct option_t MuttVars[] = {
-   ** its stdout.
+ #if USE_SMTP
+ WHERE char *SmtpAuthenticators;
+diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
+--- mutt-2.0.6.org/init.h	2021-04-18 19:23:38.230011162 +0200
++++ mutt-2.0.6/init.h	2021-04-18 19:23:38.363346256 +0200
+@@ -1953,6 +1953,14 @@ struct option_t MuttVars[] = {
+   ** automatically generated with \fI<mark-message>a\fP will be composed
+   ** from this prefix and the letter \fIa\fP.
    */
 +  { "signatures_directory",	DT_PATH, R_NONE, {.p=&SigDirectory}, {.p=""} },
 +  /*
@@ -113,26 +140,32 @@ diff -pruN2 mutt-1.3.27.orig/init.h mutt-1.3.27/init.h
 +  ** sig_dashes (``-- '').
 +  ** You can choose between these signatures from the compose menu.
 +  */
-   { "simple_search",	DT_STR,	 R_NONE, UL &SimpleSearch, UL "~f %s | ~s %s" },
+   { "mark_old",		DT_BOOL, R_BOTH, {.l=OPTMARKOLD}, {.l=1} },
    /*
-diff -pruN2 mutt-1.3.27.orig/keymap.c mutt-1.3.27/keymap.c
---- mutt-1.3.27.orig/keymap.c	Tue Oct 16 16:29:02 2001
-+++ mutt-1.3.27/keymap.c	Wed Jan 23 22:35:32 2002
-@@ -50,4 +50,6 @@ struct mapping_t Menus[] = {
- 
-  { "query",	MENU_QUERY },
+   ** .pp
+diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.c mutt-2.0.6/keymap.c
+--- mutt-2.0.6.org/keymap.c	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/keymap.c	2021-04-18 19:23:38.366679633 +0200
+@@ -49,6 +49,8 @@ const struct mapping_t Menus[] = {
+   { "pager",	MENU_PAGER },
+   { "postpone",	MENU_POST },
+   { "pgp",	MENU_PGP },
 + { "signature",	MENU_SIG },
 + { "sig_directory",	MENU_SIG_DIR },
-  { "generic",	MENU_GENERIC },
-  { NULL,	0 }
-@@ -528,4 +530,6 @@ void km_init (void)
+   { "smime",	MENU_SMIME },
+ #ifdef CRYPT_BACKEND_GPGME
+   { "key_select_pgp",	MENU_KEY_SELECT_PGP },
+@@ -749,6 +751,8 @@ void km_init (void)
+   create_bindings (OpPost, MENU_POST);
    create_bindings (OpQuery, MENU_QUERY);
    create_bindings (OpAlias, MENU_ALIAS);
 +  create_bindings (OpSig, MENU_SIG);
 +  create_bindings (OpSigDir, MENU_SIG_DIR);
  
  
-@@ -619,4 +623,7 @@ void km_init (void)
+   if ((WithCrypto & APPLICATION_PGP))
+@@ -851,6 +855,9 @@ void km_init (void)
+   km_bindkey ("<enter>", MENU_ATTACH, OP_VIEW_ATTACH);
    km_bindkey ("<enter>", MENU_COMPOSE, OP_VIEW_ATTACH);
  
 +  km_bindkey ("<up>", MENU_SIG, OP_PREV_SIG);
@@ -140,7 +173,9 @@ diff -pruN2 mutt-1.3.27.orig/keymap.c mutt-1.3.27/keymap.c
 +
    /* edit-to (default "t") hides generic tag-entry in Compose menu
       This will bind tag-entry to  "T" in the Compose menu */
-@@ -739,4 +746,8 @@ struct binding_t *km_get_table (int menu
+   km_bindkey ("T", MENU_COMPOSE, OP_TAG);
+@@ -1015,6 +1022,10 @@ const struct binding_t *km_get_table (in
+       return OpEditor;
      case MENU_QUERY:
        return OpQuery;
 +    case MENU_SIG:
@@ -148,36 +183,64 @@ diff -pruN2 mutt-1.3.27.orig/keymap.c mutt-1.3.27/keymap.c
 +    case MENU_SIG_DIR:
 +      return OpSigDir;
  
- 
-diff -pruN2 mutt-1.3.27.orig/keymap.h mutt-1.3.27/keymap.h
---- mutt-1.3.27.orig/keymap.h	Tue Sep 11 12:50:12 2001
-+++ mutt-1.3.27/keymap.h	Wed Jan 23 22:35:32 2002
-@@ -60,4 +60,6 @@ enum
+     case MENU_PGP:
+       return (WithCrypto & APPLICATION_PGP)? OpPgp:NULL;
+diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.h mutt-2.0.6/keymap.h
+--- mutt-2.0.6.org/keymap.h	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/keymap.h	2021-04-18 19:23:38.366679633 +0200
+@@ -63,6 +63,8 @@ enum
+   MENU_PAGER,
    MENU_POST,
    MENU_QUERY,
 +  MENU_SIG,
 +  MENU_SIG_DIR,
  
-   
-@@ -102,4 +104,6 @@ extern struct binding_t OpEditor[];
- extern struct binding_t OpQuery[];
- extern struct binding_t OpAlias[];
+ 
+   MENU_PGP,
+@@ -105,6 +107,8 @@ const struct binding_t *km_get_table (in
+ extern const struct binding_t OpGeneric[];
+ extern const struct binding_t OpPost[];
+ extern const struct binding_t OpMain[];
 +extern struct binding_t OpSig[];
 +extern struct binding_t OpSigDir[];
+ extern const struct binding_t OpAttach[];
+ extern const struct binding_t OpPager[];
+ extern const struct binding_t OpCompose[];
+diff -urNp -x '*.orig' mutt-2.0.6.org/menu.c mutt-2.0.6/menu.c
+--- mutt-2.0.6.org/menu.c	2021-04-18 19:23:38.230011162 +0200
++++ mutt-2.0.6/menu.c	2021-04-18 19:23:38.366679633 +0200
+@@ -683,7 +683,7 @@ void menu_current_bottom (MUTTMENU *menu
+     mutt_error _("No entries.");
+ }
  
- #ifdef HAVE_PGP
-diff -pruN2 mutt-1.3.27.orig/protos.h mutt-1.3.27/protos.h
---- mutt-1.3.27.orig/protos.h	Wed Jan 16 21:43:58 2002
-+++ mutt-1.3.27/protos.h	Wed Jan 23 22:35:32 2002
-@@ -225,4 +225,5 @@ void mutt_shell_escape (void);
- void mutt_show_error (void);
- void mutt_signal_init (void);
+-static void menu_next_entry (MUTTMENU *menu)
++void menu_next_entry (MUTTMENU *menu)
+ {
+   if (menu->current < menu->max - 1)
+   {
+@@ -694,7 +694,7 @@ static void menu_next_entry (MUTTMENU *m
+     mutt_error _("You are on the last entry.");
+ }
+ 
+-static void menu_prev_entry (MUTTMENU *menu)
++void menu_prev_entry (MUTTMENU *menu)
+ {
+   if (menu->current)
+   {
+diff -urNp -x '*.orig' mutt-2.0.6.org/protos.h mutt-2.0.6/protos.h
+--- mutt-2.0.6.org/protos.h	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/protos.h	2021-04-18 19:23:38.366679633 +0200
+@@ -224,6 +224,7 @@ void mutt_free_body (BODY **);
+ void mutt_free_color (int fg, int bg);
+ void mutt_free_enter_state (ENTER_STATE **);
+ void mutt_free_envelope (ENVELOPE **);
 +void mutt_signature (char *);
- void mutt_stamp_attachment (BODY *a);
- void mutt_tabs_to_spaces (char *);
-diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
---- mutt-1.3.27.orig/signature.c	Thu Jan  1 01:00:00 1970
-+++ mutt-1.3.27/signature.c	Wed Jan 23 22:35:32 2002
+ void mutt_free_header (HEADER **);
+ void mutt_free_parameter (PARAMETER **);
+ void mutt_free_regexp (REGEXP **);
+diff -urNp -x '*.orig' mutt-2.0.6.org/signature.c mutt-2.0.6/signature.c
+--- mutt-2.0.6.org/signature.c	1970-01-01 01:00:00.000000000 +0100
++++ mutt-2.0.6/signature.c	2021-04-18 19:23:38.366679633 +0200
 @@ -0,0 +1,499 @@
 +/*
 + * Copyright (C) 2001 Cedric Duval <cedricduval@free.fr>
@@ -678,29 +741,3 @@ diff -pruN2 mutt-1.3.27.orig/signature.c mutt-1.3.27/signature.c
 +  if (sig_dir_menu (SigDirectory, msg_file) == -1)
 +    mutt_error (_("%s: no files in this directory"), SigDirectory);
 +}
-diff -pruN mutt-1.3.27.orig/PATCHES mutt-1.3.27/PATCHES
---- mutt-1.3.27.orig/PATCHES    Mon Nov 26 20:16:52 2001
-+++ mutt-1.3.27/PATCHES Thu Dec  6 16:27:55 2001
-@@ -1,0 +2 @@
-+patch-1.3.27.cd.signatures_menu.2.1
-diff --git a/menu.c b/menu.c
---- a/menu.c
-+++ b/menu.c
-@@ -642,7 +642,7 @@
-     mutt_error _("No entries.");
- }
- 
--static void menu_next_entry (MUTTMENU *menu)
-+void menu_next_entry (MUTTMENU *menu)
- {
-   if (menu->current < menu->max - 1)
-   {
-@@ -653,7 +653,7 @@
-     mutt_error _("You are on the last entry.");
- }
- 
--static void menu_prev_entry (MUTTMENU *menu)
-+void menu_prev_entry (MUTTMENU *menu)
- {
-   if (menu->current)
-   {

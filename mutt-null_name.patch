@@ -1,7 +1,7 @@
-diff -urN mutt-1.3.27.orig/browser.c mutt-1.3.27/browser.c
---- mutt-1.3.27.orig/browser.c	Tue Dec 18 16:12:48 2001
-+++ mutt-1.3.27/browser.c	Mon Feb  4 00:40:48 2002
-@@ -388,6 +388,10 @@
+diff -urNp -x '*.orig' mutt-2.0.6.org/browser.c mutt-2.0.6/browser.c
+--- mutt-2.0.6.org/browser.c	2020-12-01 04:05:21.000000000 +0100
++++ mutt-2.0.6/browser.c	2021-04-18 19:23:38.053342162 +0200
+@@ -475,6 +475,10 @@ static int examine_directory (MUTTMENU *
  
    while ((de = readdir (dp)) != NULL)
    {
@@ -11,4 +11,4 @@ diff -urN mutt-1.3.27.orig/browser.c mutt-1.3.27/browser.c
 +
      if (mutt_strcmp (de->d_name, ".") == 0)
        continue;    /* we don't need . */
-     
+ 

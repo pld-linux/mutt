@@ -1,12 +1,12 @@
-diff -udprP mutt-1.12.1.orig/PATCHES mutt-1.12.1/PATCHES
---- mutt-1.12.1.orig/PATCHES	2017-12-03 05:10:17.000000000 +0200
-+++ mutt-1.12.1/PATCHES	2019-08-11 19:32:51.176165992 +0300
+diff -urNp -x '*.orig' mutt-2.0.6.org/PATCHES mutt-2.0.6/PATCHES
+--- mutt-2.0.6.org/PATCHES	2020-06-24 23:41:42.000000000 +0200
++++ mutt-2.0.6/PATCHES	2021-04-18 19:23:37.740004690 +0200
 @@ -0,0 +1 @@
 +vvv.quote
-diff -udprP mutt-1.12.1.orig/handler.c mutt-1.12.1/handler.c
---- mutt-1.12.1.orig/handler.c	2019-05-31 19:21:33.000000000 +0300
-+++ mutt-1.12.1/handler.c	2019-08-11 19:32:51.177165977 +0300
-@@ -1593,7 +1593,31 @@ static int text_plain_handler (BODY *b,
+diff -urNp -x '*.orig' mutt-2.0.6.org/handler.c mutt-2.0.6/handler.c
+--- mutt-2.0.6.org/handler.c	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/handler.c	2021-04-18 19:23:37.740004690 +0200
+@@ -1603,7 +1603,31 @@ static int text_plain_handler (BODY *b,
  	buf[--l] = 0;
      }
      if (s->prefix)
@@ -39,7 +39,7 @@ diff -udprP mutt-1.12.1.orig/handler.c mutt-1.12.1/handler.c
      state_puts (buf, s);
      state_putc ('\n', s);
    }
-@@ -1779,7 +1803,7 @@ int mutt_body_handler (BODY *b, STATE *s
+@@ -1806,7 +1830,7 @@ int mutt_body_handler (BODY *b, STATE *s
         */
        if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp (b))
  	encrypted_handler = handler = crypt_pgp_application_pgp_handler;
@@ -48,9 +48,10 @@ diff -udprP mutt-1.12.1.orig/handler.c mutt-1.12.1/handler.c
  	handler = rfc3676_handler;
        else
  	handler = text_plain_handler;
---- mutt-2.0.6/init.h.orig	2021-04-07 17:27:35.690778943 +0000
-+++ mutt-2.0.6/init.h	2021-04-07 17:29:10.704113619 +0000
-@@ -2966,6 +2966,19 @@
+diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
+--- mutt-2.0.6.org/init.h	2021-04-18 19:23:37.610002974 +0200
++++ mutt-2.0.6/init.h	2021-04-18 19:23:37.740004690 +0200
+@@ -2966,6 +2966,19 @@ struct option_t MuttVars[] = {
    ** have no effect, and if it is set to \fIask-yes\fP or \fIask-no\fP, you are
    ** prompted for confirmation when you try to quit.
    */
@@ -70,11 +71,11 @@ diff -udprP mutt-1.12.1.orig/handler.c mutt-1.12.1/handler.c
    { "quote_regexp",	DT_RX,	 R_PAGER, {.p=&QuoteRegexp}, {.p="^([ \t]*[|>:}#])+"} },
    /*
    ** .pp
-diff -udprP mutt-1.12.1.orig/mutt.h mutt-1.12.1/mutt.h
---- mutt-1.12.1.orig/mutt.h	2019-06-14 04:29:29.000000000 +0300
-+++ mutt-1.12.1/mutt.h	2019-08-11 19:32:51.179165947 +0300
-@@ -479,6 +479,8 @@ enum
-   OPTPRINTDECODE,
+diff -urNp -x '*.orig' mutt-2.0.6.org/mutt.h mutt-2.0.6/mutt.h
+--- mutt-2.0.6.org/mutt.h	2021-03-06 20:06:37.000000000 +0100
++++ mutt-2.0.6/mutt.h	2021-04-18 19:23:37.740004690 +0200
+@@ -510,6 +510,8 @@ enum
+   OPTPRINTDECODEWEED,
    OPTPRINTSPLIT,
    OPTPROMPTAFTER,
 +  OPTQUOTEEMPTY,
