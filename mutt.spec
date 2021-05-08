@@ -6,6 +6,7 @@
 # - update/drop -imap_recent.patch
 #
 # Conditional build:
+%bcond_without	autocrypt	# disable autocrypt support
 %bcond_with	slang		# use slang library instead of ncurses
 %bcond_with	nntp		# use VVV's NNTP patch
 %bcond_with	folder_column	# build with folder_column patch
@@ -75,6 +76,7 @@ BuildRequires:	docbook-style-xsl
 %{?with_gdbm:BuildRequires:	gdbm-devel}
 BuildRequires:	gettext-tools
 BuildRequires:	gpgme-devel >= 1:1.4.0
+%{?with_autocrypt:BuildRequires: gpgme-devel >= 1:1.8.0}
 %{?with_home_etc:BuildRequires:	home-etc-devel >= 1.0.8}
 BuildRequires:	libgpg-error-devel >= 1.33
 BuildRequires:	libidn-devel
@@ -84,6 +86,7 @@ BuildRequires:	lynx
 BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_qdbm:BuildRequires:	qdbm-devel}
 %{?with_slang:BuildRequires:	slang-devel}
+%{?with_autocrypt:BuildRequires:	sqlite3-devel >= 3.20}
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
 Requires:	gpgme >= 1:1.4.0
 %{?with_home_etc:Requires:	home-etc-lib >= 1.0.8}
@@ -197,6 +200,7 @@ Mutt - це невеликий, але потужний повноекранни
 	--enable-pop \
 	--enable-sidebar \
 	--enable-smtp \
+	%{?with_autocrypt:--with-sqlite3 --enable-autocrypt} \
 	%{?with_bdb:--with-bdb=/usr} \
 	%{!?with_slang:--with-curses} \
 	--with-docdir=%{_docdir}/%{name} \
