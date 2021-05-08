@@ -285,7 +285,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_docdir}/%{name}
 %{_desktopdir}/mutt.desktop
 %{_pixmapsdir}/mutt.png
-#%{_mandir}/man1/flea.1*
+#%%{_mandir}/man1/flea.1*
 %{_mandir}/man1/mutt*.1*
 %{_mandir}/man1/pgpewrap.1*
 %{_mandir}/man1/smime_keys.1*
