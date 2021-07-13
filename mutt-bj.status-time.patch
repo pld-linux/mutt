@@ -80,7 +80,7 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/mutt_menu.h mutt-1.5.10/mutt_menu
 +++ mutt-1.5.10/mutt_menu.h	2005-10-07 09:28:59.000000000 +0200
 @@ -112,4 +112,5 @@
  void index_make_entry (char *, size_t, struct menu_t *, int);
- int index_color (int);
+ COLOR_ATTR index_color (int);
  
 +int update_status_time (void);
  #endif /* _MUTT_MENU_H_ */
