@@ -210,7 +210,6 @@ Mutt - це невеликий, але потужний повноекранни
 	--with-mailpath=/var/mail \
 	--with-mixmaster \
 	%{?with_qdbm:--with-qdbm} \
-	--with-regex \
 	%{?with_sasl:--with-sasl} \
 	%{?with_slang:--with-slang} \
 	--with-ssl \
