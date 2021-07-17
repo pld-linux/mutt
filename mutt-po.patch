@@ -8,5 +8,5 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/po/pt_BR.po mutt-2.0.6/po/pt_BR.po
 -"Content-Transfer-Encoding:\n"
 +"Content-Transfer-Encoding: 8bit\n"
  
- #: account.c:163
+ #: account.c:164
  #, fuzzy, c-format
