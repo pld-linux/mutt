@@ -17,8 +17,8 @@ diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
 --- mutt-2.0.6/init.h.orig	2021-04-07 17:47:28.950795784 +0000
 +++ mutt-2.0.6/init.h	2021-04-07 17:48:57.734130406 +0000
 @@ -1874,6 +1874,12 @@
-   ** from your spool mailbox to your $$mbox mailbox, or as a result of
-   ** a ``$mbox-hook'' command.
+   ** If \fIset\fP, convert the date in the Date header of sent emails into local
+   ** (sender's) timezone.
    */
 +  { "keep_to", DT_BOOL, R_NONE, OPTKEEPTO, 0 },
 +  /*
@@ -36,6 +36,6 @@ diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
    OPTINCLUDEONLYFIRST,
    OPTKEEPFLAGGED,
 +  OPTKEEPTO,
+   OPTLOCALDATEHEADER,
    OPTMUTTLISPINLINEEVAL,
    OPTMAILCAPSANITIZE,
-   OPTMAILCHECKRECENT,

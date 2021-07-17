@@ -13,44 +13,70 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/Makefile.am mutt-2.0.6/Makefile.am
 diff -urNp -x '*.orig' mutt-2.0.6.org/OPS mutt-2.0.6/OPS
 --- mutt-2.0.6.org/OPS	2021-03-06 20:06:37.000000000 +0100
 +++ mutt-2.0.6/OPS	2021-04-18 19:23:38.363346256 +0200
-@@ -36,6 +36,7 @@ OP_COMPOSE_EDIT_MIME "edit attachment us
- OP_COMPOSE_EDIT_REPLY_TO "edit the Reply-To field"
- OP_COMPOSE_EDIT_SUBJECT "edit the subject of this message"
- OP_COMPOSE_EDIT_TO "edit the TO list"
-+OP_COMPOSE_SIG "choose a signature"
- OP_CREATE_MAILBOX "create a new mailbox (IMAP only)"
- OP_EDIT_TYPE "edit attachment content type"
- OP_COMPOSE_GET_ATTACHMENT "get a temporary copy of an attachment"
-@@ -153,6 +154,7 @@ OP_MIDDLE_PAGE "move to the middle of th
- OP_NEXT_ENTRY "move to the next entry"
- OP_NEXT_LINE "scroll down one line"
- OP_NEXT_PAGE "move to the next page"
-+OP_NEXT_SIG "move to the next signature"
- OP_PAGER_BOTTOM "jump to the bottom of the message"
- OP_PAGER_HIDE_QUOTED "toggle display of quoted text"
- OP_PAGER_SKIP_QUOTED "skip beyond quoted text"
-@@ -161,11 +163,13 @@ OP_PIPE "pipe message/attachment to a sh
- OP_PREV_ENTRY "move to the previous entry"
- OP_PREV_LINE "scroll up one line"
- OP_PREV_PAGE "move to the previous page"
-+OP_PREV_SIG "move to the previous signature"
- OP_PRINT "print the current entry"
- OP_PURGE_MESSAGE "delete the current entry, bypassing the trash folder"
- OP_QUERY "query external program for addresses"
- OP_QUERY_APPEND "append new query results to current results"
- OP_QUIT "save changes to mailbox and quit"
-+OP_RANDOM_SIG "pick a signature at random"
- OP_RECALL_MESSAGE "recall a postponed message"
- OP_REDRAW "clear and redraw the screen"
- OP_REFORMAT_WINCH "{internal}"
-@@ -179,6 +183,7 @@ OP_SEARCH_NEXT "search for next match"
- OP_SEARCH_OPPOSITE "search for next match in opposite direction"
- OP_SEARCH_TOGGLE "toggle search pattern coloring"
- OP_SHELL_ESCAPE "invoke a command in a subshell"
-+OP_SIG_SEARCH "search signatures matching a pattern"
- OP_SORT "sort messages"
- OP_SORT_REVERSE "sort messages in reverse order"
- OP_TAG "tag the current entry"
+@@ -213,6 +213,11 @@
+  */
+ OP_COMPOSE_EDIT_TO N_("edit the TO list")
+ 
++/* L10N: Help screen description for OP_COMPOSE_SIG
++   compose menu: <signature-menu>
++ */
++OP_COMPOSE_SIG N_("choose a signature")
++
+ /* L10N: Help screen description for OP_CREATE_MAILBOX
+    browser menu: <create-mailbox>
+  */
+@@ -907,6 +912,12 @@
+  */
+ OP_NEXT_PAGE N_("move to the next page")
+ 
++/* L10N: Help screen description for OP_NEXT_SIG
++   generic menu: <next-signature>
++   pager menu: <next-signature>
++ */
++OP_NEXT_SIG N_("move to the next signature")
++
+ /* L10N: Help screen description for OP_PAGER_BOTTOM
+    pager menu: <bottom>
+  */
+@@ -958,6 +969,12 @@
+  */
+ OP_PREV_PAGE N_("move to the previous page")
+ 
++/* L10N: Help screen description for OP_PREV_SIG
++   generic menu: <prev-signature>
++   pager menu: <prev-signature>
++ */
++OP_PREV_SIG N_("move to the previous signature")
++
+ /* L10N: Help screen description for OP_PRINT
+    index menu: <print-message>
+    pager menu: <print-message>
+@@ -1006,6 +1006,12 @@
+  */
+ OP_QUIT N_("save changes to mailbox and quit")
+ 
++/* L10N: Help screen description for OP_RANDOM_SIG
++   index menu: <random-sig>
++   pager menu: <random-sig>
++*/
++OP_RANDOM_SIG N_("use random signature")
++
+ /* L10N: Help screen description for OP_RECALL_MESSAGE
+    index menu: <recall-message>
+    pager menu: <recall-message>
+@@ -1055,6 +1072,12 @@
+  */
+ OP_SEARCH_OPPOSITE N_("search for next match in opposite direction")
+ 
++/* L10N: Help screen description for OP_SIG_SEARCH
++   generic menu: <search-sig>
++   pager menu: <search-sig>
++ */
++OP_SIG_SEARCH N_("search signatures matching a pattern")
++
+ /* L10N: Help screen description for OP_SEARCH_TOGGLE
+    pager menu: <search-toggle>
+  */
 diff -urNp -x '*.orig' mutt-2.0.6.org/PATCHES mutt-2.0.6/PATCHES
 --- mutt-2.0.6.org/PATCHES	2021-04-18 19:23:38.230011162 +0200
 +++ mutt-2.0.6/PATCHES	2021-04-18 19:23:38.366679633 +0200
@@ -175,9 +201,9 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.c mutt-2.0.6/keymap.c
       This will bind tag-entry to  "T" in the Compose menu */
    km_bindkey ("T", MENU_COMPOSE, OP_TAG);
 @@ -1015,6 +1022,10 @@ const struct binding_t *km_get_table (in
-       return OpEditor;
-     case MENU_QUERY:
        return OpQuery;
+     case MENU_LIST:
+       return OpList;
 +    case MENU_SIG:
 +      return OpSig;
 +    case MENU_SIG_DIR:
@@ -231,7 +257,7 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/protos.h mutt-2.0.6/protos.h
 --- mutt-2.0.6.org/protos.h	2021-03-06 20:06:37.000000000 +0100
 +++ mutt-2.0.6/protos.h	2021-04-18 19:23:38.366679633 +0200
 @@ -224,6 +224,7 @@ void mutt_free_body (BODY **);
- void mutt_free_color (int fg, int bg);
+ void mutt_free_body (BODY **);
  void mutt_free_enter_state (ENTER_STATE **);
  void mutt_free_envelope (ENVELOPE **);
 +void mutt_signature (char *);
