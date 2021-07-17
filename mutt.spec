@@ -54,6 +54,7 @@ Patch7:		%{name}-Muttrc_mbox_path.patch
 Patch8:		%{name}-po.patch
 Patch9:	%{name}-Muttrc.head.patch
 Patch10:	%{name}-smime.rc.patch
+# seems obsolete
 Patch11:	%{name}-db.patch
 Patch12:	format-security.patch
 Patch13:	%{name}-keep_to.patch
@@ -166,7 +167,7 @@ Mutt - це невеликий, але потужний повноекранни
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
-%patch11 -p1
+#%%patch11 -p1
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
