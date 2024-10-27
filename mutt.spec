@@ -6,13 +6,13 @@
 # - update/drop -imap_recent.patch
 #
 # Conditional build:
-%bcond_without	autocrypt	# disable autocrypt support
+%bcond_without	autocrypt	# autocrypt support
 %bcond_with	slang		# use slang library instead of ncurses
-%bcond_with	nntp		# use VVV's NNTP patch
-%bcond_with	folder_column	# build with folder_column patch
+%bcond_with	nntp		# VVV's NNTP patch
+%bcond_with	folder_column	# folder_column patch
 %bcond_with	imap_recent	# show IMAP RECENT messages as new (instead of UNSEEN)
-%bcond_without	sasl		# don't use sasl
-%bcond_with	home_etc	# use home_etc
+%bcond_without	sasl		# SASL support
+%bcond_with	home_etc	# home_etc patch
 %bcond_with	gdbm		# use GDBM instead of BerkeleyDB
 %bcond_with	qdbm		# use QDBM instead of BerkeleyDB
 %bcond_with	tokyocabinet	# use TokyoCabinet instead of BerkeleyDB
@@ -31,13 +31,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	2.1.4
+Version:	2.2.13
 Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
-# Source0-md5:	696e72d905aa9e0441cc647cb1bdef48
+# Source0-md5:	0d33c808d5556c283c01542c7730ccbd
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
@@ -153,8 +153,7 @@ Mutt - це невеликий, але потужний повноекранни
 
 %prep
 %setup -q
-# pl.poupdate
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -253,7 +252,6 @@ EOF
 %{__rm} $RPM_BUILD_ROOT%{_sysconfdir}/mime.types
 # don't litter
 %{__rm} -r $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.dist
-%{__rm} -r $RPM_BUILD_ROOT%{_sysconfdir}/Muttrc.orig
 %{__rm} -r $RPM_BUILD_ROOT%{_sysconfdir}/mime.types.dist
 
 %find_lang %{name}

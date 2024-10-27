@@ -109,37 +109,58 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/doc/manual.xml.head mutt-2.0.6/doc/manual.
  
  </sect1>
  
-diff -urNp -x '*.orig' mutt-2.0.6.org/functions.h mutt-2.0.6/functions.h
---- mutt-2.0.6.org/functions.h	2021-03-06 20:06:37.000000000 +0100
-+++ mutt-2.0.6/functions.h	2021-04-18 19:23:38.363346256 +0200
-@@ -308,6 +308,7 @@ const struct binding_t OpPager[] = { /*
- 
-   { "what-key",		OP_WHAT_KEY,		NULL },
-   { "check-stats",	OP_CHECK_STATS,		NULL },
-+  { "signature-menu",	OP_COMPOSE_SIG,			"\033s" },
- 
- #ifdef USE_SIDEBAR
-   { "sidebar-first",		OP_SIDEBAR_FIRST,		NULL },
-@@ -458,6 +459,19 @@ const struct binding_t OpQuery[] = { /*
-   { NULL,		0,			NULL }
+--- mutt-2.2.13/functions.h.orig	2024-10-27 15:38:19.454762308 +0100
++++ mutt-2.2.13/functions.h	2024-10-27 16:03:18.866639300 +0100
+@@ -435,6 +435,7 @@ const struct menu_func_op_t OpPager[] =
+   { "sidebar-prev-new",          OP_SIDEBAR_PREV_NEW },
+   { "sidebar-toggle-visible",    OP_SIDEBAR_TOGGLE_VISIBLE },
+ #endif
++  { "signature-menu",            OP_COMPOSE_SIG },
+   { "skip-headers",              OP_PAGER_SKIP_HEADERS },
+   { "skip-quoted",               OP_PAGER_SKIP_QUOTED },
+   { "sort-mailbox",              OP_SORT },
+@@ -457,6 +458,7 @@ const struct menu_op_seq_t PagerDefaultB
+   { OP_BOUNCE_MESSAGE,              "b" },
+   { OP_BUFFY_LIST,                  "." },
+   { OP_CHECK_TRADITIONAL,           "\033P"   },
++  { OP_COMPOSE_SIG,                 "\033s" },
+   { OP_COPY_MESSAGE,                "C" },
+   { OP_CREATE_ALIAS,                "a" },
+   { OP_DECODE_COPY,                 "\033C" },
+@@ -809,6 +811,33 @@ const struct menu_op_seq_t QueryDefaultB
+   { 0,                  NULL }
  };
  
 +/* Signature Menu */
-+struct binding_t OpSig[] = {
-+  { "next-sig",		OP_NEXT_SIG,		"j" },
-+  { "previous-sig",	OP_PREV_SIG,		"k" },
-+  { "random-sig",	OP_RANDOM_SIG,		"r" },
-+  { NULL,		0,			NULL }
++const struct menu_func_op_t OpSig[] = {
++  { "next-sig",     OP_NEXT_SIG   },
++  { "previous-sig", OP_PREV_SIG   },
++  { "random-sig",   OP_RANDOM_SIG },
++  { NULL,           0,            }
 +};
 +
-+struct binding_t OpSigDir[] = {
-+  { "search-sig",	OP_SIG_SEARCH,		"/" },
-+  { NULL,		0,			NULL }
++const struct menu_op_seq_t SigDefaultBindings[] = {
++  { OP_NEXT_SIG,   "<down>" },
++  { OP_NEXT_SIG,   "j"      },
++  { OP_PREV_SIG,   "<up>"   },
++  { OP_PREV_SIG,   "k"      },
++  { OP_RANDOM_SIG, "r"      },
++  { 0,             NULL     }
 +};
 +
- const struct binding_t OpEditor[] = { /* map: editor */
-   { "bol",		OP_EDITOR_BOL,			"\001" },
-   { "backward-char",	OP_EDITOR_BACKWARD_CHAR,	"\002" },
++const struct menu_func_op_t OpSigDir[] = {
++  { "search-sig", OP_SIG_SEARCH },
++  { NULL,         0             }
++};
++
++const struct menu_op_seq_t SigDirDefaultBindings[] = {
++  { OP_SIG_SEARCH, "/"  },
++  { 0,             NULL }
++};
++
+ const struct menu_func_op_t OpEditor[] = { /* map: editor */
+   { "backspace",        OP_EDITOR_BACKSPACE },
+   { "backward-char",    OP_EDITOR_BACKWARD_CHAR },
 diff -urNp -x '*.orig' mutt-2.0.6.org/globals.h mutt-2.0.6/globals.h
 --- mutt-2.0.6.org/globals.h	2021-04-18 19:23:38.230011162 +0200
 +++ mutt-2.0.6/globals.h	2021-04-18 19:23:38.363346256 +0200
@@ -169,10 +190,9 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
    { "mark_old",		DT_BOOL, R_BOTH, {.l=OPTMARKOLD}, {.l=1} },
    /*
    ** .pp
-diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.c mutt-2.0.6/keymap.c
---- mutt-2.0.6.org/keymap.c	2021-03-06 20:06:37.000000000 +0100
-+++ mutt-2.0.6/keymap.c	2021-04-18 19:23:38.366679633 +0200
-@@ -49,6 +49,8 @@ const struct mapping_t Menus[] = {
+--- mutt-2.2.13/keymap.c.orig	2023-08-18 05:03:18.000000000 +0200
++++ mutt-2.2.13/keymap.c	2024-10-27 16:17:06.355489747 +0100
+@@ -50,6 +50,8 @@ const struct mapping_t Menus[] = {
    { "pager",	MENU_PAGER },
    { "postpone",	MENU_POST },
    { "pgp",	MENU_PGP },
@@ -181,26 +201,17 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.c mutt-2.0.6/keymap.c
    { "smime",	MENU_SMIME },
  #ifdef CRYPT_BACKEND_GPGME
    { "key_select_pgp",	MENU_KEY_SELECT_PGP },
-@@ -749,6 +751,8 @@ void km_init (void)
-   create_bindings (OpPost, MENU_POST);
-   create_bindings (OpQuery, MENU_QUERY);
-   create_bindings (OpAlias, MENU_ALIAS);
-+  create_bindings (OpSig, MENU_SIG);
-+  create_bindings (OpSigDir, MENU_SIG_DIR);
+@@ -778,6 +780,9 @@ void km_init (void)
+   create_bindings (EditorDefaultBindings, MENU_EDITOR);
  
- 
-   if ((WithCrypto & APPLICATION_PGP))
-@@ -851,6 +855,9 @@ void km_init (void)
-   km_bindkey ("<enter>", MENU_ATTACH, OP_VIEW_ATTACH);
-   km_bindkey ("<enter>", MENU_COMPOSE, OP_VIEW_ATTACH);
- 
-+  km_bindkey ("<up>", MENU_SIG, OP_PREV_SIG);
-+  km_bindkey ("<down>", MENU_SIG, OP_NEXT_SIG);
+   create_bindings (GenericDefaultBindings, MENU_GENERIC);
 +
-   /* edit-to (default "t") hides generic tag-entry in Compose menu
-      This will bind tag-entry to  "T" in the Compose menu */
-   km_bindkey ("T", MENU_COMPOSE, OP_TAG);
-@@ -1015,6 +1022,10 @@ const struct binding_t *km_get_table (in
++  create_bindings (SigDefaultBindings, MENU_SIG);
++  create_bindings (SigDirDefaultBindings, MENU_SIG_DIR);
+ }
+ 
+ void km_error_key (int menu)
+@@ -942,6 +947,10 @@ const struct menu_func_op_t *km_get_tabl
        return OpQuery;
      case MENU_LIST:
        return OpList;
@@ -211,10 +222,9 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.c mutt-2.0.6/keymap.c
  
      case MENU_PGP:
        return (WithCrypto & APPLICATION_PGP)? OpPgp:NULL;
-diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.h mutt-2.0.6/keymap.h
---- mutt-2.0.6.org/keymap.h	2021-03-06 20:06:37.000000000 +0100
-+++ mutt-2.0.6/keymap.h	2021-04-18 19:23:38.366679633 +0200
-@@ -63,6 +63,8 @@ enum
+--- mutt-2.2.13/keymap.h.orig	2022-12-12 23:42:54.000000000 +0100
++++ mutt-2.2.13/keymap.h	2024-10-27 16:08:08.808401886 +0100
+@@ -64,6 +64,8 @@ enum
    MENU_PAGER,
    MENU_POST,
    MENU_QUERY,
@@ -223,15 +233,16 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/keymap.h mutt-2.0.6/keymap.h
  
  
    MENU_PGP,
-@@ -105,6 +107,8 @@ const struct binding_t *km_get_table (in
- extern const struct binding_t OpGeneric[];
- extern const struct binding_t OpPost[];
- extern const struct binding_t OpMain[];
-+extern struct binding_t OpSig[];
-+extern struct binding_t OpSigDir[];
- extern const struct binding_t OpAttach[];
- extern const struct binding_t OpPager[];
- extern const struct binding_t OpCompose[];
+@@ -133,6 +135,9 @@ extern const struct menu_func_op_t OpMix
+ extern const struct menu_func_op_t OpAutocryptAcct[];
+ #endif
+ 
++extern const struct menu_func_op_t OpSig[];
++extern const struct menu_func_op_t OpSigDir[];
++
+ #include "keymap_defs.h"
+ 
+ #endif /* KEYMAP_H */
 diff -urNp -x '*.orig' mutt-2.0.6.org/menu.c mutt-2.0.6/menu.c
 --- mutt-2.0.6.org/menu.c	2021-04-18 19:23:38.230011162 +0200
 +++ mutt-2.0.6/menu.c	2021-04-18 19:23:38.366679633 +0200

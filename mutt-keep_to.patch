@@ -14,19 +14,19 @@ diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
          rfc822_append (&out->cc, in->to, 1);
        else
          rfc822_append (&out->to, in->to, 1);
---- mutt-2.0.6/init.h.orig	2021-04-07 17:47:28.950795784 +0000
-+++ mutt-2.0.6/init.h	2021-04-07 17:48:57.734130406 +0000
-@@ -1874,6 +1874,12 @@
-   ** If \fIset\fP, convert the date in the Date header of sent emails into local
-   ** (sender's) timezone.
+--- mutt-2.2.13/init.h.orig	2024-10-27 16:39:28.431552437 +0100
++++ mutt-2.2.13/init.h	2024-10-27 16:41:40.057506025 +0100
+@@ -2008,6 +2008,12 @@ struct option_t MuttVars[] = {
+   ** from your spool mailbox to your $$mbox mailbox, or as a result of
+   ** a ``$mbox-hook'' command.
    */
-+  { "keep_to", DT_BOOL, R_NONE, OPTKEEPTO, 0 },
++  { "keep_to", DT_BOOL, R_NONE, {.l=OPTKEEPTO}, {.l=0} },
 +  /*
 +  ** .pp
 +  ** Controls where recipients from ``To:'' list go on group-reply. If \fIset\fP
 +  ** they are copied to ``To:'' otherwise to ``Cc:''.
 +  */
-   { "mail_check",	DT_NUM,  R_NONE, {.p=&BuffyTimeout}, {.l=5} },
+   { "local_date_header", DT_BOOL, R_NONE, {.l=OPTLOCALDATEHEADER}, {.l=1} },
    /*
    ** .pp
 --- mutt-2.0.6/mutt.h.orig	2021-04-07 17:47:28.950795784 +0000

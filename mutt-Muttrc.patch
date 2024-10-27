@@ -1,7 +1,6 @@
-diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
---- mutt-1.5.19/doc/Muttrc	2009-04-13 19:07:38.103582891 +0200
-+++ mutt-1.5.19.conf/doc/Muttrc	2009-04-13 18:29:07.652668002 +0200
-@@ -1033,6 +1033,7 @@
+--- mutt-2.2.13/doc/Muttrc.orig	2024-10-27 16:52:16.897389301 +0100
++++ mutt-2.2.13/doc/Muttrc	2024-10-27 17:10:05.321601153 +0100
+@@ -1804,6 +1804,7 @@ attachments   -I message/external-body
  # 
  # 
  # set forward_format="[%a: %s]"
@@ -9,7 +8,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: forward_format
  # Type: string
-@@ -1203,6 +1204,7 @@
+@@ -2036,6 +2037,7 @@ attachments   -I message/external-body
  # 
  # 
  # set history=10
@@ -17,7 +16,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: history
  # Type: number
-@@ -1775,6 +1777,7 @@
+@@ -2846,6 +2848,7 @@ attachments   -I message/external-body
  # 
  # 
  # set mark_old=yes
@@ -25,7 +24,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: mark_old
  # Type: boolean
-@@ -1947,6 +1950,7 @@
+@@ -3101,6 +3104,7 @@ attachments   -I message/external-body
  # 
  # 
  # set mime_forward=no
@@ -33,7 +32,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: mime_forward
  # Type: quadoption
-@@ -2115,6 +2119,7 @@
+@@ -3298,6 +3302,7 @@ attachments   -I message/external-body
  # 
  # 
  # set pager_context=0
@@ -41,7 +40,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: pager_context
  # Type: number
-@@ -2141,6 +2146,7 @@
+@@ -3328,6 +3333,7 @@ attachments   -I message/external-body
  # 
  # 
  # set pager_index_lines=0
@@ -49,7 +48,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: pager_index_lines
  # Type: number
-@@ -3546,6 +3553,7 @@
+@@ -4351,6 +4357,7 @@ attachments   -I message/external-body
  # 
  # 
  # set quit=yes
@@ -57,15 +56,15 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: quit
  # Type: quadoption
-@@ -3680,6 +3688,7 @@
+@@ -4537,6 +4544,7 @@ attachments   -I message/external-body
  # 
  # 
- # set reply_regexp="^(re([\\[0-9\\]+])*|aw):[ \t]*"
+ # set reply_regexp="^(re)(\\\\[[0-9]+\\\\])*:[ \t]*"
 +set reply_regexp="^(([oO][dD][pP]|[aA][wW]|[rR][eE]([\\[0-9\\]+])*:|[Oo][dD][pP]:|[aA][wW]:|[rR][eE]:)[ \t]+)*"
  #
  # Name: reply_regexp
- # Type: regular expression
-@@ -3915,6 +3924,7 @@
+ # Type: regular expression (localized)
+@@ -4853,6 +4861,7 @@ attachments   -I message/external-body
  # 
  # 
  # set send_charset="us-ascii:iso-8859-1:utf-8"
@@ -73,7 +72,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: send_charset
  # Type: string
-@@ -4019,6 +4029,7 @@
+@@ -5231,6 +5240,7 @@ attachments   -I message/external-body
  # 
  # 
  # set simple_search="~f %s | ~s %s"
@@ -81,7 +80,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: simple_search
  # Type: string
-@@ -4126,6 +4137,7 @@
+@@ -5748,6 +5758,7 @@ attachments   -I message/external-body
  # 
  # 
  # set sort=date
@@ -89,7 +88,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: sort
  # Type: sort order
-@@ -4436,6 +4448,7 @@
+@@ -6341,6 +6352,7 @@ attachments   -I message/external-body
  # 
  # 
  # set thorough_search=yes
@@ -97,7 +96,7 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: thorough_search
  # Type: boolean
-@@ -4455,6 +4468,7 @@
+@@ -6371,6 +6383,7 @@ attachments   -I message/external-body
  # 
  # 
  # set tilde=no
@@ -105,8 +104,8 @@ diff -urN mutt-1.5.19/doc/Muttrc mutt-1.5.19.conf/doc/Muttrc
  #
  # Name: tilde
  # Type: boolean
-@@ -4772,3 +4786,4 @@
- # in an X11 terminal emulator.
+@@ -6780,3 +6793,4 @@ attachments   -I message/external-body
+ # ``tuning'' section of the manual for performance considerations.
  # 
  # 
 +source mutt_source-muttrc.d|
