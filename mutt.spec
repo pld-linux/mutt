@@ -181,6 +181,9 @@ Mutt - це невеликий, але потужний повноекранни
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/manual*.html
 
+# use system-wide macros
+%{__rm} m4/{gpg-error,gpgme}.m4
+
 %build
 %{__aclocal} -I m4
 %{__autoconf}
