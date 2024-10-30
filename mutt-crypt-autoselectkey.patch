@@ -15,7 +15,7 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
 +  
 +
 +  { "pgp_autoselectkey",	DT_SYN,  R_NONE, {.p="crypt_autoselectkey"}, {.l=0} },
-+  { "crypt_autoselectkey",	DT_BOOL, R_NONE, OPTCRYPTAUTOSELECT, 0 },
++  { "crypt_autoselectkey",	DT_BOOL, R_NONE, {.l=OPTCRYPTAUTOSELECT}, {.l=0} },
 +  /*
 +  ** .pp
 +  ** If set, then a list of keys is not presented for selection when only
