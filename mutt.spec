@@ -31,13 +31,13 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	2.2.13
-Release:	2
+Version:	2.2.14
+Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
-# Source0-md5:	0d33c808d5556c283c01542c7730ccbd
+# Source0-md5:	8794c4d68a4a147e454936a242ea6a9e
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
