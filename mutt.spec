@@ -153,26 +153,26 @@ Mutt - це невеликий, але потужний повноекранни
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch12 -p1
-%patch13 -p1
-%patch14 -p1
+%patch -P0 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
+%patch -P8 -p1
+%patch -P9 -p1
+%patch -P10 -p1
+%patch -P12 -p1
+%patch -P13 -p1
+%patch -P14 -p1
 
-%{?with_home_etc:%patch101 -p1}
-%{?with_nntp:%patch102 -p1}
+%{?with_home_etc:%patch -P101 -p1}
+%{?with_nntp:%patch -P102 -p1}
 # breaks display if arrow_cursor is set
-%{?with_folder_column:%patch103 -p1}
-%{?with_imap_recent:%patch104 -p1}
+%{?with_folder_column:%patch -P103 -p1}
+%{?with_imap_recent:%patch -P104 -p1}
 
 # force regeneration (manual.sgml is modified by some patches)
 %{__rm} doc/manual*.html
