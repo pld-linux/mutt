@@ -3,14 +3,14 @@
 @@ -4230,10 +4230,8 @@ msgid "Certificate host check failed: %s
  msgstr "Weryfikacja certyfikat hosta nie powiodła się: %s"
  
- #: mutt_ssl.c:1263 mutt_ssl_gnutls.c:883
+ #: mutt_ssl.c:1269 mutt_ssl_gnutls.c:883
 -#, fuzzy
 -#| msgid "Warning: Couldn't save certificate"
  msgid "Untrusted server certificate"
 -msgstr "Ostrzeżenie: Nie można zapisać certyfikatu"
 +msgstr "Niezaufany certyfikat serwera"
  
- #: mutt_ssl.c:1272 mutt_ssl_gnutls.c:938
+ #: mutt_ssl.c:1278 mutt_ssl_gnutls.c:938
  msgid "This certificate belongs to:"
 @@ -5767,10 +5765,9 @@ msgstr "Zapisywanie w %s"
  #. %s is the mailbox name.
