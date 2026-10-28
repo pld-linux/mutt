@@ -2,21 +2,10 @@ Add keep_to option to control where To: recipients are copied on group-reply (To
 
 author: Jan Palus
 
-diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
---- mutt-1.5.23.orig/send.c	2014-10-12 16:55:39.680846728 +0200
-+++ mutt-1.5.23/send.c	2014-10-12 16:55:52.104179682 +0200
-@@ -672,7 +672,7 @@
-         (!in->mail_followup_to || hmfupto != MUTT_YES))
-     {
-       /* if (!mutt_addr_is_user(in->to)) */
--      if (flags & SENDGROUPREPLY)
-+      if ( (flags & SENDGROUPREPLY) || ! option(OPTKEEPTO) )
-         rfc822_append (&out->cc, in->to, 1);
-       else
-         rfc822_append (&out->to, in->to, 1);
---- mutt-2.2.13/init.h.orig	2024-10-27 16:39:28.431552437 +0100
-+++ mutt-2.2.13/init.h	2024-10-27 16:41:40.057506025 +0100
-@@ -2008,6 +2008,12 @@ struct option_t MuttVars[] = {
+diff --git mutt-2.4.3.orig/init.h mutt-2.4.3/init.h
+--- mutt-2.4.3.orig/init.h
++++ mutt-2.4.3/init.h
+@@ -2023,6 +2023,12 @@ struct option_t MuttVars[] = {
    ** from your spool mailbox to your $$mbox mailbox, or as a result of
    ** a ``$mbox-hook'' command.
    */
@@ -29,9 +18,10 @@ diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
    { "local_date_header", DT_BOOL, R_NONE, {.l=OPTLOCALDATEHEADER}, {.l=1} },
    /*
    ** .pp
---- mutt-2.0.6/mutt.h.orig	2021-04-07 17:47:28.950795784 +0000
-+++ mutt-2.0.6/mutt.h	2021-04-07 17:50:34.977465090 +0000
-@@ -479,6 +479,7 @@
+diff --git mutt-2.4.3.orig/mutt.h mutt-2.4.3/mutt.h
+--- mutt-2.4.3.orig/mutt.h
++++ mutt-2.4.3/mutt.h
+@@ -492,6 +492,7 @@ enum
    OPTINCLUDEENCRYPTED,
    OPTINCLUDEONLYFIRST,
    OPTKEEPFLAGGED,
@@ -39,3 +29,15 @@ diff -urN mutt-1.5.23.orig/send.c mutt-1.5.23/send.c
    OPTLOCALDATEHEADER,
    OPTMUTTLISPINLINEEVAL,
    OPTMAILCAPSANITIZE,
+diff --git mutt-2.4.3.orig/send.c mutt-2.4.3/send.c
+--- mutt-2.4.3.orig/send.c
++++ mutt-2.4.3/send.c
+@@ -699,7 +699,7 @@ int mutt_fetch_recips(ENVELOPE *out, ENVELOPE *in, int flags)
+         (!in->mail_followup_to || hmfupto != MUTT_YES))
+     {
+       /* if (!mutt_addr_is_user(in->to)) */
+-      if (flags & SENDGROUPREPLY)
++      if ((flags & SENDGROUPREPLY) || !option(OPTKEEPTO))
+         rfc822_append(&out->cc, in->to, 1);
+       else
+         rfc822_append(&out->to, in->to, 1);

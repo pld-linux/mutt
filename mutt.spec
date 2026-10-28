@@ -31,17 +31,16 @@ Summary(ru.UTF-8):	Почтовая клиентская программа Mutt
 Summary(tr.UTF-8):	Mutt elektronik posta programı
 Summary(uk.UTF-8):	Поштова клієнтська програма Mutt
 Name:		mutt
-Version:	2.2.16
+Version:	2.4.3
 Release:	1
 Epoch:		6
 License:	GPL v2+
 Group:		Applications/Mail
 Source0:	ftp://ftp.mutt.org/pub/mutt/%{name}-%{version}.tar.gz
-# Source0-md5:	bf490012d216492e63f67358860b1123
+# Source0-md5:	1f04ae804c632e7f7240dd88377b0491
 Source1:	%{name}.desktop
 Source2:	%{name}.png
 Source3:	%{name}.1.pl
-Patch0:		%{name}-pl.po-update.patch
 Patch1:		%{name}-bj.status-time.patch
 # http://mutt.org.ua/download/
 Patch2:		%{name}-vvv.quote.patch
@@ -87,6 +86,7 @@ BuildRequires:	openssl-devel >= 0.9.7d
 %{?with_slang:BuildRequires:	slang-devel}
 %{?with_autocrypt:BuildRequires:	sqlite3-devel >= 3.20}
 %{?with_tokyocabinet:BuildRequires:	tokyocabinet-devel}
+BuildRequires:	zlib-devel
 Requires:	gpgme >= 1:1.4.0
 %{?with_home_etc:Requires:	home-etc-lib >= 1.0.8}
 Requires:	iconv
@@ -153,7 +153,6 @@ Mutt - це невеликий, але потужний повноекранни
 
 %prep
 %setup -q
-%patch -P0 -p1
 %patch -P1 -p1
 %patch -P2 -p1
 %patch -P3 -p1
@@ -212,7 +211,8 @@ Mutt - це невеликий, але потужний повноекранни
 	%{?with_sasl:--with-sasl} \
 	%{?with_slang:--with-slang} \
 	--with-ssl \
-	%{?with_tokyocabinet:--with-tokyocabinet}
+	%{?with_tokyocabinet:--with-tokyocabinet} \
+	--with-zlib
 
 %{__make} -j1 -C doc
 %{__make}

@@ -1,6 +1,6 @@
---- mutt-2.2.13/doc/Muttrc.orig	2024-10-27 16:52:16.897389301 +0100
-+++ mutt-2.2.13/doc/Muttrc	2024-10-27 17:10:05.321601153 +0100
-@@ -1804,6 +1804,7 @@ attachments   -I message/external-body
+--- mutt-2.4.3/doc/Muttrc.orig
++++ mutt-2.4.3/doc/Muttrc
+@@ -1804,6 +1804,7 @@
  # 
  # 
  # set forward_format="[%a: %s]"
@@ -8,7 +8,7 @@
  #
  # Name: forward_format
  # Type: string
-@@ -2036,6 +2037,7 @@ attachments   -I message/external-body
+@@ -2036,6 +2037,7 @@
  # 
  # 
  # set history=10
@@ -16,7 +16,7 @@
  #
  # Name: history
  # Type: number
-@@ -2846,6 +2848,7 @@ attachments   -I message/external-body
+@@ -2869,6 +2871,7 @@
  # 
  # 
  # set mark_old=yes
@@ -24,7 +24,7 @@
  #
  # Name: mark_old
  # Type: boolean
-@@ -3101,6 +3104,7 @@ attachments   -I message/external-body
+@@ -3124,6 +3127,7 @@
  # 
  # 
  # set mime_forward=no
@@ -32,7 +32,7 @@
  #
  # Name: mime_forward
  # Type: quadoption
-@@ -3298,6 +3302,7 @@ attachments   -I message/external-body
+@@ -3321,6 +3325,7 @@
  # 
  # 
  # set pager_context=0
@@ -40,7 +40,7 @@
  #
  # Name: pager_context
  # Type: number
-@@ -3328,6 +3333,7 @@ attachments   -I message/external-body
+@@ -3351,6 +3356,7 @@
  # 
  # 
  # set pager_index_lines=0
@@ -48,7 +48,7 @@
  #
  # Name: pager_index_lines
  # Type: number
-@@ -4351,6 +4357,7 @@ attachments   -I message/external-body
+@@ -4374,6 +4380,7 @@
  # 
  # 
  # set quit=yes
@@ -56,7 +56,7 @@
  #
  # Name: quit
  # Type: quadoption
-@@ -4537,6 +4544,7 @@ attachments   -I message/external-body
+@@ -4560,6 +4567,7 @@
  # 
  # 
  # set reply_regexp="^(re)(\\\\[[0-9]+\\\\])*:[ \t]*"
@@ -64,7 +64,7 @@
  #
  # Name: reply_regexp
  # Type: regular expression (localized)
-@@ -4853,6 +4861,7 @@ attachments   -I message/external-body
+@@ -4876,6 +4884,7 @@
  # 
  # 
  # set send_charset="us-ascii:iso-8859-1:utf-8"
@@ -72,7 +72,7 @@
  #
  # Name: send_charset
  # Type: string
-@@ -5231,6 +5240,7 @@ attachments   -I message/external-body
+@@ -5254,6 +5263,7 @@
  # 
  # 
  # set simple_search="~f %s | ~s %s"
@@ -80,7 +80,7 @@
  #
  # Name: simple_search
  # Type: string
-@@ -5748,6 +5758,7 @@ attachments   -I message/external-body
+@@ -5814,6 +5824,7 @@
  # 
  # 
  # set sort=date
@@ -88,7 +88,7 @@
  #
  # Name: sort
  # Type: sort order
-@@ -6341,6 +6352,7 @@ attachments   -I message/external-body
+@@ -6410,6 +6421,7 @@
  # 
  # 
  # set thorough_search=yes
@@ -96,7 +96,7 @@
  #
  # Name: thorough_search
  # Type: boolean
-@@ -6371,6 +6383,7 @@ attachments   -I message/external-body
+@@ -6440,6 +6452,7 @@
  # 
  # 
  # set tilde=no
@@ -104,7 +104,7 @@
  #
  # Name: tilde
  # Type: boolean
-@@ -6780,3 +6793,4 @@ attachments   -I message/external-body
+@@ -6866,3 +6879,4 @@
  # ``tuning'' section of the manual for performance considerations.
  # 
  # 

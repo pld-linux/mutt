@@ -1,28 +1,30 @@
-diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/curs_main.c mutt-1.5.10/curs_main.c
---- mutt-1.5.20.b/curs_main.c	2009-07-14 12:34:25.000000000 +0200
-+++ mutt-1.5.20/curs_main.c	2009-07-14 12:42:41.000000000 +0200
-@@ -556,7 +556,7 @@
-       menu_redraw_current (menu);
+diff --git mutt-2.4.3.orig/curs_main.c mutt-2.4.3/curs_main.c
+--- mutt-2.4.3.orig/curs_main.c
++++ mutt-2.4.3/curs_main.c
+@@ -608,7 +608,7 @@ static void index_menu_redraw(MUTTMENU *menu)
+       menu_redraw_current(menu);
    }
  
 -  if (menu->redraw & REDRAW_STATUS)
-+  if (menu->redraw & REDRAW_STATUS || update_status_time ())
++  if (menu->redraw & REDRAW_STATUS || update_status_time())
    {
-     menu_status_line (buf, sizeof (buf), menu, NONULL (Status));
-     mutt_window_move (MuttStatusWindow, 0, 0);
---- mutt-1.5.18/globals.h.orig	2008-01-30 05:26:50.000000000 +0100
-+++ mutt-1.5.18/globals.h	2008-07-25 17:41:02.532746787 +0200
-@@ -200,6 +200,7 @@
+     menu_status_line(buf, sizeof(buf), menu, NONULL(Status));
+     mutt_window_move(MuttStatusWindow, 0, 0);
+diff --git mutt-2.4.3.orig/globals.h mutt-2.4.3/globals.h
+--- mutt-2.4.3.orig/globals.h
++++ mutt-2.4.3/globals.h
+@@ -243,6 +243,7 @@ WHERE short ReflowWrap;
  WHERE short SaveHist;
  WHERE short SendmailWait;
- WHERE short SleepTime INITVAL (1);
+ WHERE short SleepTime INITVAL(1);
 +WHERE short StatusUpdate;
  WHERE short TimeInc;
  WHERE short Timeout;
  WHERE short Wrap;
---- mutt-2.0.6/init.h.orig	2021-03-06 19:06:37.000000000 +0000
-+++ mutt-2.0.6/init.h	2021-04-07 17:25:21.720777040 +0000
-@@ -4197,6 +4197,8 @@
+diff --git mutt-2.4.3.orig/init.h mutt-2.4.3/init.h
+--- mutt-2.4.3.orig/init.h
++++ mutt-2.4.3/init.h
+@@ -4555,6 +4555,8 @@ struct option_t MuttVars[] = {
    ** .dt %u  .dd number of unread messages *
    ** .dt %v  .dd Mutt version string
    ** .dt %V  .dd currently active limit pattern, if any *
@@ -31,7 +33,7 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/curs_main.c mutt-1.5.10/curs_main
    ** .dt %>X .dd right justify the rest of the string and pad with ``X''
    ** .dt %|X .dd pad to the end of the line with ``X''
    ** .dt %*X .dd soft-fill with character ``X'' as pad
-@@ -4248,6 +4250,16 @@
+@@ -4606,6 +4608,16 @@ struct option_t MuttVars[] = {
    ** the first line of the screen rather than near the bottom. If $$help
    ** is \fIset\fP, too it'll be placed at the bottom.
    */
@@ -45,13 +47,13 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/curs_main.c mutt-1.5.10/curs_main
 +  ** If it is negative, the status time will only be updated
 +  ** if it necessary to update to the status line for some other reason.
 +  */
-   { "strict_threads",	DT_BOOL, R_RESORT|R_RESORT_INIT|R_INDEX, {.l=OPTSTRICTTHREADS}, {.l=0} },
+   { "strict_threads",   DT_BOOL, R_RESORT|R_RESORT_INIT|R_INDEX, {.l=OPTSTRICTTHREADS}, {.l=0} },
    /*
    ** .pp
-diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/menu.c mutt-1.5.10/menu.c
---- mutt-1.5.10.orig/menu.c	2005-06-12 20:32:46.000000000 +0200
-+++ mutt-1.5.10/menu.c	2005-10-07 09:28:24.000000000 +0200
-@@ -1087,3 +1087,23 @@
+diff --git mutt-2.4.3.orig/menu.c mutt-2.4.3/menu.c
+--- mutt-2.4.3.orig/menu.c
++++ mutt-2.4.3/menu.c
+@@ -1283,3 +1283,23 @@ int mutt_menuLoop(MUTTMENU *menu)
    }
    /* not reached */
  }
@@ -75,19 +77,19 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/menu.c mutt-1.5.10/menu.c
 +  else
 +    return 0;
 +}
-diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/mutt_menu.h mutt-1.5.10/mutt_menu.h
---- mutt-1.5.10.orig/mutt_menu.h	2005-08-11 21:37:02.000000000 +0200
-+++ mutt-1.5.10/mutt_menu.h	2005-10-07 09:28:59.000000000 +0200
-@@ -112,4 +112,5 @@
- void index_make_entry (char *, size_t, struct menu_t *, int);
- COLOR_ATTR index_color (int);
+diff --git mutt-2.4.3.orig/mutt_menu.h mutt-2.4.3/mutt_menu.h
+--- mutt-2.4.3.orig/mutt_menu.h
++++ mutt-2.4.3/mutt_menu.h
+@@ -142,4 +142,5 @@ int mutt_menuLoop(MUTTMENU *);
+ void index_make_entry(char *, size_t, struct menu_t *, int);
+ COLOR_ATTR index_color(int);
  
-+int update_status_time (void);
++int update_status_time(void);
  #endif /* _MUTT_MENU_H_ */
-diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/pager.c mutt-1.5.10/pager.c
---- mutt-1.5.10.orig/pager.c	2005-08-11 21:37:02.000000000 +0200
-+++ mutt-1.5.10/pager.c	2005-10-07 09:28:24.000000000 +0200
-@@ -1763,7 +1763,7 @@
+diff --git mutt-2.4.3.orig/pager.c mutt-2.4.3/pager.c
+--- mutt-2.4.3.orig/pager.c
++++ mutt-2.4.3/pager.c
+@@ -2064,7 +2064,7 @@ static void pager_menu_redraw(MUTTMENU *pager_menu)
      }
    }
  
@@ -96,10 +98,10 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/pager.c mutt-1.5.10/pager.c
    {
      /* redraw the pager_index indicator, because the
       * flags for this message might have changed. */
-diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/status.c mutt-1.5.10/status.c
---- mutt-1.5.10.orig/status.c	2005-10-07 09:28:10.000000000 +0200
-+++ mutt-1.5.10/status.c	2005-10-07 09:28:24.000000000 +0200
-@@ -303,6 +304,47 @@
+diff --git mutt-2.4.3.orig/status.c mutt-2.4.3/status.c
+--- mutt-2.4.3.orig/status.c
++++ mutt-2.4.3/status.c
+@@ -349,6 +349,50 @@ status_format_str(char *buf, size_t buflen, size_t col, int cols, char op, const
        *buf = 0;
        return (src);
  
@@ -113,11 +115,13 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/status.c mutt-1.5.10/status.c
 +	  src++;
 +	}
 +
-+	while (len > 0 && *src != ']')
++	while (len > 0 && *src && *src != ']')
 +	{
 +	  if (*src == '%')
 +	  {
 +	    src++;
++	    if (!*src)
++	      break;
 +	    if (len >= 2)
 +	    {
 +	      *cp++ = '%';
@@ -135,7 +139,8 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/status.c mutt-1.5.10/status.c
 +	  }
 +	}
 +	*cp = 0;
-+	src++;
++	if (*src)
++	  src++;
 +	time_t now = time (NULL);
 +	strftime (tmp, sizeof (tmp), fmt, localtime (&now));
 +
@@ -145,5 +150,5 @@ diff -dur -x '*~' -x '*.orig' mutt-1.5.10.orig/status.c mutt-1.5.10/status.c
 +      break;
 +
      default:
-       snprintf (buf, buflen, "%%%s%c", prefix, op);
+       snprintf(buf, buflen, "%%%s%c", prefix, op);
        break;

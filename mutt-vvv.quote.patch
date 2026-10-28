@@ -1,57 +1,57 @@
-diff -urNp -x '*.orig' mutt-2.0.6.org/PATCHES mutt-2.0.6/PATCHES
---- mutt-2.0.6.org/PATCHES	2020-06-24 23:41:42.000000000 +0200
-+++ mutt-2.0.6/PATCHES	2021-04-18 19:23:37.740004690 +0200
+diff --git mutt-2.4.3.orig/PATCHES mutt-2.4.3/PATCHES
+--- mutt-2.4.3.orig/PATCHES
++++ mutt-2.4.3/PATCHES
 @@ -0,0 +1 @@
 +vvv.quote
-diff -urNp -x '*.orig' mutt-2.0.6.org/handler.c mutt-2.0.6/handler.c
---- mutt-2.0.6.org/handler.c	2021-03-06 20:06:37.000000000 +0100
-+++ mutt-2.0.6/handler.c	2021-04-18 19:23:37.740004690 +0200
-@@ -1603,7 +1603,31 @@ static int text_plain_handler (BODY *b,
- 	buf[--l] = 0;
+diff --git mutt-2.4.3.orig/handler.c mutt-2.4.3/handler.c
+--- mutt-2.4.3.orig/handler.c
++++ mutt-2.4.3/handler.c
+@@ -1603,7 +1603,31 @@ static int text_plain_handler(BODY *b, STATE *s)
+         buf[--l] = 0;
      }
      if (s->prefix)
--      state_puts (s->prefix, s);
+-      state_puts(s->prefix, s);
 +    {
-+      int i;
-+      char qbuf[2 * LONG_STRING];
-+      int j = 0, offset = 0;
++      size_t i, j = 0, offset = 0;
 +      regmatch_t pmatch[1];
 +
-+      while (regexec ((regex_t *) QuoteRegexp.rx, &buf[offset], 1, pmatch, 0) == 0)
-+	offset += pmatch->rm_eo;
++      while (regexec((regex_t *) QuoteRegexp.rx, &buf[offset], 1, pmatch, 0) == 0 &&
++             pmatch->rm_eo > 0)
++        offset += pmatch->rm_eo;
 +
-+      if (!option (OPTQUOTEEMPTY) && !*buf)
-+	strcpy (qbuf, buf);
-+      else if (option (OPTQUOTEQUOTED) && offset)
++      if (!option(OPTQUOTEEMPTY) && !*buf)
++        ;
++      else if (option(OPTQUOTEQUOTED) && offset)
 +      {
-+	for (i = 0; i < offset; i++)
-+	  if (buf[i] != ' ')
-+	    j = i;
-+	strncpy (qbuf, buf, j + 1);
-+	strcpy (qbuf + j + 1, buf + j);
++        /* repeat the last quote character of the existing prefix */
++        for (i = 0; i < offset; i++)
++          if (buf[i] != ' ')
++            j = i;
++        for (i = 0; i <= j; i++)
++          state_putc(buf[i], s);
++        state_puts(buf + j, s);
++        state_putc('\n', s);
++        continue;
 +      }
 +      else
-+	snprintf (qbuf, sizeof (qbuf), "%s%s", NONULL(s->prefix), buf);
-+
-+      state_puts (qbuf, s);
++        state_puts(s->prefix, s);
 +    }
-+    else
-     state_puts (buf, s);
-     state_putc ('\n', s);
+     state_puts(buf, s);
+     state_putc('\n', s);
    }
-@@ -1806,7 +1830,7 @@ int mutt_body_handler (BODY *b, STATE *s
+@@ -1806,7 +1830,7 @@ int mutt_body_handler(BODY *b, STATE *s)
         */
-       if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp (b))
- 	encrypted_handler = handler = crypt_pgp_application_pgp_handler;
--      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0)
-+      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp ("flowed", mutt_get_parameter ("format", b->parameter)) == 0 && !s->prefix)
- 	handler = rfc3676_handler;
+       if ((WithCrypto & APPLICATION_PGP) && mutt_is_application_pgp(b))
+         encrypted_handler = handler = crypt_pgp_application_pgp_handler;
+-      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp("flowed", mutt_get_parameter("format", b->parameter)) == 0)
++      else if (option(OPTREFLOWTEXT) && ascii_strcasecmp("flowed", mutt_get_parameter("format", b->parameter)) == 0 && !s->prefix)
+         handler = rfc3676_handler;
        else
- 	handler = text_plain_handler;
-diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
---- mutt-2.0.6.org/init.h	2021-04-18 19:23:37.610002974 +0200
-+++ mutt-2.0.6/init.h	2021-04-18 19:23:37.740004690 +0200
-@@ -2966,6 +2966,19 @@ struct option_t MuttVars[] = {
+         handler = text_plain_handler;
+diff --git mutt-2.4.3.orig/init.h mutt-2.4.3/init.h
+--- mutt-2.4.3.orig/init.h
++++ mutt-2.4.3/init.h
+@@ -3175,6 +3175,19 @@ struct option_t MuttVars[] = {
    ** have no effect, and if it is set to \fIask-yes\fP or \fIask-no\fP, you are
    ** prompted for confirmation when you try to quit.
    */
@@ -68,13 +68,13 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
 +  ** character will be added to the end of existing prefix.  Otherwise,
 +  ** quoted lines will be prepended by ``$indent_string''.
 +  */
-   { "quote_regexp",	DT_RX,	 R_PAGER, {.p=&QuoteRegexp}, {.p="^([ \t]*[|>:}#])+"} },
+   { "quote_regexp",     DT_RX,   R_PAGER, {.p=&QuoteRegexp}, {.p="^([ \t]*[|>:}#])+"} },
    /*
    ** .pp
-diff -urNp -x '*.orig' mutt-2.0.6.org/mutt.h mutt-2.0.6/mutt.h
---- mutt-2.0.6.org/mutt.h	2021-03-06 20:06:37.000000000 +0100
-+++ mutt-2.0.6/mutt.h	2021-04-18 19:23:37.740004690 +0200
-@@ -510,6 +510,8 @@ enum
+diff --git mutt-2.4.3.orig/mutt.h mutt-2.4.3/mutt.h
+--- mutt-2.4.3.orig/mutt.h
++++ mutt-2.4.3/mutt.h
+@@ -524,6 +524,8 @@ enum
    OPTPRINTDECODEWEED,
    OPTPRINTSPLIT,
    OPTPROMPTAFTER,

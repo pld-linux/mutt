@@ -1,14 +1,14 @@
-diff -urNp -x '*.orig' mutt-2.0.6.org/PATCHES mutt-2.0.6/PATCHES
---- mutt-2.0.6.org/PATCHES	2021-04-18 19:23:38.550015388 +0200
-+++ mutt-2.0.6/PATCHES	2021-04-18 19:23:38.680017105 +0200
+diff --git mutt-2.4.3.orig/PATCHES mutt-2.4.3/PATCHES
+--- mutt-2.4.3.orig/PATCHES
++++ mutt-2.4.3/PATCHES
 @@ -1,2 +1,3 @@
 +patch-1.5.6.dw.crypt-autoselectkey.1
  vvv.quote
  patch-1.3.27.cd.signatures_menu.2.1
-diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
---- mutt-2.0.6.org/init.h	2021-04-18 19:23:38.550015388 +0200
-+++ mutt-2.0.6/init.h	2021-04-18 19:23:38.680017105 +0200
-@@ -1203,6 +1203,16 @@ struct option_t MuttVars[] = {
+diff --git mutt-2.4.3.orig/init.h mutt-2.4.3/init.h
+--- mutt-2.4.3.orig/init.h
++++ mutt-2.4.3/init.h
+@@ -1335,6 +1335,16 @@ struct option_t MuttVars[] = {
    ** For a full listing of defined \fCprintf(3)\fP-like sequences see
    ** the section on $$index_format.  See also $$attribution_locale.
    */
@@ -25,10 +25,10 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/init.h mutt-2.0.6/init.h
    /* L10N:
       $forward_attribution_trailer default value
    */
-diff -urNp -x '*.orig' mutt-2.0.6.org/mutt.h mutt-2.0.6/mutt.h
---- mutt-2.0.6.org/mutt.h	2021-04-18 19:23:38.546682010 +0200
-+++ mutt-2.0.6/mutt.h	2021-04-18 19:23:38.680017105 +0200
-@@ -429,6 +429,7 @@ enum
+diff --git mutt-2.4.3.orig/mutt.h mutt-2.4.3/mutt.h
+--- mutt-2.4.3.orig/mutt.h
++++ mutt-2.4.3/mutt.h
+@@ -442,6 +442,7 @@ enum
  #if defined(HAVE_QDBM) || defined(HAVE_TC) || defined(HAVE_KC)
    OPTHCACHECOMPRESS,
  #endif /* HAVE_QDBM */
@@ -36,33 +36,29 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/mutt.h mutt-2.0.6/mutt.h
  #endif
    OPTHDRS,
    OPTHEADER,
-diff -urNp -x '*.orig' mutt-2.0.6.org/pgpkey.c mutt-2.0.6/pgpkey.c
---- mutt-2.0.6.org/pgpkey.c	2020-07-25 20:22:53.000000000 +0200
-+++ mutt-2.0.6/pgpkey.c	2021-04-18 19:23:38.680017105 +0200
-@@ -440,8 +440,13 @@ static int pgp_id_matches_addr (ADDRESS
+diff --git mutt-2.4.3.orig/pgpkey.c mutt-2.4.3/pgpkey.c
+--- mutt-2.4.3.orig/pgpkey.c
++++ mutt-2.4.3/pgpkey.c
+@@ -443,6 +443,10 @@ static int pgp_id_matches_addr(ADDRESS *addr, ADDRESS *u_addr, pgp_uid_t *uid)
    return rv;
  }
  
-+
 +#define pgp_trusted_id(uid) (!option(OPTPGPCHECKTRUST) \
-+			     || (pgp_id_is_valid((uid)) \
-+				 && pgp_id_is_strong((uid))))
++                             || (pgp_id_is_valid((uid)) \
++                                 && pgp_id_is_strong((uid))))
 +
- static pgp_key_t pgp_select_key (pgp_key_t keys,
--                                 ADDRESS * p, const char *s)
-+				  ADDRESS * p, const char *s)
+ static pgp_key_t pgp_select_key(pgp_key_t keys,
+                                 ADDRESS * p, const char *s)
  {
-   int keymax;
-   pgp_uid_t **KeyTable;
-@@ -456,6 +461,7 @@ static pgp_key_t pgp_select_key (pgp_key
+@@ -459,6 +463,7 @@ static pgp_key_t pgp_select_key(pgp_key_t keys,
    pgp_uid_t *a;
-   int (*f) (const void *, const void *);
+   int (*f)(const void *, const void *);
  
-+  int keymatch = 0;		/* count matching keys */
++  int keymatch = 0;             /* count matching keys */
    int unusable = 0;
  
    keymax = 0;
-@@ -485,6 +491,7 @@ static pgp_key_t pgp_select_key (pgp_key
+@@ -488,6 +493,7 @@ static pgp_key_t pgp_select_key(pgp_key_t keys,
  
        KeyTable[i++] = a;
      }
@@ -70,11 +66,11 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/pgpkey.c mutt-2.0.6/pgpkey.c
    }
  
    if (!i && unusable)
-@@ -493,6 +500,21 @@ static pgp_key_t pgp_select_key (pgp_key
-     mutt_sleep (1);
+@@ -496,6 +502,21 @@ static pgp_key_t pgp_select_key(pgp_key_t keys,
+     mutt_sleep(1);
      return NULL;
    }
-+  else if (keymatch == 1 && option(OPTCRYPTAUTOSELECT))
++  else if (keymatch == 1 && i && option(OPTCRYPTAUTOSELECT))
 +  {
 +    /*
 +     * Only one matching key...see if there's an id with enough trust to auto-select
@@ -84,22 +80,22 @@ diff -urNp -x '*.orig' mutt-2.0.6.org/pgpkey.c mutt-2.0.6/pgpkey.c
 +    {
 +      if (pgp_trusted_id(a))
 +      {
-+	safe_free ((void **) &KeyTable);
-+	return (kp);
++        FREE(&KeyTable);
++        return (kp);
 +      }
 +    }
 +  }
  
    switch (PgpSortKeys & SORT_MASK)
    {
-@@ -609,9 +631,7 @@ static pgp_key_t pgp_select_key (pgp_key
+@@ -612,9 +633,7 @@ static pgp_key_t pgp_select_key(pgp_key_t keys,
              break;
            }
  
--        if (option (OPTPGPCHECKTRUST) &&
--            (!pgp_id_is_valid (KeyTable[menu->current])
--             || !pgp_id_is_strong (KeyTable[menu->current])))
-+      if (!pgp_trusted_id(KeyTable[menu->current]))
+-        if (option(OPTPGPCHECKTRUST) &&
+-            (!pgp_id_is_valid(KeyTable[menu->current])
+-             || !pgp_id_is_strong(KeyTable[menu->current])))
++        if (!pgp_trusted_id(KeyTable[menu->current]))
          {
            char *s = "";
            char buff[LONG_STRING];
